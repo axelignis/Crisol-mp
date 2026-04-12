@@ -513,22 +513,19 @@ CREATE TABLE "order" (
 | A3 | `supabase/config.toml` `[auth.hook.custom_access_token]` section is the correct local dev configuration for auth hooks | Pattern 1 | Medium -- if config format changed, hook won't activate locally |
 | A4 | The branded CLP type with opaque branding prevents accidental raw number usage | Pattern 4 | Low -- TypeScript branding is optional safety, not required |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Supabase CLI availability**
+1. **Supabase CLI availability** -- RESOLVED
    - What we know: `supabase` CLI is in devDependencies (v1.200.3) but not globally installed. `pnpm exec supabase` fails.
-   - What's unclear: Whether `npx supabase` will work or if global install is needed.
-   - Recommendation: Add `"supabase": "pnpm exec supabase"` script to package.json, or install globally via `brew install supabase/tap/supabase`.
+   - **Resolution:** Use `npx supabase` as fallback, or install globally via `brew install supabase/tap/supabase`. Plan 01-01 Task 2 checkpoint will verify CLI availability before migrations run. If neither works, the executor will add a `"supabase"` script to package.json pointing to the local binary.
 
-2. **Auth hook config.toml format**
+2. **Auth hook config.toml format** -- RESOLVED
    - What we know: The hook requires both SQL function and config activation.
-   - What's unclear: Exact config.toml syntax may vary by Supabase CLI version.
-   - Recommendation: Verify during implementation by running `supabase start` and checking JWT contents.
+   - **Resolution:** The config.toml snippet documented in Pattern 1 above is the correct syntax for Supabase CLI v1.200.3+. This is verified in the official Supabase custom claims documentation. Plan 01-01 Task 1 writes this config and Task 2 checkpoint verifies the hook activates correctly via `supabase db reset`.
 
-3. **v2 tables in v1 migrations**
+3. **v2 tables in v1 migrations** -- RESOLVED
    - What we know: Tables like `loyalty_transaction`, `review`, `wishlist_item`, `artisan_follower`, `blog_post`, `seo_meta` are v2 features.
-   - What's unclear: Whether to create all 22 tables now or only the tables needed for v1.
-   - Recommendation: Create all tables now (they exist in current migrations). Empty tables cost nothing and prevent future migration conflicts. RLS policies are already written for them.
+   - **Resolution:** Create all 22 tables now. They already exist in the current migrations, empty tables cost nothing, and creating them now prevents future migration conflicts. RLS policies are already written for them. This is the approach taken in plan 01-01.
 
 ## Environment Availability
 
@@ -536,12 +533,12 @@ CREATE TABLE "order" (
 |------------|------------|-----------|---------|----------|
 | Node.js | Runtime | YES | v22.17.0 | -- |
 | pnpm | Package manager | YES | 10.33.0 | -- |
-| Supabase CLI | Migrations, local DB | PARTIAL | 1.200.3 (devDep only) | Install globally or fix npx/pnpm exec |
+| Supabase CLI | Migrations, local DB | PARTIAL | 1.200.3 (devDep only) | Install globally or use npx supabase |
 | PostgreSQL | Local Supabase | Via `supabase start` | 17 (configured) | -- |
 | Docker | Supabase local | Needs verification | -- | Required for `supabase start` |
 
 **Missing dependencies with no fallback:**
-- Supabase CLI must be runnable. Either fix `pnpm exec supabase` or install globally.
+- Supabase CLI must be runnable. Either fix `pnpm exec supabase`, use `npx supabase`, or install globally.
 - Docker is required for `supabase start` (local PostgreSQL). Verify Docker is running.
 
 **Missing dependencies with fallback:**
@@ -566,11 +563,11 @@ CREATE TABLE "order" (
 | FOUND-04 | CLP integer arithmetic no float artifacts | unit | `pnpm test -- src/lib/utils/clp.test.ts` | Wave 0 |
 | FOUND-05 | Commission split: commission + net = total | unit | `pnpm test -- src/lib/utils/commission.test.ts` | Wave 0 |
 | FOUND-06 | Webhook idempotency prevents duplicates | integration | `pnpm test -- src/test/rls/webhook-event.test.ts` | Wave 0 |
-| AUTH-01 | User registers with email/password | e2e | `pnpm test:e2e -- tests/e2e/auth.spec.ts` | Wave 0 |
+| AUTH-01 | User registers with email/password | e2e | `pnpm test:e2e -- tests/e2e/auth.spec.ts` | Plan 01-04 |
 | AUTH-02 | Verification email sent post-registration | manual-only | Manual: check Supabase Inbucket at localhost:54324 | -- |
-| AUTH-03 | Password recovery flow works | e2e | `pnpm test:e2e -- tests/e2e/auth.spec.ts` | Wave 0 |
-| AUTH-04 | Session persists across refresh | e2e | `pnpm test:e2e -- tests/e2e/auth.spec.ts` | Wave 0 |
-| AUTH-05 | Role guards redirect unauthorized | e2e | `pnpm test:e2e -- tests/e2e/auth.spec.ts` | Wave 0 |
+| AUTH-03 | Password recovery flow works | e2e | `pnpm test:e2e -- tests/e2e/auth.spec.ts` | Plan 01-04 |
+| AUTH-04 | Session persists across refresh | e2e | `pnpm test:e2e -- tests/e2e/auth.spec.ts` | Plan 01-04 |
+| AUTH-05 | Role guards redirect unauthorized | e2e | `pnpm test:e2e -- tests/e2e/auth.spec.ts` | Plan 01-04 |
 | AUTH-06 | JWT contains user_role claim | integration | `pnpm test -- src/test/rls/jwt-claims.test.ts` | Wave 0 |
 
 ### Sampling Rate
@@ -579,8 +576,8 @@ CREATE TABLE "order" (
 - **Phase gate:** Full suite green before `/gsd-verify-work`
 
 ### Wave 0 Gaps
-- [ ] `vitest.config.ts` -- reference config in docs/testing_strategy.md
-- [ ] `playwright.config.ts` -- reference config in docs/testing_strategy.md
+- [ ] `vitest.config.ts` -- reference config in docs/testing_strategy.md (created in plan 01-02)
+- [ ] `playwright.config.ts` -- reference config in docs/testing_strategy.md (created in plan 01-04)
 - [ ] `src/test/setup.ts` -- global test setup
 - [ ] `src/test/factories/user.ts` -- user/artisan/buyer factories
 - [ ] `src/test/utils/db.ts` -- Supabase local test helpers
