@@ -1,16 +1,16 @@
 -- ============================================================
--- CRISOL — Migración 006: Fidelización, social y contenido
--- Puntos, reseñas, favoritos, seguidores, blog y SEO.
+-- CRISOL -- Migracion 006: Fidelizacion, social y contenido
+-- Puntos, resenas, favoritos, seguidores, blog y SEO.
 -- ============================================================
 
 -- ------------------------------------------------------------
--- LOYALTY_TRANSACTION — historial de puntos
+-- LOYALTY_TRANSACTION -- historial de puntos
 -- ------------------------------------------------------------
 CREATE TABLE loyalty_transaction (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   buyer_id      UUID NOT NULL REFERENCES buyer(id) ON DELETE CASCADE,
   order_id      UUID REFERENCES "order"(id),
-  points_delta  INTEGER NOT NULL,  -- positivo = acumula, negativo = canjea
+  points_delta  INTEGER NOT NULL,
   type          TEXT NOT NULL CHECK (type IN (
     'earn_purchase',
     'redeem',
@@ -22,12 +22,12 @@ CREATE TABLE loyalty_transaction (
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-COMMENT ON TABLE  loyalty_transaction              IS 'Historial completo de puntos por comprador. Inmutable — nunca se modifica.';
-COMMENT ON COLUMN loyalty_transaction.points_delta IS 'Positivo = acumulación, Negativo = canje o expiración.';
-COMMENT ON COLUMN loyalty_transaction.balance_after IS 'Saldo de puntos del comprador después de esta transacción.';
+COMMENT ON TABLE  loyalty_transaction              IS 'Historial completo de puntos por comprador. Inmutable.';
+COMMENT ON COLUMN loyalty_transaction.points_delta IS 'Positivo = acumulacion, Negativo = canje o expiracion.';
+COMMENT ON COLUMN loyalty_transaction.balance_after IS 'Saldo de puntos del comprador despues de esta transaccion.';
 
 -- ------------------------------------------------------------
--- REVIEW — reseña verificada
+-- REVIEW -- resena verificada
 -- ------------------------------------------------------------
 CREATE TABLE review (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -43,11 +43,11 @@ CREATE TABLE review (
   UNIQUE (product_id, buyer_id, order_id)
 );
 
-COMMENT ON TABLE  review             IS 'Reseña verificada. Solo compradores con ORDER entregada pueden reseñar. Requiere aprobación del admin.';
-COMMENT ON COLUMN review.is_approved IS 'false = pendiente de moderación. Solo reseñas aprobadas son visibles al público.';
+COMMENT ON TABLE  review             IS 'Resena verificada. Solo compradores con ORDER entregada pueden resenar.';
+COMMENT ON COLUMN review.is_approved IS 'false = pendiente de moderacion. Solo resenas aprobadas son visibles.';
 
 -- ------------------------------------------------------------
--- WISHLIST_ITEM — lista de deseos
+-- WISHLIST_ITEM -- lista de deseos
 -- ------------------------------------------------------------
 CREATE TABLE wishlist_item (
   id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -57,10 +57,10 @@ CREATE TABLE wishlist_item (
   UNIQUE (buyer_id, product_id)
 );
 
-COMMENT ON TABLE wishlist_item IS 'Lista de deseos del comprador. Relación única buyer ↔ product.';
+COMMENT ON TABLE wishlist_item IS 'Lista de deseos del comprador. Relacion unica buyer <-> product.';
 
 -- ------------------------------------------------------------
--- ARTISAN_FOLLOWER — seguimiento de artesanos
+-- ARTISAN_FOLLOWER -- seguimiento de artesanos
 -- ------------------------------------------------------------
 CREATE TABLE artisan_follower (
   buyer_id    UUID NOT NULL REFERENCES buyer(id) ON DELETE CASCADE,
@@ -69,10 +69,10 @@ CREATE TABLE artisan_follower (
   PRIMARY KEY (buyer_id, artisan_id)
 );
 
-COMMENT ON TABLE artisan_follower IS 'Relación comprador → artesano. Genera notificaciones cuando el artesano publica nuevas piezas.';
+COMMENT ON TABLE artisan_follower IS 'Relacion comprador -> artesano. Genera notificaciones al publicar piezas.';
 
 -- ------------------------------------------------------------
--- BLOG_POST — artículos editoriales
+-- BLOG_POST -- articulos editoriales
 -- ------------------------------------------------------------
 CREATE TABLE blog_post (
   id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -92,11 +92,14 @@ CREATE TABLE blog_post (
   updated_at        TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-COMMENT ON TABLE blog_post IS 'Artículo editorial. Gestionado desde el panel de admin con soporte de IA como asistente.';
+COMMENT ON TABLE blog_post IS 'Articulo editorial. Gestionado desde el panel de admin.';
+
+CREATE TRIGGER tg_blog_updated_at
+  BEFORE UPDATE ON blog_post
+  FOR EACH ROW EXECUTE FUNCTION fn_update_updated_at();
 
 -- ------------------------------------------------------------
--- SEO_META — metadatos SEO polimórficos
--- Una sola tabla para productos, artesanos, categorías y blog.
+-- SEO_META -- metadatos SEO polimorficos
 -- ------------------------------------------------------------
 CREATE TABLE seo_meta (
   id            UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -106,18 +109,18 @@ CREATE TABLE seo_meta (
   meta_description TEXT,
   og_image_url  TEXT,
   canonical_url TEXT,
-  schema_json   JSONB,  -- Schema.org JSON-LD (Product, Person, FAQPage, etc.)
-  hreflang      JSONB,  -- {"es": "/es/...", "en": "/en/..."}
+  schema_json   JSONB,
+  hreflang      JSONB,
   updated_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
   UNIQUE (entity_type, entity_id)
 );
 
-COMMENT ON TABLE  seo_meta           IS 'Metadatos SEO y Schema.org para cualquier entidad del sistema. Diseño polimórfico.';
-COMMENT ON COLUMN seo_meta.schema_json IS 'JSON-LD de Schema.org. Tipos: Product, Person, FAQPage, Organization, BlogPosting, BreadcrumbList.';
-COMMENT ON COLUMN seo_meta.hreflang   IS 'Mapa de URLs por locale. Ej: {"es": "/es/pieza", "en": "/en/piece"}.';
+COMMENT ON TABLE  seo_meta           IS 'Metadatos SEO y Schema.org para cualquier entidad. Diseno polimorfico.';
+COMMENT ON COLUMN seo_meta.schema_json IS 'JSON-LD de Schema.org (Product, Person, FAQPage, etc.).';
+COMMENT ON COLUMN seo_meta.hreflang   IS 'Mapa de URLs por locale. Ej: {"es": "/es/...", "en": "/en/..."}.';
 
 -- ------------------------------------------------------------
--- NOTIFICATION — notificaciones del sistema
+-- NOTIFICATION -- notificaciones del sistema
 -- ------------------------------------------------------------
 CREATE TABLE notification (
   id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -136,10 +139,74 @@ CREATE TABLE notification (
   )),
   title      TEXT NOT NULL,
   body       TEXT,
-  data       JSONB,      -- contexto extra: order_id, product_id, artisan_id, etc.
+  data       JSONB,
   is_read    BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-COMMENT ON TABLE  notification      IS 'Notificaciones internas del sistema. Se complementa con emails (Resend) y Web Push.';
+COMMENT ON TABLE  notification      IS 'Notificaciones internas del sistema.';
 COMMENT ON COLUMN notification.data IS 'JSON con IDs de contexto para generar deep-links en el frontend.';
+
+-- ------------------------------------------------------------
+-- Triggers adicionales de fidelizacion
+-- ------------------------------------------------------------
+
+-- Sincronizar total_points del buyer con cada transaccion
+CREATE OR REPLACE FUNCTION fn_sync_buyer_points()
+RETURNS TRIGGER AS $$
+BEGIN
+  UPDATE buyer
+  SET total_points = NEW.balance_after
+  WHERE id = NEW.buyer_id;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tg_sync_buyer_points
+  AFTER INSERT ON loyalty_transaction
+  FOR EACH ROW EXECUTE FUNCTION fn_sync_buyer_points();
+
+-- Verificar y actualizar nivel de membresia automaticamente
+CREATE OR REPLACE FUNCTION fn_check_membership_upgrade()
+RETURNS TRIGGER AS $$
+DECLARE
+  new_level_id UUID;
+BEGIN
+  IF NEW.total_points IS DISTINCT FROM OLD.total_points THEN
+    SELECT id INTO new_level_id
+    FROM membership_level
+    WHERE points_threshold <= NEW.total_points
+    ORDER BY points_threshold DESC
+    LIMIT 1;
+
+    IF new_level_id IS NOT NULL AND new_level_id IS DISTINCT FROM NEW.membership_level_id THEN
+      NEW.membership_level_id := new_level_id;
+      NEW.level_since := now();
+    END IF;
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tg_check_membership_upgrade
+  BEFORE UPDATE OF total_points ON buyer
+  FOR EACH ROW EXECUTE FUNCTION fn_check_membership_upgrade();
+
+-- Marcar producto como 'sold' al agotar stock (piezas unicas)
+CREATE OR REPLACE FUNCTION fn_check_product_sold()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.stock = 0 THEN
+    UPDATE product
+    SET status = 'sold'
+    WHERE id = NEW.product_id
+      AND is_unique = true
+      AND status = 'published';
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER tg_check_product_sold
+  AFTER UPDATE OF stock ON product_variant
+  FOR EACH ROW EXECUTE FUNCTION fn_check_product_sold();
