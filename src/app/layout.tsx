@@ -1,18 +1,18 @@
 import type { Metadata } from 'next'
+import { Inter } from 'next/font/google'
+import { cn } from '@/lib/utils'
 import './globals.css'
-import { Geist } from "next/font/google";
-import { cn } from "@/lib/utils";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const inter = Inter({ subsets: ['latin'], variable: '--font-sans' })
 
 export const metadata: Metadata = {
   title: 'Crisol',
-  description: 'Marketplace de orfebrería artesanal',
+  description: 'Marketplace de orfebreria artesanal',
 }
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="es" className={cn("font-sans", geist.variable)}>
+    <html lang="es" className={cn('font-sans', inter.variable)}>
       <body>{children}</body>
     </html>
   )
