@@ -41,7 +41,7 @@ Plans:
 ### Phase 2: Catalog & Discovery
 **Goal**: Artisans can create and manage pieces with variants and media, admins can moderate submissions, and visitors can browse a public catalog with filtering, product detail, and artisan profiles
 **Depends on**: Phase 1
-**Requirements**: CATL-01, CATL-02, CATL-03, CATL-04, CATL-05, CATL-06, CATL-07, CATL-08, CATL-09, CATL-10, CATL-11, DISC-01, DISC-02, DISC-03, DISC-04, DISC-05, DISC-06
+**Requirements**: CATL-01, CATL-02, CATL-03, CATL-04, CATL-05, CATL-06, CATL-07, CATL-08, CATL-09, CATL-11, DISC-01, DISC-02, DISC-03, DISC-04, DISC-05, DISC-06
 **Success Criteria** (what must be TRUE):
   1. An artisan can create a piece with type, title, description, price, variants (talla/material/color/piedras with stock and price modifier), and up to 10 photos via Cloudinary — then submit it for review
   2. An admin can approve, request changes, or reject a submitted piece; the artisan receives an email notification of the result
@@ -96,11 +96,11 @@ Plans:
 ### Phase 5: Dashboards & Operations
 **Goal**: Artisans have a self-service panel for managing their business, and admins have a complete operations panel for platform governance, configuration, and reporting
 **Depends on**: Phase 4
-**Requirements**: ARTP-01, ARTP-02, ARTP-03, ARTP-04, ARTP-05, ADMN-01, ADMN-02, ADMN-03, ADMN-04, ADMN-05, ADMN-06
+**Requirements**: ARTP-01, ARTP-02, ARTP-03, ARTP-04, ARTP-05, ADMN-01, ADMN-02, ADMN-03, ADMN-04, ADMN-05, ADMN-06, CATL-10
 **Success Criteria** (what must be TRUE):
   1. An artisan can view and manage their pieces, see their order list with statuses, view their net balance and commission breakdown, and edit their public profile — all from /artesano
   2. An artisan can see notifications of piece approval/rejection and new orders within their panel
-  3. An admin can manage the approval queue, activate/deactivate artisans, and manage catalog categories/tags from /admin
+  3. An admin can manage the approval queue, activate/deactivate artisans, and manage catalog categories/tags from /admin (CATL-10)
   4. An admin can configure commission percentage and free-shipping threshold (versioned), create/edit/disable discount coupons, and view basic reports (total sales, accumulated commissions, orders by status)
 **Plans**: TBD
 **UI hint**: yes
