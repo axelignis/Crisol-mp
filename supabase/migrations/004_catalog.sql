@@ -127,14 +127,45 @@ CREATE TABLE product_media (
   cloudinary_id TEXT,
   sort_order    INTEGER NOT NULL DEFAULT 0,
   is_cover      BOOLEAN NOT NULL DEFAULT false,
-  created_at    TIMESTAMPTZ NOT NULL DEFAULT now(),
-  CONSTRAINT max_one_video  CHECK (type != 'video'    OR (SELECT COUNT(*) FROM product_media pm WHERE pm.product_id = product_media.product_id AND pm.type = 'video') <= 1),
-  CONSTRAINT max_one_3d     CHECK (type != 'model_3d' OR (SELECT COUNT(*) FROM product_media pm WHERE pm.product_id = product_media.product_id AND pm.type = 'model_3d') <= 1)
+  created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
 COMMENT ON TABLE  product_media              IS 'Multimedia asociada a una pieza. Máx 10 fotos, 1 video, 1 modelo 3D.';
 COMMENT ON COLUMN product_media.is_cover     IS 'true = imagen principal mostrada en el catálogo y cards.';
 COMMENT ON COLUMN product_media.cloudinary_id IS 'ID del asset en Cloudinary para transformaciones on-the-fly.';
+
+-- Límites por producto: 10 fotos, 1 video, 1 modelo 3D.
+-- Implementados como trigger porque Postgres no permite subqueries en CHECK.
+CREATE OR REPLACE FUNCTION enforce_product_media_limits()
+RETURNS TRIGGER AS $$
+DECLARE
+  current_count INTEGER;
+  max_allowed   INTEGER;
+BEGIN
+  max_allowed := CASE NEW.type
+    WHEN 'photo'    THEN 10
+    WHEN 'video'    THEN 1
+    WHEN 'model_3d' THEN 1
+  END;
+
+  SELECT COUNT(*) INTO current_count
+  FROM product_media
+  WHERE product_id = NEW.product_id
+    AND type = NEW.type
+    AND id <> NEW.id;
+
+  IF current_count >= max_allowed THEN
+    RAISE EXCEPTION 'product_media limit exceeded for type % (max %)', NEW.type, max_allowed
+      USING ERRCODE = 'check_violation';
+  END IF;
+
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER product_media_enforce_limits
+BEFORE INSERT OR UPDATE OF type, product_id ON product_media
+FOR EACH ROW EXECUTE FUNCTION enforce_product_media_limits();
 
 -- ------------------------------------------------------------
 -- PRODUCT_TAG — relación muchos a muchos producto ↔ tag
