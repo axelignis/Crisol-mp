@@ -148,70 +148,70 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | TBD | Pending |
-| FOUND-02 | TBD | Pending |
-| FOUND-03 | TBD | Pending |
-| FOUND-04 | TBD | Pending |
-| FOUND-05 | TBD | Pending |
-| FOUND-06 | TBD | Pending |
-| AUTH-01 | TBD | Pending |
-| AUTH-02 | TBD | Pending |
-| AUTH-03 | TBD | Pending |
-| AUTH-04 | TBD | Pending |
-| AUTH-05 | TBD | Pending |
-| AUTH-06 | TBD | Pending |
-| CATL-01 | TBD | Pending |
-| CATL-02 | TBD | Pending |
-| CATL-03 | TBD | Pending |
-| CATL-04 | TBD | Pending |
-| CATL-05 | TBD | Pending |
-| CATL-06 | TBD | Pending |
-| CATL-07 | TBD | Pending |
-| CATL-08 | TBD | Pending |
-| CATL-09 | TBD | Pending |
-| CATL-10 | TBD | Pending |
-| CATL-11 | TBD | Pending |
-| DISC-01 | TBD | Pending |
-| DISC-02 | TBD | Pending |
-| DISC-03 | TBD | Pending |
-| DISC-04 | TBD | Pending |
-| DISC-05 | TBD | Pending |
-| DISC-06 | TBD | Pending |
-| COMR-01 | TBD | Pending |
-| COMR-02 | TBD | Pending |
-| COMR-03 | TBD | Pending |
-| COMR-04 | TBD | Pending |
-| COMR-05 | TBD | Pending |
-| COMR-06 | TBD | Pending |
-| COMR-07 | TBD | Pending |
-| COMR-08 | TBD | Pending |
-| COMR-09 | TBD | Pending |
-| ORDR-01 | TBD | Pending |
-| ORDR-02 | TBD | Pending |
-| ORDR-03 | TBD | Pending |
-| ORDR-04 | TBD | Pending |
-| ORDR-05 | TBD | Pending |
-| ORDR-06 | TBD | Pending |
-| ARTP-01 | TBD | Pending |
-| ARTP-02 | TBD | Pending |
-| ARTP-03 | TBD | Pending |
-| ARTP-04 | TBD | Pending |
-| ARTP-05 | TBD | Pending |
-| ADMN-01 | TBD | Pending |
-| ADMN-02 | TBD | Pending |
-| ADMN-03 | TBD | Pending |
-| ADMN-04 | TBD | Pending |
-| ADMN-05 | TBD | Pending |
-| ADMN-06 | TBD | Pending |
-| COUP-01 | TBD | Pending |
-| COUP-02 | TBD | Pending |
-| COUP-03 | TBD | Pending |
+| FOUND-01 | Phase 1 | Pending |
+| FOUND-02 | Phase 1 | Pending |
+| FOUND-03 | Phase 1 | Pending |
+| FOUND-04 | Phase 1 | Pending |
+| FOUND-05 | Phase 1 | Pending |
+| FOUND-06 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Pending |
+| AUTH-02 | Phase 1 | Pending |
+| AUTH-03 | Phase 1 | Pending |
+| AUTH-04 | Phase 1 | Pending |
+| AUTH-05 | Phase 1 | Pending |
+| AUTH-06 | Phase 1 | Pending |
+| CATL-01 | Phase 2 | Pending |
+| CATL-02 | Phase 2 | Pending |
+| CATL-03 | Phase 2 | Pending |
+| CATL-04 | Phase 2 | Pending |
+| CATL-05 | Phase 2 | Pending |
+| CATL-06 | Phase 2 | Pending |
+| CATL-07 | Phase 2 | Pending |
+| CATL-08 | Phase 2 | Pending |
+| CATL-09 | Phase 2 | Pending |
+| CATL-10 | Phase 2 | Pending |
+| CATL-11 | Phase 2 | Pending |
+| DISC-01 | Phase 2 | Pending |
+| DISC-02 | Phase 2 | Pending |
+| DISC-03 | Phase 2 | Pending |
+| DISC-04 | Phase 2 | Pending |
+| DISC-05 | Phase 2 | Pending |
+| DISC-06 | Phase 2 | Pending |
+| COMR-01 | Phase 3 | Pending |
+| COMR-02 | Phase 3 | Pending |
+| COMR-03 | Phase 3 | Pending |
+| COMR-04 | Phase 3 | Pending |
+| COMR-05 | Phase 3 | Pending |
+| COMR-06 | Phase 3 | Pending |
+| COMR-07 | Phase 3 | Pending |
+| COMR-08 | Phase 3 | Pending |
+| COMR-09 | Phase 3 | Pending |
+| ORDR-01 | Phase 4 | Pending |
+| ORDR-02 | Phase 4 | Pending |
+| ORDR-03 | Phase 4 | Pending |
+| ORDR-04 | Phase 4 | Pending |
+| ORDR-05 | Phase 4 | Pending |
+| ORDR-06 | Phase 4 | Pending |
+| ARTP-01 | Phase 5 | Pending |
+| ARTP-02 | Phase 5 | Pending |
+| ARTP-03 | Phase 5 | Pending |
+| ARTP-04 | Phase 5 | Pending |
+| ARTP-05 | Phase 5 | Pending |
+| ADMN-01 | Phase 5 | Pending |
+| ADMN-02 | Phase 5 | Pending |
+| ADMN-03 | Phase 5 | Pending |
+| ADMN-04 | Phase 5 | Pending |
+| ADMN-05 | Phase 5 | Pending |
+| ADMN-06 | Phase 5 | Pending |
+| COUP-01 | Phase 3 | Pending |
+| COUP-02 | Phase 3 | Pending |
+| COUP-03 | Phase 3 | Pending |
 
 **Coverage:**
-- v1 requirements: 56 total
-- Mapped to phases: 0
-- Unmapped: 56 ⚠️
+- v1 requirements: 58 total
+- Mapped to phases: 58
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-12*
-*Last updated: 2026-04-12 after initial definition*
+*Last updated: 2026-04-12 after roadmap creation*

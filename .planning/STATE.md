@@ -1,0 +1,61 @@
+# Project State
+
+## Project Reference
+
+See: .planning/PROJECT.md (updated 2026-04-12)
+
+**Core value:** Un comprador puede descubrir, explorar y comprar piezas artesanales únicas con pago seguro y despacho directo del artesano.
+**Current focus:** Phase 1: Foundation & Auth
+
+## Current Position
+
+Phase: 1 of 5 (Foundation & Auth)
+Plan: 0 of 3 in current phase
+Status: Ready to plan
+Last activity: 2026-04-12 — Roadmap created with 5 phases covering 58 requirements
+
+Progress: [░░░░░░░░░░] 0%
+
+## Performance Metrics
+
+**Velocity:**
+- Total plans completed: 0
+- Average duration: -
+- Total execution time: 0 hours
+
+**By Phase:**
+
+| Phase | Plans | Total | Avg/Plan |
+|-------|-------|-------|----------|
+| - | - | - | - |
+
+**Recent Trend:**
+- Last 5 plans: -
+- Trend: -
+
+*Updated after each plan completion*
+
+## Accumulated Context
+
+### Decisions
+
+Decisions are logged in PROJECT.md Key Decisions table.
+Recent decisions affecting current work:
+
+- [Roadmap]: 5 phases derived from 9 requirement categories — Foundation/Auth merged, Catalog/Discovery merged, Commerce atomic with Coupons, Order Lifecycle separate, Dashboards/Operations merged
+- [Roadmap]: Research flags Stripe Connect Express availability in Chile and Chilexpress/Starken sandbox access as risks for Phase 3
+
+### Pending Todos
+
+None yet.
+
+### Blockers/Concerns
+
+- Phase 3 risk: Stripe Connect Express account availability for Chilean artisans needs confirmation before designing onboarding flow
+- Phase 3 risk: Chilexpress and Starken REST API sandbox access needs hands-on verification
+
+## Session Continuity
+
+Last session: 2026-04-12
+Stopped at: Roadmap created, ready to plan Phase 1
+Resume file: None
