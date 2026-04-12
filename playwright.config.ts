@@ -8,7 +8,7 @@ export default defineConfig({
   workers: process.env.CI ? 1 : undefined,
   reporter: 'html',
   use: {
-    baseURL: process.env.PLAYWRIGHT_BASE_URL ?? 'http://localhost:3001',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3001',
     trace: 'on-first-retry',
   },
   projects: [
@@ -17,10 +17,4 @@ export default defineConfig({
       use: { ...devices['Desktop Chrome'] },
     },
   ],
-  webServer: {
-    command: 'echo "Using existing dev server"',
-    url: process.env.PLAYWRIGHT_BASE_URL || 'http://localhost:3001',
-    reuseExistingServer: true,
-    timeout: 120000,
-  },
 })
