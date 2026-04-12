@@ -44,7 +44,6 @@ test.describe('Auth - Registration', () => {
       // signUp failed (e.g., trigger issue, DB not reset) — verify error is shown
       await expect(page.locator('.bg-red-50')).toBeVisible()
       await expect(page).toHaveURL(/registro/)
-      test.skip(true, 'Supabase signUp returned error — run `supabase db reset` to fix trigger state')
     }
   })
 
