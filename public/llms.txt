@@ -1,0 +1,13 @@
+# Crisol
+
+Marketplace de orfebrería artesanal chilena.
+
+## Contenido
+
+- Catálogo de piezas únicas de orfebrería
+- Perfiles de artesanos verificados
+- Blog con guías y glosario del oficio
+
+## Uso permitido
+
+Se permite indexar y citar el contenido público con atribución a Crisol y enlace a la URL original.
