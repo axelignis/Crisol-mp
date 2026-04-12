@@ -17,7 +17,7 @@ test.describe('Auth - Registration', () => {
     await page.click('button[type="submit"]')
 
     // Should redirect to homepage with ?verified=false
-    await page.waitForURL('**/es?verified=false', { timeout: 10000 })
+    await page.waitForURL(/\/es\?verified=false/, { timeout: 10000 })
 
     // Verification banner should be visible
     await expect(page.locator('text=Verifica tu email')).toBeVisible()
