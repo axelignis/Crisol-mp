@@ -10,7 +10,7 @@ export default async function ArtesanoLayout({ children }: { children: React.Rea
   if (!user) redirect('/es/auth/login')
 
   const { data: profile } = await supabase
-    .from('profiles')
+    .from('user')
     .select('role')
     .eq('id', user.id)
     .single()
