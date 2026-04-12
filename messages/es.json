@@ -1,5 +1,118 @@
 {
-  "common": {
-    "appName": "Crisol"
+  "common": { "appName": "Crisol" },
+  "catalog": {
+    "title": "Catalogo de Joyeria Artesanal",
+    "description": "Descubre piezas unicas de joyeria artesanal creadas por nuestros artesanos.",
+    "sort": {
+      "reciente": "Mas recientes",
+      "precio_asc": "Precio: menor a mayor",
+      "precio_desc": "Precio: mayor a menor"
+    },
+    "filters": {
+      "title": "Filtros",
+      "tipo": "Tipo de pieza",
+      "material": "Material",
+      "precio": "Rango de precio",
+      "ocasion": "Ocasion",
+      "tecnica": "Tecnica",
+      "clear": "Limpiar filtros",
+      "active": "{count} filtros activos"
+    },
+    "empty": {
+      "title": "No hay piezas disponibles",
+      "description": "Vuelve pronto, nuestros artesanos estan creando nuevas obras."
+    },
+    "emptyFiltered": {
+      "title": "Sin resultados",
+      "description": "Intenta ajustar los filtros o explorar todo el catalogo.",
+      "action": "Limpiar filtros"
+    },
+    "stock": {
+      "low": "Quedan {count} unidades",
+      "sold": "Vendida"
+    },
+    "cart": {
+      "add": "Agregar al carrito",
+      "disabledTooltip": "Disponible pronto"
+    },
+    "price": "Precio"
+  },
+  "wizard": {
+    "step1": "Informacion basica",
+    "step2": "Variantes",
+    "step3": "Fotos",
+    "step4": "Revisar y enviar",
+    "type": {
+      "label": "Tipo de pieza",
+      "jewelry_unique": "Pieza unica",
+      "jewelry_series": "Serie",
+      "decorative": "Arte decorativo"
+    },
+    "title": "Titulo",
+    "description": "Descripcion",
+    "basePrice": "Precio base (CLP)",
+    "category": "Categoria",
+    "submit": "Enviar a revision",
+    "save": "Guardado",
+    "saving": "Guardando...",
+    "next": "Siguiente",
+    "back": "Atras",
+    "variants": {
+      "type": "Tipo",
+      "value": "Valor",
+      "stock": "Stock",
+      "modifier": "Modificador de precio",
+      "addRow": "Agregar variante"
+    },
+    "photos": {
+      "dropzone": "Arrastra fotos aqui o haz clic para seleccionar",
+      "cover": "Portada",
+      "maxPhotos": "Maximo {max} fotos (JPG, PNG o WebP)",
+      "uploadError": "No se pudo subir la imagen. Verifica el formato (JPG, PNG o WebP) y que no exceda 10 MB.",
+      "deleteConfirm": {
+        "title": "Eliminar foto",
+        "description": "Esta foto sera eliminada permanentemente.",
+        "confirm": "Eliminar",
+        "cancel": "Cancelar"
+      }
+    },
+    "review": {
+      "title": "Revisar pieza",
+      "confirm": "Todo listo. Al enviar, un administrador revisara tu pieza."
+    },
+    "empty": {
+      "title": "No tienes piezas creadas",
+      "description": "Crea tu primera pieza y comparte tu arte.",
+      "action": "Crear pieza"
+    },
+    "saveError": "No se pudieron guardar los cambios. Intenta de nuevo."
+  },
+  "moderation": {
+    "title": "Moderacion de piezas",
+    "approve": "Aprobar pieza",
+    "requestChanges": "Pedir cambios",
+    "reject": "Rechazar pieza",
+    "feedback": "Mensaje para el artesano",
+    "feedbackRequired": "Escribe un mensaje antes de pedir cambios",
+    "rejectConfirm": {
+      "title": "Rechazar pieza",
+      "description": "Esta accion notificara al artesano y la pieza no sera publicada. Confirmar?",
+      "confirm": "Si, rechazar",
+      "cancel": "Cancelar"
+    },
+    "empty": {
+      "title": "No hay piezas pendientes",
+      "description": "Todas las piezas han sido revisadas."
+    }
+  },
+  "artisan": {
+    "pieces": "Piezas de {name}",
+    "empty": {
+      "title": "Este artesano aun no tiene piezas publicadas",
+      "description": "Vuelve pronto para descubrir su trabajo."
+    }
+  },
+  "error": {
+    "catalogLoad": "No pudimos cargar el catalogo. Recarga la pagina."
   }
 }
