@@ -1,0 +1,1385 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crisol — Wireframes v2</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#B8975A;--gold-l:#F2E8D5;--gold-d:#8A6E3E;
+  --ink:#1A1714;--ink-m:#5C5550;--ink-l:#9C9590;
+  --cream:#FAF8F5;--white:#FFFFFF;--bd:#E8E3DC;
+  --sf:#F5F1EB;--ok:#3B6D11;--err:#A32D2D;
+  --serif:'Cormorant Garamond',serif;--sans:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:#232119;min-height:100vh}
+code{font-family:monospace;font-size:11px;background:var(--sf);padding:1px 5px;border-radius:3px;color:var(--gold-d)}
+/* switcher */
+.sw{position:fixed;top:0;left:0;right:0;z-index:100;background:#141210;border-bottom:1px solid #2a2724;height:44px;display:flex;align-items:center;padding:0 16px;gap:0;overflow-x:auto}
+.sw::-webkit-scrollbar{display:none}
+.sw-logo{font-family:var(--serif);color:var(--gold);font-size:16px;margin-right:16px;letter-spacing:.06em;flex-shrink:0}
+.sw-grp{display:flex;align-items:center;gap:0;border-right:1px solid #2a2724;padding-right:8px;margin-right:8px;flex-shrink:0}
+.sw-grp:last-child{border-right:none}
+.sw-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.08em;color:#4a4540;margin-right:4px;flex-shrink:0}
+.sb{font-family:var(--sans);font-size:11px;color:#6a6560;padding:0 10px;height:44px;cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .12s;white-space:nowrap;flex-shrink:0}
+.sb:hover{color:#b5a88a}
+.sb.on{color:var(--gold);border-bottom-color:var(--gold)}
+/* screens */
+.sc{display:none;margin-top:44px}
+.sc.on{display:block}
+/* common site elements */
+.hdr{background:var(--white);border-bottom:1px solid var(--bd);padding:0 36px;height:60px;display:flex;align-items:center;gap:28px}
+.logo{font-family:var(--serif);font-size:20px;letter-spacing:.1em;color:var(--ink);text-transform:uppercase}
+.logo em{color:var(--gold);font-style:normal}
+.nav{display:flex;gap:24px;margin-left:16px}
+.nav a{font-size:13px;color:var(--ink-m);text-decoration:none;padding-bottom:1px;border-bottom:1px solid transparent}
+.nav a.on,.nav a:hover{color:var(--ink);border-bottom-color:var(--gold)}
+.acts{display:flex;gap:10px;align-items:center;margin-left:auto}
+.btn-sm{font-size:12px;padding:6px 12px;border:1px solid var(--bd);border-radius:5px;color:var(--ink-m);cursor:pointer;background:none}
+.btn-dark{background:var(--ink);color:var(--white);border:none;padding:6px 14px;border-radius:5px;font-size:12px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.cart-dot{background:var(--gold);color:var(--white);border-radius:50%;width:15px;height:15px;font-size:9px;display:flex;align-items:center;justify-content:center;font-weight:600}
+
+/* ── FIXED PRODUCT CARD ── */
+.pgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.pcard{background:var(--white);border:1px solid var(--bd);border-radius:8px;overflow:hidden;cursor:pointer;transition:box-shadow .18s}
+.pcard:hover{box-shadow:0 6px 20px rgba(0,0,0,.09)}
+.pcard-img{height:240px;background:var(--sf);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+.pcard-img .ph{font-family:var(--serif);font-size:52px;color:var(--bd)}
+.pcard-badge{position:absolute;top:10px;left:10px;font-size:10px;padding:3px 8px;border-radius:3px;font-weight:500;letter-spacing:.03em}
+.badge-new{background:var(--gold);color:var(--white)}
+.badge-sold{background:var(--ink);color:var(--white)}
+.badge-3d{position:absolute;bottom:10px;right:10px;background:rgba(26,23,20,.72);color:var(--white);font-size:10px;padding:3px 8px;border-radius:3px}
+.pcard-body{padding:13px 15px 15px}
+.pcard-artist{font-size:10px;color:var(--gold);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px}
+.pcard-name{font-family:var(--serif);font-size:15px;color:var(--ink);line-height:1.35;margin-bottom:7px}
+.pcard-stars{display:flex;align-items:center;gap:2px;margin-bottom:7px}
+.star{font-size:11px;color:var(--gold)}
+.star.e{color:var(--bd)}
+.rc{font-size:11px;color:var(--ink-l);margin-left:3px}
+.pcard-foot{display:flex;align-items:center;justify-content:space-between}
+.pcard-price{font-size:14px;font-weight:500;color:var(--ink)}
+.pcard-price.muted{color:var(--ink-l);font-size:12px}
+.pcard-wish{font-size:17px;color:var(--ink-l);cursor:pointer}
+
+/* ── DUAL RANGE SLIDER ── */
+.price-block{margin-bottom:22px}
+.price-block .fg{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:10px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+.range-wrap{position:relative;height:20px;margin:18px 4px 6px}
+.range-wrap input[type=range]{position:absolute;width:100%;height:4px;background:transparent;pointer-events:none;-webkit-appearance:none;outline:none;top:50%;transform:translateY(-50%)}
+.range-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--gold);border:2px solid var(--white);box-shadow:0 0 0 1px var(--gold);pointer-events:all;cursor:pointer}
+.range-track{position:absolute;height:4px;background:var(--bd);width:100%;top:50%;transform:translateY(-50%);border-radius:2px}
+.range-fill{position:absolute;height:4px;background:var(--gold);top:50%;transform:translateY(-50%);border-radius:2px;left:10%;width:70%}
+.price-vals{display:flex;justify-content:space-between;font-size:12px;color:var(--ink-m)}
+
+/* filters sidebar */
+.fsb{width:220px;flex-shrink:0;background:var(--white);border-right:1px solid var(--bd);padding:20px 18px;min-height:calc(100vh - 104px);position:sticky;top:104px;overflow-y:auto}
+.ftitle{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.07em;color:var(--ink-l);margin-bottom:14px}
+.fg-name{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:9px;padding-bottom:7px;border-bottom:1px solid var(--bd)}
+.fopt{display:flex;align-items:center;gap:8px;padding:3px 0;cursor:pointer}
+.fchk{width:13px;height:13px;border:1.5px solid var(--bd);border-radius:3px;flex-shrink:0}
+.fchk.on{background:var(--gold);border-color:var(--gold)}
+.fopt span{font-size:12px;color:var(--ink-m)}
+.fopt .cnt{margin-left:auto;font-size:11px;color:var(--ink-l)}
+
+/* catalog top bar */
+.ctop{display:flex;align-items:center;padding:16px 28px;border-bottom:1px solid var(--bd);background:var(--white);gap:12px}
+.ctop-cnt{font-size:13px;color:var(--ink-m)}
+.ctop-sort{margin-left:auto;display:flex;align-items:center;gap:8px;font-size:13px;color:var(--ink-m)}
+.sel{border:1px solid var(--bd);padding:5px 10px;font-size:12px;border-radius:5px;background:var(--white);font-family:var(--sans);color:var(--ink)}
+
+/* panels */
+.pw{display:flex;background:var(--cream);min-height:calc(100vh - 44px)}
+.psb{width:210px;background:var(--ink);flex-shrink:0;display:flex;flex-direction:column}
+.psb-logo{font-family:var(--serif);font-size:16px;color:var(--gold);letter-spacing:.1em;padding:18px 18px 14px;text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.07)}
+.psb-user{padding:12px 18px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:8px}
+.ava{width:28px;height:28px;border-radius:50%;background:var(--gold-l);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:12px;color:var(--gold-d);flex-shrink:0}
+.psb-nm{font-size:12px;color:#c5b89a}
+.psb-role{font-size:10px;color:rgba(255,255,255,.28)}
+.psb-nav{padding:8px 0;flex:1;overflow-y:auto}
+.psb-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.22);padding:9px 18px 3px}
+.pni{display:flex;align-items:center;gap:9px;padding:8px 18px;font-size:12px;color:rgba(255,255,255,.48);cursor:pointer;transition:all .1s;border-left:2px solid transparent}
+.pni:hover{color:rgba(255,255,255,.78);background:rgba(255,255,255,.04)}
+.pni.on{color:var(--white);background:rgba(181,151,90,.14);border-left-color:var(--gold)}
+.pni .badge{margin-left:auto;background:var(--gold);color:var(--white);font-size:9px;padding:1px 5px;border-radius:8px;font-weight:600}
+.pmain{flex:1;padding:24px 28px;overflow-y:auto}
+.ptop{display:flex;align-items:center;justify-content:space-between;margin-bottom:20px}
+.ph1{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--ink)}
+.ph1 span{color:var(--gold)}
+.pacts{display:flex;gap:8px}
+.pbtn{font-size:12px;padding:7px 14px;border-radius:5px;cursor:pointer;font-family:var(--sans)}
+.pbtn-p{background:var(--ink);color:var(--white);border:none}
+.pbtn-s{background:var(--white);color:var(--ink);border:1px solid var(--bd)}
+.mcards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:22px}
+.mcard{background:var(--white);border:1px solid var(--bd);border-radius:8px;padding:16px 18px}
+.mcard-lbl{font-size:10px;color:var(--ink-l);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.mcard-val{font-family:var(--serif);font-size:22px;font-weight:400;color:var(--ink);line-height:1}
+.mcard-sub{font-size:11px;color:var(--ink-l);margin-top:5px}
+.mcard-trend{font-size:11px;margin-top:5px}
+.up{color:var(--ok)}.dn{color:var(--err)}
+.pcard2{background:var(--white);border:1px solid var(--bd);border-radius:8px;padding:18px}
+.pcard2-title{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.pcard2-link{font-size:12px;color:var(--gold)}
+.tbl{width:100%;border-collapse:collapse;font-size:12px}
+.tbl th{text-align:left;padding:6px 8px;background:var(--sf);border-bottom:1px solid var(--bd);font-size:10px;font-weight:500;color:var(--ink-l);text-transform:uppercase;letter-spacing:.04em}
+.tbl td{padding:9px 8px;border-bottom:1px solid var(--bd);vertical-align:top}
+.tbl tr:last-child td{border-bottom:none}
+.stag{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500}
+.s-paid{background:#EAF3DE;color:var(--ok)}
+.s-prep{background:var(--gold-l);color:var(--gold-d)}
+.s-ship{background:var(--sf);color:var(--ink-m)}
+.s-rev{background:#FFF3E0;color:#B05008}
+.s-pub{background:#EAF3DE;color:var(--ok)}
+.s-draft{background:var(--sf);color:var(--ink-l)}
+.two-col{display:grid;grid-template-columns:1fr 290px;gap:18px}
+.three-col{display:grid;grid-template-columns:1fr 1fr 1fr;gap:18px}
+
+/* status/badge */
+.tag{font-size:11px;padding:3px 9px;border-radius:20px;border:1px solid}
+.tag-gold{background:var(--gold-l);border-color:var(--gold);color:var(--gold-d)}
+.tag-ink{background:var(--sf);border-color:var(--bd);color:var(--ink-m)}
+
+/* common util */
+.sep{height:1px;background:var(--bd);margin:14px 0}
+.lbl{font-size:10px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--ink-m);margin-bottom:6px}
+.val{font-size:13px;color:var(--ink)}
+.row{display:flex;align-items:center;gap:10px}
+.col{display:flex;flex-direction:column;gap:6px}
+.f-inp{border:1.5px solid var(--bd);border-radius:6px;padding:9px 12px;font-size:13px;color:var(--ink);font-family:var(--sans);width:100%}
+.f-inp.focus{border-color:var(--gold)}
+.f-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.f-group{display:flex;flex-direction:column;gap:5px}
+.f-lbl{font-size:11px;font-weight:500;color:var(--ink-m);text-transform:uppercase;letter-spacing:.04em}
+
+/* breadcrumb */
+.bc{padding:10px 36px;font-size:12px;color:var(--ink-l);display:flex;gap:6px;align-items:center;background:var(--white);border-bottom:1px solid var(--bd)}
+.bc a{color:var(--ink-m);text-decoration:none}
+</style>
+</head>
+<body>
+
+<div class="sw">
+  <div class="sw-logo">Crisol</div>
+  <div class="sw-grp">
+    <span class="sw-lbl">Público</span>
+    <button class="sb on" onclick="go('home',this)">Homepage</button>
+    <button class="sb" onclick="go('catalog',this)">Catálogo</button>
+    <button class="sb" onclick="go('detail',this)">Pieza</button>
+    <button class="sb" onclick="go('artisan',this)">Artesano</button>
+    <button class="sb" onclick="go('slot',this)">Encargo</button>
+  </div>
+  <div class="sw-grp">
+    <span class="sw-lbl">Auth</span>
+    <button class="sb" onclick="go('login',this)">Login / Registro</button>
+  </div>
+  <div class="sw-grp">
+    <span class="sw-lbl">Compra</span>
+    <button class="sb" onclick="go('cart',this)">Carrito</button>
+    <button class="sb" onclick="go('checkout',this)">Checkout</button>
+    <button class="sb" onclick="go('confirm',this)">Confirmación</button>
+  </div>
+  <div class="sw-grp">
+    <span class="sw-lbl">Mi cuenta</span>
+    <button class="sb" onclick="go('points',this)">Mis puntos</button>
+    <button class="sb" onclick="go('orders',this)">Mis pedidos</button>
+  </div>
+  <div class="sw-grp">
+    <span class="sw-lbl">Artesano</span>
+    <button class="sb" onclick="go('dart',this)">Dashboard</button>
+    <button class="sb" onclick="go('newpiece',this)">Nueva pieza</button>
+    <button class="sb" onclick="go('stripe',this)">Stripe Connect</button>
+  </div>
+  <div class="sw-grp">
+    <span class="sw-lbl">Admin</span>
+    <button class="sb" onclick="go('dadmin',this)">Dashboard</button>
+    <button class="sb" onclick="go('review',this)">Revisar pieza</button>
+  </div>
+  <div class="sw-grp">
+    <span class="sw-lbl">Mi cuenta</span>
+    <button class="sb" onclick="go('orders',this)">Mis pedidos</button>
+  </div>
+  <div class="sw-grp">
+    <span class="sw-lbl">Público</span>
+    <button class="sb" onclick="go('encargos',this)">Enc. públicos</button>
+  </div>
+</div>
+
+<!-- ══ HOMEPAGE ══ -->
+<div class="sc on" id="s-home" style="background:var(--cream)">
+  <header class="hdr">
+    <div class="logo">C<em>r</em>isol</div>
+    <nav class="nav"><a href="#" class="on">Catálogo</a><a href="#">Artesanos</a><a href="#">Encargos</a><a href="#">Blog</a></nav>
+    <div class="acts"><div class="btn-sm">ES | CLP ▾</div><div class="btn-sm">Mi cuenta</div><div class="btn-dark">Carrito <div class="cart-dot">0</div></div></div>
+  </header>
+  <!-- Hero -->
+  <div style="display:grid;grid-template-columns:1fr 1fr;min-height:480px">
+    <div style="background:#1A1714;display:flex;flex-direction:column;justify-content:center;padding:60px 52px">
+      <div style="font-size:11px;color:var(--gold);letter-spacing:.12em;text-transform:uppercase;margin-bottom:16px">Orfebrería chilena · hecha a mano</div>
+      <div style="font-family:var(--serif);font-size:48px;font-weight:300;color:var(--white);line-height:1.1;margin-bottom:20px">Cada pieza,<br><em style="font-style:italic;color:var(--gold)">una historia</em></div>
+      <div style="font-size:14px;color:rgba(255,255,255,.5);max-width:360px;line-height:1.7;margin-bottom:32px">Joyería artesanal de alta calidad elaborada por orfebres familiares. Piezas únicas, series limitadas y encargos personalizados.</div>
+      <div style="display:flex;gap:12px">
+        <div style="background:var(--gold);color:var(--white);padding:12px 24px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer">Explorar catálogo</div>
+        <div style="border:1px solid rgba(255,255,255,.2);color:rgba(255,255,255,.7);padding:12px 24px;border-radius:6px;font-size:13px;cursor:pointer">Solicitar encargo</div>
+      </div>
+    </div>
+    <div style="background:#2C2520;display:flex;align-items:center;justify-content:center">
+      <div style="font-family:var(--serif);font-size:120px;color:rgba(184,151,90,.2)">◎</div>
+    </div>
+  </div>
+  <!-- Featured pieces -->
+  <div style="padding:48px 36px 36px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px">
+      <div style="font-family:var(--serif);font-size:28px;font-weight:400;color:var(--ink)">Piezas destacadas</div>
+      <a style="font-size:13px;color:var(--gold);text-decoration:none">Ver catálogo completo →</a>
+    </div>
+    <div class="pgrid">
+      <div class="pcard"><div class="pcard-img" style="background:#F0EBE3"><div class="pcard-badge badge-new">Nuevo</div><div class="ph">◎</div><div class="badge-3d">3D</div></div><div class="pcard-body"><div class="pcard-artist">María Silva</div><div class="pcard-name">Anillo solitario oro 18k con diamante</div><div class="pcard-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="rc">(12)</span></div><div class="pcard-foot"><span class="pcard-price">$185.000</span><span class="pcard-wish">♡</span></div></div></div>
+      <div class="pcard"><div class="pcard-img" style="background:#EBF0F0"><div class="ph">⌇</div><div class="badge-3d">3D</div></div><div class="pcard-body"><div class="pcard-artist">Carlos Rojas</div><div class="pcard-name">Collar plata 925 con cuarzo rosa</div><div class="pcard-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star e">★</span><span class="rc">(7)</span></div><div class="pcard-foot"><span class="pcard-price">$95.000</span><span class="pcard-wish">♡</span></div></div></div>
+      <div class="pcard"><div class="pcard-img" style="background:#EEF0EB"><div class="pcard-badge badge-new">Nuevo</div><div class="ph">◈</div></div><div class="pcard-body"><div class="pcard-artist">Ana Fuentes</div><div class="pcard-name">Pulsera filigrana oro 14k</div><div class="pcard-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star e">★</span><span class="rc">(5)</span></div><div class="pcard-foot"><span class="pcard-price">$220.000</span><span class="pcard-wish">♡</span></div></div></div>
+    </div>
+  </div>
+  <!-- Artisans section -->
+  <div style="padding:0 36px 48px">
+    <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:24px">
+      <div style="font-family:var(--serif);font-size:28px;font-weight:400;color:var(--ink)">Nuestros artesanos</div>
+      <a style="font-size:13px;color:var(--gold);text-decoration:none">Ver todos →</a>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:16px">
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:24px;text-align:center">
+        <div style="width:72px;height:72px;border-radius:50%;background:var(--gold-l);margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:28px;color:var(--gold-d)">M</div>
+        <div style="font-family:var(--serif);font-size:17px;color:var(--ink);margin-bottom:4px">María Silva</div>
+        <div style="font-size:12px;color:var(--ink-l);margin-bottom:10px">Orfebre · 15 años de experiencia</div>
+        <div style="font-size:12px;color:var(--ink-m);margin-bottom:14px">Especialista en joyería nupcial y anillos de compromiso en oro.</div>
+        <div style="display:flex;justify-content:center;gap:16px;font-size:12px;color:var(--ink-l)"><span>18 piezas</span><span>234 seguidores</span><span>4.9 ★</span></div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:24px;text-align:center">
+        <div style="width:72px;height:72px;border-radius:50%;background:#E8F0EE;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:28px;color:#3B6D60">C</div>
+        <div style="font-family:var(--serif);font-size:17px;color:var(--ink);margin-bottom:4px">Carlos Rojas</div>
+        <div style="font-size:12px;color:var(--ink-l);margin-bottom:10px">Joyero · Plata y piedras naturales</div>
+        <div style="font-size:12px;color:var(--ink-m);margin-bottom:14px">Trabaja plata 925 con piedras semi-preciosas chilenas: lapislázuli y cuarzo.</div>
+        <div style="display:flex;justify-content:center;gap:16px;font-size:12px;color:var(--ink-l)"><span>24 piezas</span><span>189 seguidores</span><span>4.8 ★</span></div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:24px;text-align:center">
+        <div style="width:72px;height:72px;border-radius:50%;background:#EEE8F0;margin:0 auto 14px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:28px;color:#6B3B8A">A</div>
+        <div style="font-family:var(--serif);font-size:17px;color:var(--ink);margin-bottom:4px">Ana Fuentes</div>
+        <div style="font-size:12px;color:var(--ink-l);margin-bottom:10px">Artista · Bronce y arte decorativo</div>
+        <div style="font-size:12px;color:var(--ink-m);margin-bottom:14px">Crea esculturas y piezas decorativas en bronce y cobre usando técnica cincelada.</div>
+        <div style="display:flex;justify-content:center;gap:16px;font-size:12px;color:var(--ink-l)"><span>11 piezas</span><span>142 seguidores</span><span>4.7 ★</span></div>
+      </div>
+    </div>
+  </div>
+  <!-- Encargos CTA -->
+  <div style="background:#1A1714;margin:0 36px 48px;border-radius:12px;padding:40px 48px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px">
+    <div>
+      <div style="font-size:10px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:10px">Piezas por encargo</div>
+      <div style="font-family:var(--serif);font-size:28px;color:var(--white);font-weight:300;line-height:1.2;margin-bottom:12px">¿Tienes algo especial en mente?</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.5);max-width:480px;line-height:1.7">Nuestros artesanos aceptan encargos personalizados. Describe tu idea y ellos la convierten en realidad.</div>
+    </div>
+    <div style="background:var(--gold);color:var(--white);padding:14px 28px;border-radius:6px;font-size:13px;font-weight:500;cursor:pointer;white-space:nowrap">Ver slots disponibles →</div>
+  </div>
+</div>
+
+<!-- ══ CATÁLOGO (cards + price slider fixed) ══ -->
+<div class="sc" id="s-catalog" style="background:var(--cream)">
+  <header class="hdr">
+    <div class="logo">C<em>r</em>isol</div>
+    <nav class="nav"><a href="#" class="on">Catálogo</a><a href="#">Artesanos</a><a href="#">Encargos</a><a href="#">Blog</a></nav>
+    <div class="acts"><div class="btn-sm">ES | CLP ▾</div><div class="btn-sm">Mi cuenta</div><div class="btn-dark">Carrito <div class="cart-dot">2</div></div></div>
+  </header>
+  <div class="ctop">
+    <span class="ctop-cnt">84 piezas encontradas</span>
+    <div class="ctop-sort">Ordenar <select class="sel"><option>Más reciente</option><option>Precio ↑</option><option>Precio ↓</option></select></div>
+    <div style="display:flex;border:1px solid var(--bd);border-radius:5px;overflow:hidden"><button style="padding:5px 10px;font-size:12px;background:var(--ink);color:var(--white);border:none;cursor:pointer">⊞</button><button style="padding:5px 10px;font-size:12px;background:var(--white);color:var(--ink-m);border:none;cursor:pointer">☰</button></div>
+  </div>
+  <div style="display:flex">
+    <aside class="fsb">
+      <div class="ftitle">Filtros</div>
+      <div style="margin-bottom:20px"><div class="fg-name">Tipo de pieza</div>
+        <div class="fopt"><div class="fchk on"></div><span>Anillos</span><span class="cnt">34</span></div>
+        <div class="fopt"><div class="fchk"></div><span>Collares</span><span class="cnt">28</span></div>
+        <div class="fopt"><div class="fchk"></div><span>Pendientes</span><span class="cnt">21</span></div>
+        <div class="fopt"><div class="fchk"></div><span>Pulseras</span><span class="cnt">18</span></div>
+        <div class="fopt"><div class="fchk"></div><span>Arte decorativo</span><span class="cnt">11</span></div>
+      </div>
+      <div style="margin-bottom:20px"><div class="fg-name">Material</div>
+        <div class="fopt"><div class="fchk on"></div><span>Oro 18k</span><span class="cnt">24</span></div>
+        <div class="fopt"><div class="fchk on"></div><span>Plata 925</span><span class="cnt">38</span></div>
+        <div class="fopt"><div class="fchk"></div><span>Bronce</span><span class="cnt">12</span></div>
+        <div class="fopt"><div class="fchk"></div><span>Cobre</span><span class="cnt">8</span></div>
+      </div>
+      <div class="price-block">
+        <div class="fg-name">Precio (CLP)</div>
+        <div class="range-wrap">
+          <div class="range-track"></div>
+          <div class="range-fill"></div>
+          <input type="range" min="0" max="1000000" value="20000" id="rMin">
+          <input type="range" min="0" max="1000000" value="500000" id="rMax">
+        </div>
+        <div class="price-vals"><span id="vMin">$20.000</span><span id="vMax">$500.000</span></div>
+      </div>
+      <div style="margin-bottom:20px"><div class="fg-name">Ocasión</div>
+        <div class="fopt"><div class="fchk"></div><span>Matrimonio</span><span class="cnt">15</span></div>
+        <div class="fopt"><div class="fchk"></div><span>Regalo</span><span class="cnt">42</span></div>
+        <div class="fopt"><div class="fchk"></div><span>Cotidiano</span><span class="cnt">31</span></div>
+      </div>
+      <div style="margin-bottom:20px"><div class="fg-name">Técnica</div>
+        <div class="fopt"><div class="fchk"></div><span>Forjado a mano</span><span class="cnt">29</span></div>
+        <div class="fopt"><div class="fchk"></div><span>Filigrana</span><span class="cnt">11</span></div>
+        <div class="fopt"><div class="fchk"></div><span>Cincelado</span><span class="cnt">16</span></div>
+      </div>
+    </aside>
+    <main style="flex:1;padding:24px 28px">
+      <div class="pgrid">
+        <div class="pcard"><div class="pcard-img" style="background:#F0EBE3"><div class="pcard-badge badge-new">Nuevo</div><div class="ph">◎</div><div class="badge-3d">3D</div></div><div class="pcard-body"><div class="pcard-artist">María Silva</div><div class="pcard-name">Anillo solitario oro 18k con diamante</div><div class="pcard-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="rc">(12)</span></div><div class="pcard-foot"><span class="pcard-price">$185.000</span><span class="pcard-wish">♡</span></div></div></div>
+        <div class="pcard"><div class="pcard-img" style="background:#EBF0F0"><div class="ph">⌇</div><div class="badge-3d">3D</div></div><div class="pcard-body"><div class="pcard-artist">Carlos Rojas</div><div class="pcard-name">Collar plata 925 con cuarzo rosa</div><div class="pcard-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star e">★</span><span class="rc">(7)</span></div><div class="pcard-foot"><span class="pcard-price">$95.000</span><span class="pcard-wish">♡</span></div></div></div>
+        <div class="pcard"><div class="pcard-img" style="background:#EEF0EB"><div class="pcard-badge badge-sold">Vendida</div><div class="ph">⟡</div></div><div class="pcard-body"><div class="pcard-artist">Ana Fuentes</div><div class="pcard-name">Pendientes bronce cincelados — pieza única</div><div class="pcard-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="rc">(3)</span></div><div class="pcard-foot"><span class="pcard-price muted">$68.000 · portafolio</span></div></div></div>
+        <div class="pcard"><div class="pcard-img" style="background:#F5EDF0"><div class="pcard-badge badge-new">Nuevo</div><div class="ph">◈</div><div class="badge-3d">3D</div></div><div class="pcard-body"><div class="pcard-artist">María Silva</div><div class="pcard-name">Pulsera filigrana oro 14k</div><div class="pcard-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star e">★</span><span class="rc">(5)</span></div><div class="pcard-foot"><span class="pcard-price">$220.000</span><span class="pcard-wish">♡</span></div></div></div>
+        <div class="pcard"><div class="pcard-img" style="background:#EBF0F5"><div class="ph">✦</div></div><div class="pcard-body"><div class="pcard-artist">Carlos Rojas</div><div class="pcard-name">Anillo plata 925 serie forja</div><div class="pcard-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="rc">(18)</span></div><div class="pcard-foot"><span class="pcard-price">$45.000</span><span class="pcard-wish">♡</span></div></div></div>
+        <div class="pcard"><div class="pcard-img" style="background:#F0EEE8"><div class="badge-3d">3D</div><div class="ph">⟐</div></div><div class="pcard-body"><div class="pcard-artist">Ana Fuentes</div><div class="pcard-name">Escultura cobre edición limitada</div><div class="pcard-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star e">★</span><span class="rc">(2)</span></div><div class="pcard-foot"><span class="pcard-price">$380.000</span><span class="pcard-wish">♡</span></div></div></div>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══ DETALLE DE PIEZA ══ -->
+<div class="sc" id="s-detail" style="background:var(--cream)">
+  <header class="hdr"><div class="logo">C<em>r</em>isol</div><nav class="nav"><a href="#">Catálogo</a><a href="#">Artesanos</a><a href="#">Encargos</a><a href="#">Blog</a></nav><div class="acts"><div class="btn-sm">ES | CLP ▾</div><div class="btn-sm">Mi cuenta</div><div class="btn-dark">Carrito <div class="cart-dot">2</div></div></div></header>
+  <div class="bc"><a href="#">Inicio</a> / <a href="#">Catálogo</a> / <a href="#">Anillos</a> / Anillo solitario oro 18k</div>
+  <div style="display:grid;grid-template-columns:1fr 400px;gap:36px;padding:28px 36px;max-width:1160px">
+    <div>
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;height:420px;display:flex;align-items:center;justify-content:center;position:relative;margin-bottom:12px">
+        <div style="font-family:var(--serif);font-size:100px;color:var(--bd)">◎</div>
+        <div style="position:absolute;bottom:14px;right:14px;background:var(--ink);color:var(--white);font-size:11px;padding:7px 14px;border-radius:6px;display:flex;align-items:center;gap:5px;cursor:pointer">⟐ Ver en 3D</div>
+      </div>
+      <div style="display:flex;gap:10px">
+        <div style="width:68px;height:68px;background:var(--gold-l);border:2px solid var(--gold);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:22px;color:var(--bd);cursor:pointer">◎</div>
+        <div style="width:68px;height:68px;background:var(--sf);border:1px solid var(--bd);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:22px;color:var(--bd);cursor:pointer">◎</div>
+        <div style="width:68px;height:68px;background:var(--sf);border:1px solid var(--bd);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:22px;color:var(--bd);cursor:pointer">◎</div>
+        <div style="width:68px;height:68px;background:var(--sf);border:1px solid var(--bd);border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer">▶</div>
+        <div style="width:68px;height:68px;background:var(--ink);border:1px solid var(--bd);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--white);font-weight:500;cursor:pointer">3D</div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:18px">
+      <div><div style="font-size:10px;color:var(--gold);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">Anillos · Pieza única</div><div style="font-family:var(--serif);font-size:28px;font-weight:400;color:var(--ink);line-height:1.2">Anillo solitario<br>oro 18k con diamante</div></div>
+      <div style="display:flex;align-items:center;gap:10px;background:var(--sf);padding:10px 14px;border-radius:8px">
+        <div class="ava" style="width:34px;height:34px;font-size:14px">M</div>
+        <div><div style="font-size:13px;font-weight:500;color:var(--ink)">María Silva</div><div style="font-size:11px;color:var(--ink-l)">Orfebre · Santiago, Chile</div></div>
+        <div style="margin-left:auto;font-size:12px;color:var(--gold);border:1px solid var(--gold-l);padding:4px 10px;border-radius:20px;cursor:pointer">+ Seguir</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:6px"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span style="font-size:13px;color:var(--ink-l)">4.9 · 12 reseñas</span></div>
+      <div style="display:flex;align-items:baseline;gap:10px">
+        <span style="font-family:var(--serif);font-size:26px;color:var(--ink)">$185.000</span>
+        <span style="font-size:13px;color:var(--ink-l)">≈ USD 197</span>
+        <span style="font-size:11px;background:var(--gold-l);color:var(--gold-d);padding:3px 9px;border-radius:20px">✦ Pieza única</span>
+      </div>
+      <div><div class="lbl">Talla</div><div style="display:flex;gap:7px;flex-wrap:wrap"><div style="padding:6px 13px;border:1.5px solid var(--bd);border-radius:5px;font-size:12px;color:var(--ink-m);cursor:pointer;opacity:.4;text-decoration:line-through">13</div><div style="padding:6px 13px;border:1.5px solid var(--bd);border-radius:5px;font-size:12px;color:var(--ink-m);cursor:pointer">14</div><div style="padding:6px 13px;border:2px solid var(--gold);border-radius:5px;font-size:12px;color:var(--ink);cursor:pointer;background:var(--gold-l)">15</div><div style="padding:6px 13px;border:1.5px solid var(--bd);border-radius:5px;font-size:12px;cursor:pointer">16</div><div style="padding:6px 13px;border:1.5px solid var(--bd);border-radius:5px;font-size:12px;cursor:pointer">17</div></div></div>
+      <div><div class="lbl">Material</div><div style="display:flex;gap:7px;flex-wrap:wrap"><div style="padding:6px 13px;border:2px solid var(--gold);border-radius:5px;font-size:12px;cursor:pointer;background:var(--gold-l);color:var(--ink)">Oro amarillo</div><div style="padding:6px 13px;border:1.5px solid var(--bd);border-radius:5px;font-size:12px;cursor:pointer;color:var(--ink-m)">Oro rosado +$12.000</div></div></div>
+      <div style="display:flex;gap:9px"><button style="flex:1;background:var(--ink);color:var(--white);padding:13px;border-radius:7px;font-size:13px;border:none;cursor:pointer;font-weight:500;font-family:var(--sans)">Agregar al carrito</button><div style="width:46px;height:46px;border:1.5px solid var(--bd);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:18px;cursor:pointer;background:var(--white)">♡</div></div>
+      <div style="font-size:13px;color:var(--ink-m);line-height:1.7">Pieza única forjada a mano en oro 18k con diamante brillante de 0.15 ct. Acabado satinado en la banda con bisel pulido. Viene en estuche de cuero grabado.</div>
+      <div style="font-size:12px;color:var(--ink-l);border-top:1px solid var(--bd);padding-top:12px">🚚 Envío desde <strong>$4.990</strong> · Cotiza al finalizar</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PERFIL PÚBLICO ARTESANO ══ -->
+<div class="sc" id="s-artisan" style="background:var(--cream)">
+  <header class="hdr"><div class="logo">C<em>r</em>isol</div><nav class="nav"><a href="#">Catálogo</a><a href="#" class="on">Artesanos</a><a href="#">Encargos</a><a href="#">Blog</a></nav><div class="acts"><div class="btn-sm">ES | CLP ▾</div><div class="btn-sm">Mi cuenta</div><div class="btn-dark">Carrito <div class="cart-dot">2</div></div></div></header>
+  <div class="bc"><a href="#">Inicio</a> / <a href="#">Artesanos</a> / María Silva</div>
+  <!-- Profile header -->
+  <div style="background:var(--white);border-bottom:1px solid var(--bd);padding:32px 36px">
+    <div style="display:flex;gap:28px;align-items:flex-start;max-width:860px">
+      <div style="width:96px;height:96px;border-radius:50%;background:var(--gold-l);display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:40px;color:var(--gold-d);flex-shrink:0">M</div>
+      <div style="flex:1">
+        <div style="display:flex;align-items:center;gap:14px;margin-bottom:8px">
+          <div style="font-family:var(--serif);font-size:26px;color:var(--ink)">María Silva</div>
+          <div style="font-size:11px;background:var(--gold-l);color:var(--gold-d);padding:3px 10px;border-radius:20px">Orfebre certificada</div>
+        </div>
+        <div style="font-size:13px;color:var(--ink-m);margin-bottom:12px">Santiago, Chile · Activa desde 2018</div>
+        <div style="font-size:13px;color:var(--ink-m);line-height:1.7;max-width:540px;margin-bottom:16px">Especialista en joyería nupcial y piezas únicas en oro. Cada anillo que creo lleva 15 años de aprendizaje y el alma de las técnicas tradicionales de orfebrería chilena.</div>
+        <div style="display:flex;gap:20px;font-size:13px;color:var(--ink-m);margin-bottom:16px">
+          <span><strong style="color:var(--ink)">18</strong> piezas</span>
+          <span><strong style="color:var(--ink)">234</strong> seguidores</span>
+          <span><strong style="color:var(--ink)">4.9 ★</strong> (47 reseñas)</span>
+        </div>
+        <div style="display:flex;gap:10px">
+          <div style="background:var(--ink);color:var(--white);padding:9px 20px;border-radius:6px;font-size:13px;cursor:pointer">+ Seguir</div>
+          <div style="border:1px solid var(--bd);padding:9px 16px;border-radius:6px;font-size:13px;cursor:pointer;color:var(--ink-m)">Ver encargos disponibles</div>
+          <div style="border:1px solid var(--bd);padding:9px 14px;border-radius:6px;font-size:13px;cursor:pointer;color:var(--ink-m)">IG</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Tabs -->
+  <div style="background:var(--white);border-bottom:1px solid var(--bd);padding:0 36px;display:flex;gap:0">
+    <div style="padding:13px 20px;font-size:13px;color:var(--ink);border-bottom:2px solid var(--gold);cursor:pointer">Piezas (18)</div>
+    <div style="padding:13px 20px;font-size:13px;color:var(--ink-m);border-bottom:2px solid transparent;cursor:pointer">Encargos (2)</div>
+    <div style="padding:13px 20px;font-size:13px;color:var(--ink-m);border-bottom:2px solid transparent;cursor:pointer">Reseñas (47)</div>
+  </div>
+  <div style="padding:24px 36px">
+    <div class="pgrid">
+      <div class="pcard"><div class="pcard-img" style="background:#F0EBE3"><div class="pcard-badge badge-new">Nuevo</div><div class="ph">◎</div><div class="badge-3d">3D</div></div><div class="pcard-body"><div class="pcard-artist">María Silva</div><div class="pcard-name">Anillo solitario oro 18k</div><div class="pcard-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="rc">(12)</span></div><div class="pcard-foot"><span class="pcard-price">$185.000</span><span class="pcard-wish">♡</span></div></div></div>
+      <div class="pcard"><div class="pcard-img" style="background:#EEF0EB"><div class="pcard-badge badge-sold">Vendida</div><div class="ph">◈</div></div><div class="pcard-body"><div class="pcard-artist">María Silva</div><div class="pcard-name">Par de aros largo plata 925</div><div class="pcard-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="rc">(8)</span></div><div class="pcard-foot"><span class="pcard-price muted">$55.000 · portafolio</span></div></div></div>
+      <div class="pcard"><div class="pcard-img" style="background:#F5EDF0"><div class="ph">◈</div><div class="badge-3d">3D</div></div><div class="pcard-body"><div class="pcard-artist">María Silva</div><div class="pcard-name">Pulsera filigrana oro 14k</div><div class="pcard-stars"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star e">★</span><span class="rc">(5)</span></div><div class="pcard-foot"><span class="pcard-price">$220.000</span><span class="pcard-wish">♡</span></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SOLICITUD DE ENCARGO (SLOT) ══ -->
+<div class="sc" id="s-slot" style="background:var(--cream)">
+  <header class="hdr"><div class="logo">C<em>r</em>isol</div><nav class="nav"><a href="#">Catálogo</a><a href="#">Artesanos</a><a href="#" class="on">Encargos</a><a href="#">Blog</a></nav><div class="acts"><div class="btn-sm">ES | CLP ▾</div><div class="btn-sm">Mi cuenta</div><div class="btn-dark">Carrito <div class="cart-dot">1</div></div></div></header>
+  <div class="bc"><a href="#">Inicio</a> / <a href="#">Encargos</a> / Reservar encargo — María Silva</div>
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:28px;padding:28px 36px;max-width:1100px">
+    <div>
+      <!-- Slot info card -->
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:20px;margin-bottom:16px">
+        <div style="display:flex;gap:14px;align-items:flex-start;margin-bottom:16px">
+          <div class="ava" style="width:44px;height:44px;font-size:18px;flex-shrink:0">M</div>
+          <div>
+            <div style="font-family:var(--serif);font-size:18px;color:var(--ink);margin-bottom:2px">Anillo personalizado con piedra</div>
+            <div style="font-size:12px;color:var(--ink-l)">María Silva · 2 slots disponibles</div>
+          </div>
+          <div style="margin-left:auto;text-align:right"><div style="font-family:var(--serif);font-size:20px;color:var(--ink)">$120.000</div><div style="font-size:11px;color:var(--ink-l)">precio base</div></div>
+        </div>
+        <div style="font-size:13px;color:var(--ink-m);line-height:1.7;margin-bottom:14px">Diseño exclusivo según tus especificaciones. La artesana trabajará contigo para crear una pieza única que refleje tu visión. Incluye hasta 2 revisiones del diseño antes de la producción.</div>
+        <div style="display:flex;gap:16px;font-size:12px;color:var(--ink-m);padding:12px 0;border-top:1px solid var(--bd);border-bottom:1px solid var(--bd);margin-bottom:14px">
+          <span>⏱ ~21 días hábiles</span>
+          <span>🔄 2 revisiones</span>
+          <span>📦 Envío incluido</span>
+          <span>💬 Comunicación directa</span>
+        </div>
+        <div style="display:flex;gap:12px">
+          <div class="tag tag-gold">Oro 18k disponible</div>
+          <div class="tag tag-ink">Plata 925 disponible</div>
+          <div class="tag tag-ink">Con piedras</div>
+        </div>
+      </div>
+      <!-- Brief form -->
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:20px;margin-bottom:16px">
+        <div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--bd)">Cuéntanos sobre tu encargo</div>
+        <div class="col" style="gap:14px">
+          <div class="f-group"><div class="f-lbl">¿Qué tipo de pieza quieres?</div><select class="f-inp"><option>Anillo de compromiso</option><option>Anillo de matrimonio</option><option>Pendientes</option><option>Collar</option><option>Otro</option></select></div>
+          <div class="f-group"><div class="f-lbl">Describe tu idea</div><textarea class="f-inp" rows="4" style="resize:none" placeholder="Ej: Quiero un anillo solitario en oro rosado con un diamante central, banda delgada y engaste tipo corona..."></textarea></div>
+          <div class="f-grid">
+            <div class="f-group"><div class="f-lbl">Material preferido</div><select class="f-inp"><option>Oro 18k amarillo</option><option>Oro 18k rosado (+$12.000)</option><option>Plata 925</option></select></div>
+            <div class="f-group"><div class="f-lbl">Talla (si aplica)</div><input class="f-inp" placeholder="Ej: 15 o "no sé aún""></div>
+          </div>
+          <div class="f-group"><div class="f-lbl">¿Tienes referencias visuales?</div><div style="border:1.5px dashed var(--bd);border-radius:6px;padding:20px;text-align:center;font-size:12px;color:var(--ink-l);cursor:pointer">+ Adjuntar imágenes de referencia (opcional)</div></div>
+          <div class="f-group"><div class="f-lbl">¿Para cuándo lo necesitas?</div><input type="date" class="f-inp"></div>
+        </div>
+      </div>
+    </div>
+    <!-- Summary -->
+    <div>
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:20px;position:sticky;top:60px">
+        <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd)">Resumen del encargo</div>
+        <div style="font-size:13px;margin-bottom:8px;color:var(--ink-m)">Artesana</div>
+        <div style="font-size:13px;color:var(--ink);margin-bottom:14px;font-weight:500">María Silva</div>
+        <div style="font-size:13px;margin-bottom:8px;color:var(--ink-m)">Tiempo estimado</div>
+        <div style="font-size:13px;color:var(--ink);margin-bottom:14px">~21 días hábiles</div>
+        <div class="sep"></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0">
+          <span style="color:var(--ink-m)">Precio base</span><span>$120.000</span>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0">
+          <span style="color:var(--ink-m)">Envío estimado</span><span>$4.990</span>
+        </div>
+        <div class="sep"></div>
+        <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:500;padding:6px 0;margin-bottom:16px">
+          <span>Total a pagar ahora</span><span>$124.990</span>
+        </div>
+        <div style="font-size:11px;color:var(--ink-l);background:var(--sf);padding:10px;border-radius:6px;line-height:1.6;margin-bottom:14px">El pago es completo al confirmar. Si la artesana no puede aceptar el encargo, se reembolsará el 100%.</div>
+        <button style="width:100%;background:var(--ink);color:var(--white);padding:13px;border-radius:7px;font-size:13px;border:none;cursor:pointer;font-weight:500;font-family:var(--sans)">Reservar y pagar $124.990</button>
+        <div style="font-size:11px;color:var(--ink-l);text-align:center;margin-top:10px">Sin devoluciones una vez iniciada la producción</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LOGIN / REGISTRO ══ -->
+<div class="sc" id="s-login" style="background:var(--cream)">
+  <div style="display:grid;grid-template-columns:1fr 1fr;min-height:calc(100vh - 44px)">
+    <!-- Left brand panel -->
+    <div style="background:#1A1714;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:60px">
+      <div style="font-family:var(--serif);font-size:32px;letter-spacing:.15em;color:var(--white);text-transform:uppercase;margin-bottom:8px">C<em style="color:var(--gold);font-style:normal">r</em>isol</div>
+      <div style="font-size:11px;color:rgba(255,255,255,.3);letter-spacing:.15em;text-transform:uppercase;margin-bottom:48px">Orfebrería artesanal</div>
+      <div style="font-family:var(--serif);font-size:28px;font-weight:300;color:var(--white);text-align:center;line-height:1.3;margin-bottom:20px">"Cada pieza cuenta<br><em style="color:var(--gold)">una historia única"</em></div>
+      <div style="font-size:12px;color:rgba(255,255,255,.3);text-align:center;line-height:1.7">Accede a tu cuenta para guardar favoritos,<br>ver el historial de pedidos y acumular puntos.</div>
+      <div style="margin-top:48px;display:flex;gap:12px">
+        <div style="width:8px;height:8px;border-radius:50%;background:var(--gold)"></div>
+        <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2)"></div>
+        <div style="width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.2)"></div>
+      </div>
+    </div>
+    <!-- Right form panel -->
+    <div style="display:flex;align-items:center;justify-content:center;padding:40px;background:var(--white)">
+      <div style="width:100%;max-width:380px">
+        <!-- Tab toggle -->
+        <div style="display:flex;border:1px solid var(--bd);border-radius:8px;overflow:hidden;margin-bottom:28px">
+          <div style="flex:1;padding:10px;text-align:center;font-size:13px;font-weight:500;background:var(--ink);color:var(--white);cursor:pointer">Iniciar sesión</div>
+          <div style="flex:1;padding:10px;text-align:center;font-size:13px;color:var(--ink-m);cursor:pointer">Crear cuenta</div>
+        </div>
+        <div style="font-family:var(--serif);font-size:22px;color:var(--ink);margin-bottom:6px">Bienvenido de nuevo</div>
+        <div style="font-size:13px;color:var(--ink-l);margin-bottom:24px">Ingresa tus datos para continuar</div>
+        <!-- Google login -->
+        <div style="border:1.5px solid var(--bd);border-radius:7px;padding:11px;display:flex;align-items:center;justify-content:center;gap:10px;font-size:13px;color:var(--ink);cursor:pointer;margin-bottom:18px">
+          <div style="width:18px;height:18px;background:#4285F4;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;color:white;font-weight:700">G</div>
+          Continuar con Google
+        </div>
+        <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px"><div style="flex:1;height:1px;background:var(--bd)"></div><div style="font-size:11px;color:var(--ink-l)">o con email</div><div style="flex:1;height:1px;background:var(--bd)"></div></div>
+        <div class="col" style="gap:14px;margin-bottom:20px">
+          <div class="f-group"><div class="f-lbl">Email</div><input class="f-inp focus" type="email" placeholder="ana@ejemplo.cl" value="ana@ejemplo.cl"></div>
+          <div class="f-group"><div class="f-lbl">Contraseña</div><input class="f-inp" type="password" placeholder="••••••••"><div style="font-size:11px;color:var(--gold);text-align:right;margin-top:4px;cursor:pointer">¿Olvidaste tu contraseña?</div></div>
+        </div>
+        <button style="width:100%;background:var(--ink);color:var(--white);padding:13px;border-radius:7px;font-size:13px;border:none;cursor:pointer;font-weight:500;font-family:var(--sans);margin-bottom:14px">Iniciar sesión</button>
+        <div style="font-size:12px;color:var(--ink-l);text-align:center;margin-bottom:20px">¿No tienes cuenta? <a style="color:var(--gold);text-decoration:none;cursor:pointer">Regístrate gratis</a></div>
+        <div style="border-top:1px solid var(--bd);padding-top:14px;text-align:center"><div style="font-size:12px;color:var(--ink-l);margin-bottom:8px">¿Solo quieres comprar una vez?</div><div style="font-size:13px;color:var(--gold);cursor:pointer">Continuar como invitado →</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CARRITO ══ -->
+<div class="sc" id="s-cart" style="background:var(--cream)">
+  <header class="hdr"><div class="logo">C<em>r</em>isol</div><nav class="nav"><a href="#">Catálogo</a><a href="#">Artesanos</a><a href="#">Encargos</a><a href="#">Blog</a></nav><div class="acts"><div class="btn-sm">ES | CLP ▾</div><div class="btn-sm">Mi cuenta</div><div class="btn-dark">Carrito <div class="cart-dot">2</div></div></div></header>
+  <div style="max-width:1000px;margin:0 auto;padding:28px 36px">
+    <div style="font-family:var(--serif);font-size:26px;font-weight:400;color:var(--ink);margin-bottom:24px">Tu carrito (2 piezas)</div>
+    <div style="display:grid;grid-template-columns:1fr 300px;gap:24px">
+      <div>
+        <!-- Cart item 1 -->
+        <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:18px;margin-bottom:12px">
+          <div style="display:flex;gap:16px">
+            <div style="width:80px;height:80px;background:var(--sf);border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:32px;color:var(--bd);flex-shrink:0">◎</div>
+            <div style="flex:1">
+              <div style="font-size:11px;color:var(--gold);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px">María Silva</div>
+              <div style="font-family:var(--serif);font-size:15px;color:var(--ink);margin-bottom:6px">Anillo solitario oro 18k con diamante</div>
+              <div style="font-size:12px;color:var(--ink-l);margin-bottom:10px">Talla 15 · Oro amarillo · Cantidad: 1</div>
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <div style="font-size:14px;font-weight:500;color:var(--ink)">$185.000</div>
+                <div style="font-size:12px;color:var(--err);cursor:pointer">✕ Eliminar</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Cart item 2 -->
+        <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:18px;margin-bottom:20px">
+          <div style="display:flex;gap:16px">
+            <div style="width:80px;height:80px;background:#F5EDF0;border-radius:8px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:32px;color:var(--bd);flex-shrink:0">◈</div>
+            <div style="flex:1">
+              <div style="font-size:11px;color:var(--gold);letter-spacing:.05em;text-transform:uppercase;margin-bottom:3px">María Silva</div>
+              <div style="font-family:var(--serif);font-size:15px;color:var(--ink);margin-bottom:6px">Pulsera filigrana oro 14k</div>
+              <div style="font-size:12px;color:var(--ink-l);margin-bottom:10px">Estándar · Cantidad: 1</div>
+              <div style="display:flex;align-items:center;justify-content:space-between">
+                <div style="font-size:14px;font-weight:500;color:var(--ink)">$220.000</div>
+                <div style="font-size:12px;color:var(--err);cursor:pointer">✕ Eliminar</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- Coupon + points -->
+        <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:18px;margin-bottom:12px">
+          <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:12px">Descuentos</div>
+          <div style="display:flex;gap:8px;margin-bottom:12px">
+            <input class="f-inp" placeholder="Código de cupón" style="flex:1">
+            <button style="background:var(--sf);border:1px solid var(--bd);padding:9px 14px;border-radius:6px;font-size:12px;cursor:pointer;font-family:var(--sans);color:var(--ink-m)">Aplicar</button>
+          </div>
+          <div style="background:var(--gold-l);border-radius:8px;padding:12px;display:flex;align-items:center;gap:12px">
+            <div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--ink)">7 puntos disponibles</div><div style="font-size:12px;color:var(--ink-m)">Equivalen a $70 de descuento</div></div>
+            <div style="font-size:12px;color:var(--gold-d);cursor:pointer;font-weight:500">Usar puntos →</div>
+          </div>
+        </div>
+        <div style="font-size:13px;color:var(--gold);cursor:pointer">← Seguir comprando</div>
+      </div>
+      <!-- Summary -->
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:20px;height:fit-content;position:sticky;top:60px">
+        <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd)">Resumen</div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;color:var(--ink-m)"><span>Subtotal</span><span style="color:var(--ink)">$405.000</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;padding:6px 0;color:var(--ink-m)"><span>Envío</span><span style="color:var(--ink)">Se calcula en el siguiente paso</span></div>
+        <div class="sep"></div>
+        <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:500;padding:6px 0;margin-bottom:16px"><span>Total estimado</span><span>$405.000</span></div>
+        <button style="width:100%;background:var(--ink);color:var(--white);padding:13px;border-radius:7px;font-size:13px;border:none;cursor:pointer;font-weight:500;font-family:var(--sans);margin-bottom:10px">Proceder al checkout →</button>
+        <div style="font-size:11px;color:var(--ink-l);text-align:center">Sin devoluciones · Pago seguro</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CHECKOUT ══ -->
+<div class="sc" id="s-checkout" style="background:var(--cream)">
+  <div style="background:var(--white);border-bottom:1px solid var(--bd);padding:0 36px;height:56px;display:flex;align-items:center;gap:20px">
+    <div class="logo">C<em>r</em>isol</div>
+    <div style="display:flex;align-items:center;gap:0;margin:0 auto">
+      <div style="display:flex;align-items:center;gap:7px;padding:0 16px"><div style="width:20px;height:20px;border-radius:50%;background:var(--gold);color:var(--white);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center">✓</div><span style="font-size:12px;color:var(--ink-m)">Carrito</span></div>
+      <div style="width:28px;height:1px;background:var(--bd)"></div>
+      <div style="display:flex;align-items:center;gap:7px;padding:0 16px"><div style="width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--white);font-size:10px;font-weight:600;display:flex;align-items:center;justify-content:center">2</div><span style="font-size:12px;color:var(--ink);font-weight:500">Dirección</span></div>
+      <div style="width:28px;height:1px;background:var(--bd)"></div>
+      <div style="display:flex;align-items:center;gap:7px;padding:0 16px"><div style="width:20px;height:20px;border-radius:50%;background:var(--bd);color:var(--ink-l);font-size:10px;display:flex;align-items:center;justify-content:center">3</div><span style="font-size:12px;color:var(--ink-l)">Envío</span></div>
+      <div style="width:28px;height:1px;background:var(--bd)"></div>
+      <div style="display:flex;align-items:center;gap:7px;padding:0 16px"><div style="width:20px;height:20px;border-radius:50%;background:var(--bd);color:var(--ink-l);font-size:10px;display:flex;align-items:center;justify-content:center">4</div><span style="font-size:12px;color:var(--ink-l)">Pago</span></div>
+      <div style="width:28px;height:1px;background:var(--bd)"></div>
+      <div style="display:flex;align-items:center;gap:7px;padding:0 16px"><div style="width:20px;height:20px;border-radius:50%;background:var(--bd);color:var(--ink-l);font-size:10px;display:flex;align-items:center;justify-content:center">5</div><span style="font-size:12px;color:var(--ink-l)">Confirmación</span></div>
+    </div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 340px;gap:28px;padding:28px 36px;max-width:1060px;margin:0 auto">
+    <div>
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:20px;margin-bottom:14px">
+        <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--bd)">Dirección de envío</div>
+        <div class="f-grid" style="margin-bottom:12px"><div class="f-group"><div class="f-lbl">Nombre completo</div><input class="f-inp focus" value="Ana Torres"></div><div class="f-group"><div class="f-lbl">Teléfono</div><input class="f-inp" value="+56 9 1234 5678"></div></div>
+        <div class="f-group" style="margin-bottom:12px"><div class="f-lbl">Dirección</div><input class="f-inp" value="Av. Providencia 1234, Depto 5B"></div>
+        <div class="f-grid"><div class="f-group"><div class="f-lbl">Ciudad</div><input class="f-inp" value="Santiago"></div><div class="f-group"><div class="f-lbl">País</div><input class="f-inp" value="Chile 🇨🇱"></div></div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:20px;margin-bottom:14px">
+        <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd)">Método de envío</div>
+        <div style="display:flex;align-items:center;gap:12px;padding:11px 13px;border:2px solid var(--gold);border-radius:8px;background:var(--gold-l);margin-bottom:8px;cursor:pointer"><div style="width:14px;height:14px;border-radius:50%;border:2px solid var(--gold);background:radial-gradient(circle,var(--gold) 4px,transparent 5px);flex-shrink:0"></div><div><div style="font-size:13px;font-weight:500">Chilexpress — Estándar</div><div style="font-size:11px;color:var(--ink-m)">3-4 días hábiles</div></div><div style="margin-left:auto;font-size:13px;font-weight:500">$4.990</div></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:11px 13px;border:1px solid var(--bd);border-radius:8px;margin-bottom:8px;cursor:pointer;background:var(--white)"><div style="width:14px;height:14px;border-radius:50%;border:2px solid var(--bd);flex-shrink:0"></div><div><div style="font-size:13px;font-weight:500">Starken — Express</div><div style="font-size:11px;color:var(--ink-m)">1-2 días hábiles</div></div><div style="margin-left:auto;font-size:13px;font-weight:500">$7.990</div></div>
+        <div style="display:flex;align-items:center;gap:12px;padding:11px 13px;border:1px solid var(--bd);border-radius:8px;cursor:pointer;background:var(--white)"><div style="width:14px;height:14px;border-radius:50%;border:2px solid var(--bd);flex-shrink:0"></div><div><div style="font-size:13px;font-weight:500">Retiro en persona</div><div style="font-size:11px;color:var(--ink-m)">Coordinación con artesana</div></div><div style="margin-left:auto;font-size:13px;font-weight:500;color:var(--ok)">Gratis</div></div>
+      </div>
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:20px">
+        <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd)">Método de pago</div>
+        <div style="display:flex;gap:8px;margin-bottom:14px">
+          <div style="flex:1;padding:9px;border:2px solid var(--gold);border-radius:7px;text-align:center;font-size:12px;cursor:pointer;color:var(--ink);background:var(--gold-l);font-weight:500">💳 Tarjeta</div>
+          <div style="flex:1;padding:9px;border:1.5px solid var(--bd);border-radius:7px;text-align:center;font-size:12px;cursor:pointer;color:var(--ink-m)">₿ Cripto</div>
+          <div style="flex:1;padding:9px;border:1.5px solid var(--bd);border-radius:7px;text-align:center;font-size:12px;cursor:pointer;color:var(--ink-m)">🏦 Transferencia</div>
+        </div>
+        <div style="background:var(--sf);border-radius:8px;padding:14px">
+          <div class="f-group" style="margin-bottom:10px"><div class="f-lbl">Número de tarjeta</div><div style="border:1.5px solid var(--bd);border-radius:6px;padding:9px 12px;background:var(--white);display:flex;align-items:center;gap:8px"><span style="flex:1;font-size:13px;color:var(--ink-m)">•••• •••• •••• ••••</span><div style="display:flex;gap:4px"><div style="width:26px;height:16px;background:#1A1F71;border-radius:2px"></div><div style="width:26px;height:16px;background:#EB001B;border-radius:2px"></div></div></div></div>
+          <div class="f-grid"><div class="f-group"><div class="f-lbl">Vencimiento</div><div style="border:1.5px solid var(--bd);border-radius:6px;padding:9px 12px;background:var(--white);font-size:13px;color:var(--ink-m)">MM / AA</div></div><div class="f-group"><div class="f-lbl">CVC</div><div style="border:1.5px solid var(--bd);border-radius:6px;padding:9px 12px;background:var(--white);font-size:13px;color:var(--ink-m)">•••</div></div></div>
+        </div>
+      </div>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:20px;height:fit-content;position:sticky;top:70px">
+      <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd)">Resumen del pedido</div>
+      <div style="display:flex;gap:10px;margin-bottom:12px"><div style="width:48px;height:48px;background:var(--sf);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:20px;color:var(--bd)">◎</div><div><div style="font-size:12px;color:var(--ink);line-height:1.4">Anillo solitario oro 18k</div><div style="font-size:11px;color:var(--ink-l)">Talla 15 · ×1</div><div style="font-size:12px;font-weight:500;margin-top:3px">$185.000</div></div></div>
+      <div style="display:flex;gap:10px;margin-bottom:14px"><div style="width:48px;height:48px;background:#F5EDF0;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:20px;color:var(--bd)">◈</div><div><div style="font-size:12px;color:var(--ink);line-height:1.4">Pulsera filigrana oro 14k</div><div style="font-size:11px;color:var(--ink-l)">Estándar · ×1</div><div style="font-size:12px;font-weight:500;margin-top:3px">$220.000</div></div></div>
+      <div class="sep"></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--ink-m)"><span>Subtotal</span><span>$405.000</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--ink-m)"><span>Envío</span><span>$4.990</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;padding:4px 0;color:var(--ok)"><span>Cupón PRIMAVERA10</span><span>–$40.500</span></div>
+      <div class="sep"></div>
+      <div style="display:flex;justify-content:space-between;font-size:14px;font-weight:500;padding:4px 0;margin-bottom:14px"><span>Total</span><span>$369.490</span></div>
+      <div style="font-size:11px;color:var(--ink-l);background:var(--sf);padding:9px;border-radius:6px;line-height:1.6;margin-bottom:12px">Sin devoluciones. Pueden aplicar impuestos de aduana según país de destino.</div>
+      <button style="width:100%;background:var(--ink);color:var(--white);padding:13px;border-radius:7px;font-size:13px;border:none;cursor:pointer;font-weight:500;font-family:var(--sans)">Confirmar y pagar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONFIRMACIÓN ══ -->
+<div class="sc" id="s-confirm" style="background:var(--cream)">
+  <div style="background:var(--white);border-bottom:1px solid var(--bd);padding:0 36px;height:56px;display:flex;align-items:center"><div class="logo">C<em>r</em>isol</div></div>
+  <div style="max-width:640px;margin:0 auto;padding:48px 24px;text-align:center">
+    <!-- Success icon -->
+    <div style="width:72px;height:72px;border-radius:50%;background:#EAF3DE;border:2px solid var(--ok);display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:28px;color:var(--ok)">✓</div>
+    <div style="font-family:var(--serif);font-size:30px;font-weight:400;color:var(--ink);margin-bottom:8px">¡Tu pedido está confirmado!</div>
+    <div style="font-size:14px;color:var(--ink-m);margin-bottom:6px">Pedido <strong>#1047</strong></div>
+    <div style="font-size:13px;color:var(--ink-l);margin-bottom:28px">Recibirás un correo de confirmación en <strong>ana@ejemplo.cl</strong></div>
+    <!-- Points earned -->
+    <div style="background:var(--gold-l);border:1px solid var(--gold);border-radius:10px;padding:14px 20px;margin-bottom:24px;display:flex;align-items:center;gap:12px;text-align:left">
+      <div style="font-size:24px">✦</div>
+      <div><div style="font-size:13px;font-weight:500;color:var(--ink)">¡Ganaste 1 punto de fidelización!</div><div style="font-size:12px;color:var(--ink-m)">Ahora tienes 8 puntos · equivalen a $80 de descuento en tu próxima compra</div></div>
+    </div>
+    <!-- Order summary -->
+    <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:20px;text-align:left;margin-bottom:20px">
+      <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:14px;padding-bottom:10px;border-bottom:1px solid var(--bd)">Detalle del pedido</div>
+      <div style="display:flex;gap:12px;margin-bottom:12px"><div style="width:52px;height:52px;background:var(--sf);border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:22px;color:var(--bd)">◎</div><div><div style="font-size:13px;color:var(--ink)">Anillo solitario oro 18k · Talla 15</div><div style="font-size:12px;color:var(--ink-l)">María Silva</div><div style="font-size:13px;font-weight:500;margin-top:3px">$185.000</div></div></div>
+      <div style="display:flex;gap:12px;margin-bottom:14px"><div style="width:52px;height:52px;background:#F5EDF0;border-radius:7px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:22px;color:var(--bd)">◈</div><div><div style="font-size:13px;color:var(--ink)">Pulsera filigrana oro 14k</div><div style="font-size:12px;color:var(--ink-l)">María Silva</div><div style="font-size:13px;font-weight:500;margin-top:3px">$220.000</div></div></div>
+      <div class="sep"></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--ink-m);margin-bottom:6px"><span>Total pagado</span><span style="color:var(--ink);font-weight:500">$369.490</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-m)"><span>Envío a</span><span>Av. Providencia 1234, Santiago</span></div>
+    </div>
+    <!-- What's next -->
+    <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:18px;text-align:left;margin-bottom:24px">
+      <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:12px">¿Qué sigue?</div>
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <div style="display:flex;align-items:center;gap:10px"><div style="width:24px;height:24px;border-radius:50%;background:var(--gold-l);color:var(--gold-d);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">1</div><div style="font-size:13px;color:var(--ink-m)">María Silva preparará tu pedido (1-3 días)</div></div>
+        <div style="display:flex;align-items:center;gap:10px"><div style="width:24px;height:24px;border-radius:50%;background:var(--sf);color:var(--ink-l);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">2</div><div style="font-size:13px;color:var(--ink-m)">Te notificaremos cuando esté en camino con tracking</div></div>
+        <div style="display:flex;align-items:center;gap:10px"><div style="width:24px;height:24px;border-radius:50%;background:var(--sf);color:var(--ink-l);font-size:11px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0">3</div><div style="font-size:13px;color:var(--ink-m)">Recibe tu pedido y deja una reseña</div></div>
+      </div>
+    </div>
+    <div style="display:flex;gap:12px;justify-content:center">
+      <div style="background:var(--ink);color:var(--white);padding:12px 24px;border-radius:6px;font-size:13px;cursor:pointer;font-weight:500">Ver mis pedidos</div>
+      <div style="border:1px solid var(--bd);color:var(--ink);padding:12px 24px;border-radius:6px;font-size:13px;cursor:pointer">Seguir comprando</div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MIS PUNTOS / MEMBRESÍA ══ -->
+<div class="sc" id="s-points" style="background:var(--cream)">
+  <header class="hdr"><div class="logo">C<em>r</em>isol</div><nav class="nav"><a href="#">Catálogo</a><a href="#">Artesanos</a><a href="#">Encargos</a><a href="#">Blog</a></nav><div class="acts"><div class="btn-sm">ES | CLP ▾</div><div class="btn-sm">Mi cuenta ▾</div><div class="btn-dark">Carrito <div class="cart-dot">0</div></div></div></header>
+  <div style="display:flex">
+    <!-- Account sidebar -->
+    <div style="width:200px;flex-shrink:0;background:var(--white);border-right:1px solid var(--bd);min-height:calc(100vh - 104px);padding:20px 0;position:sticky;top:104px">
+      <div style="padding:0 18px 14px;border-bottom:1px solid var(--bd);margin-bottom:8px"><div style="font-family:var(--serif);font-size:15px;color:var(--ink)">Ana Torres</div><div style="font-size:11px;color:var(--ink-l)">ana@ejemplo.cl</div></div>
+      <div style="padding:0 0 8px">
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 18px;font-size:13px;color:var(--ink-m);cursor:pointer">📦 Mis pedidos</div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 18px;font-size:13px;color:var(--white);background:var(--ink);border-left:2px solid var(--gold);cursor:pointer">✦ Mis puntos</div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 18px;font-size:13px;color:var(--ink-m);cursor:pointer">♡ Favoritos</div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 18px;font-size:13px;color:var(--ink-m);cursor:pointer">◎ Artesanos seguidos</div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 18px;font-size:13px;color:var(--ink-m);cursor:pointer">📍 Mis direcciones</div>
+        <div style="display:flex;align-items:center;gap:8px;padding:8px 18px;font-size:13px;color:var(--ink-m);cursor:pointer">⚙ Mi perfil</div>
+      </div>
+    </div>
+    <main style="flex:1;padding:28px 32px">
+      <!-- Current level hero -->
+      <div style="background:linear-gradient(135deg,#1A1714 0%,#2C2520 100%);border-radius:12px;padding:28px 32px;margin-bottom:22px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:24px">
+        <div>
+          <div style="font-size:10px;color:rgba(255,255,255,.4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Nivel actual</div>
+          <div style="font-family:var(--serif);font-size:28px;color:var(--white);margin-bottom:6px">Estándar</div>
+          <div style="display:flex;align-items:baseline;gap:8px;margin-bottom:16px">
+            <div style="font-family:var(--serif);font-size:42px;color:var(--gold);line-height:1">8</div>
+            <div style="font-size:13px;color:rgba(255,255,255,.5)">puntos acumulados</div>
+          </div>
+          <!-- Progress bar -->
+          <div style="margin-bottom:8px">
+            <div style="display:flex;justify-content:space-between;font-size:11px;color:rgba(255,255,255,.4);margin-bottom:6px"><span>Estándar</span><span>Premium (500 pts)</span></div>
+            <div style="height:6px;background:rgba(255,255,255,.12);border-radius:3px"><div style="height:6px;background:var(--gold);border-radius:3px;width:1.6%"></div></div>
+            <div style="font-size:11px;color:rgba(255,255,255,.3);margin-top:5px">Te faltan 492 puntos para ser Premium</div>
+          </div>
+        </div>
+        <div style="text-align:center">
+          <div style="font-size:64px;line-height:1;margin-bottom:6px">✦</div>
+          <div style="font-size:10px;color:rgba(255,255,255,.3);letter-spacing:.1em;text-transform:uppercase">1 punto por compra</div>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:22px">
+        <!-- Benefits comparison -->
+        <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:18px">
+          <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:14px">Beneficios por nivel</div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:0">
+            <div style="font-size:11px;font-weight:500;text-align:center;padding:8px;background:var(--sf);border-radius:6px 0 0 0;color:var(--ink-m)">Estándar</div>
+            <div style="font-size:11px;font-weight:500;text-align:center;padding:8px;background:var(--gold-l);border-radius:0 6px 0 0;color:var(--gold-d)">✦ Premium (500 pts)</div>
+          </div>
+          <div style="border:1px solid var(--bd);border-top:none;border-radius:0 0 8px 8px;overflow:hidden">
+            <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--bd)"><div style="padding:9px 12px;font-size:12px;color:var(--ink-m)">Sin descuento</div><div style="padding:9px 12px;font-size:12px;color:var(--gold-d);background:rgba(242,232,213,.3)">5% en todas las compras</div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--bd)"><div style="padding:9px 12px;font-size:12px;color:var(--ink-m)">Envío estándar</div><div style="padding:9px 12px;font-size:12px;color:var(--gold-d);background:rgba(242,232,213,.3)">Envío gratis +$50.000</div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;border-bottom:1px solid var(--bd)"><div style="padding:9px 12px;font-size:12px;color:var(--ink-m)">—</div><div style="padding:9px 12px;font-size:12px;color:var(--gold-d);background:rgba(242,232,213,.3)">Acceso anticipado</div></div>
+            <div style="display:grid;grid-template-columns:1fr 1fr"><div style="padding:9px 12px;font-size:12px;color:var(--ink-m)">—</div><div style="padding:9px 12px;font-size:12px;color:var(--gold-d);background:rgba(242,232,213,.3)">Descuento en encargos</div></div>
+          </div>
+        </div>
+        <!-- Points calculator -->
+        <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:18px">
+          <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:6px">Calculadora de canje</div>
+          <div style="font-size:12px;color:var(--ink-l);margin-bottom:14px">1 punto = $10 CLP de descuento</div>
+          <div class="f-group" style="margin-bottom:12px"><div class="f-lbl">Puntos a canjear</div><input class="f-inp" value="8" type="number"></div>
+          <div style="background:var(--sf);border-radius:7px;padding:12px;display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><span style="font-size:13px;color:var(--ink-m)">Descuento obtenido</span><span style="font-family:var(--serif);font-size:18px;color:var(--ink)">$80</span></div>
+          <div style="font-size:11px;color:var(--ink-l);background:var(--gold-l);padding:8px 10px;border-radius:6px">Los puntos se canjean directamente en el carrito como descuento sobre el total.</div>
+        </div>
+      </div>
+      <!-- Transaction history -->
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:18px">
+        <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:14px">Historial de puntos</div>
+        <table class="tbl">
+          <tr><th>Fecha</th><th>Descripción</th><th>Tipo</th><th style="text-align:right">Puntos</th><th style="text-align:right">Saldo</th></tr>
+          <tr><td style="color:var(--ink-l)">11 abr 2026</td><td>Compra #1047 — Anillo + Pulsera</td><td><span class="stag s-paid">Acumulado</span></td><td style="text-align:right;color:var(--ok);font-weight:500">+1</td><td style="text-align:right;font-weight:500">8</td></tr>
+          <tr><td style="color:var(--ink-l)">01 abr 2026</td><td>Compra #1031 — Collar plata</td><td><span class="stag s-paid">Acumulado</span></td><td style="text-align:right;color:var(--ok);font-weight:500">+1</td><td style="text-align:right;font-weight:500">7</td></tr>
+          <tr><td style="color:var(--ink-l)">15 mar 2026</td><td>Canje en compra #1018</td><td><span class="stag s-rev">Canjeado</span></td><td style="text-align:right;color:var(--err);font-weight:500">–5</td><td style="text-align:right;font-weight:500">6</td></tr>
+          <tr><td style="color:var(--ink-l)">02 feb 2026</td><td>Compra #0998 — Pendientes</td><td><span class="stag s-paid">Acumulado</span></td><td style="text-align:right;color:var(--ok);font-weight:500">+1</td><td style="text-align:right;font-weight:500">11</td></tr>
+        </table>
+      </div>
+    </main>
+  </div>
+</div>
+
+<!-- ══ PANEL ARTESANO ══ -->
+<div class="sc" id="s-dart">
+  <div class="pw">
+    <div class="psb">
+      <div class="psb-logo">Crisol</div>
+      <div class="psb-user"><div class="ava">M</div><div><div class="psb-nm">María Silva</div><div class="psb-role">Artesana</div></div></div>
+      <div class="psb-nav">
+        <div class="psb-lbl">General</div>
+        <div class="pni on">⊞ Dashboard</div>
+        <div class="pni">◈ Mis piezas <span class="badge">2</span></div>
+        <div class="pni">✦ Encargos</div>
+        <div class="psb-lbl">Ventas</div>
+        <div class="pni">📦 Pedidos <span class="badge">3</span></div>
+        <div class="pni">$ Balance</div>
+        <div class="psb-lbl">Cuenta</div>
+        <div class="pni">◎ Mi perfil</div>
+        <div class="pni">⚙ Configuración</div>
+      </div>
+    </div>
+    <div class="pmain">
+      <div class="ptop"><div><div class="ph1">Hola, <span>María</span></div><div style="font-size:12px;color:var(--ink-l)">Abril 2026</div></div><div class="pacts"><button class="pbtn pbtn-s">Ver perfil público</button><button class="pbtn pbtn-p">+ Nueva pieza</button></div></div>
+      <div class="mcards">
+        <div class="mcard"><div class="mcard-lbl">Ventas este mes</div><div class="mcard-val">8</div><div class="mcard-trend up">↑ +3 vs anterior</div></div>
+        <div class="mcard"><div class="mcard-lbl">Ingresos netos</div><div class="mcard-val" style="font-size:18px">$1.080.000</div><div class="mcard-sub">después del 10%</div></div>
+        <div class="mcard"><div class="mcard-lbl">Piezas publicadas</div><div class="mcard-val">18</div><div class="mcard-trend up">↑ 2 esta semana</div></div>
+        <div class="mcard"><div class="mcard-lbl">Seguidores</div><div class="mcard-val">234</div><div class="mcard-trend up">↑ 12 nuevos</div></div>
+      </div>
+      <div class="two-col">
+        <div class="pcard2"><div class="pcard2-title">Pedidos recientes <a class="pcard2-link">Ver todos →</a></div><table class="tbl"><tr><th>Pedido</th><th>Pieza</th><th>Total</th><th>Estado</th></tr><tr><td>#1042</td><td>Anillo solitario oro 18k</td><td>$153.450</td><td><span class="stag s-prep">En preparación</span></td></tr><tr><td>#1038</td><td>Pulsera filigrana</td><td>$198.000</td><td><span class="stag s-ship">Enviado</span></td></tr><tr><td>#1031</td><td>Collar plata con cuarzo</td><td>$85.500</td><td><span class="stag s-paid">Pagado</span></td></tr></table></div>
+        <div class="pcard2"><div class="pcard2-title">Mis piezas <a class="pcard2-link">Ver todas →</a></div>
+          <div style="display:flex;gap:9px;align-items:center;padding:9px 0;border-bottom:1px solid var(--bd)"><div style="width:40px;height:40px;background:var(--sf);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:16px;color:var(--bd)">◎</div><div style="flex:1;font-size:12px;color:var(--ink)">Anillo solitario oro</div><span class="stag s-rev">En revisión</span></div>
+          <div style="display:flex;gap:9px;align-items:center;padding:9px 0;border-bottom:1px solid var(--bd)"><div style="width:40px;height:40px;background:var(--sf);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:16px;color:var(--bd)">⌇</div><div style="flex:1;font-size:12px;color:var(--ink)">Collar plata nueva serie</div><span class="stag s-draft">Borrador</span></div>
+          <div style="display:flex;gap:9px;align-items:center;padding:9px 0"><div style="width:40px;height:40px;background:var(--sf);border-radius:5px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:16px;color:var(--bd)">◈</div><div style="flex:1;font-size:12px;color:var(--ink)">Pulsera filigrana 18k</div><span class="stag s-pub">Publicada</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ PANEL ADMIN ══ -->
+<div class="sc" id="s-dadmin">
+  <div class="pw">
+    <div class="psb" style="background:#141210;width:200px">
+      <div class="psb-logo" style="font-size:14px">Crisol<div style="font-size:8px;color:rgba(255,255,255,.2);letter-spacing:.1em;margin-top:1px">ADMIN</div></div>
+      <div class="psb-nav">
+        <div class="psb-lbl">Vista general</div>
+        <div class="pni on">⊞ Dashboard</div>
+        <div class="psb-lbl">Catálogo</div>
+        <div class="pni">◈ Cola de revisión <span class="badge">4</span></div>
+        <div class="pni">☰ Categorías y tags</div>
+        <div class="psb-lbl">Usuarios</div>
+        <div class="pni">✦ Artesanos</div>
+        <div class="pni">◎ Compradores</div>
+        <div class="psb-lbl">Comercio</div>
+        <div class="pni">📦 Pedidos</div>
+        <div class="pni">% Cupones</div>
+        <div class="pni">★ Membresías</div>
+        <div class="pni">$ Comisión (10%)</div>
+        <div class="psb-lbl">Contenido</div>
+        <div class="pni">✎ Blog</div>
+        <div class="pni">♡ Reseñas <span class="badge">7</span></div>
+        <div class="pni">🔍 SEO meta</div>
+        <div class="psb-lbl">Reportes</div>
+        <div class="pni">📊 Ventas</div>
+        <div class="pni">⟐ Comisiones</div>
+      </div>
+    </div>
+    <div class="pmain">
+      <div class="ptop"><div><div class="ph1">Dashboard</div><div style="font-size:12px;color:var(--ink-l)">Abril 2026</div></div><div class="pacts"><button class="pbtn pbtn-s">Exportar reportes</button></div></div>
+      <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin-bottom:20px">
+        <div class="mcard"><div class="mcard-lbl">Ventas mes</div><div class="mcard-val" style="font-size:17px">$3.250.000</div></div>
+        <div class="mcard"><div class="mcard-lbl">Comisiones (10%)</div><div class="mcard-val" style="font-size:17px">$325.000</div></div>
+        <div class="mcard"><div class="mcard-lbl">Pedidos activos</div><div class="mcard-val">23</div></div>
+        <div class="mcard"><div class="mcard-lbl">En revisión</div><div class="mcard-val" style="color:var(--gold)">4</div></div>
+        <div class="mcard"><div class="mcard-lbl">Piezas publicadas</div><div class="mcard-val">84</div></div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="pcard2" style="margin-bottom:16px">
+            <div class="pcard2-title">Cola de moderación — 4 pendientes <a class="pcard2-link">Ver todas →</a></div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <div style="display:flex;gap:12px;align-items:center;padding:10px;background:var(--sf);border-radius:8px">
+                <div style="width:50px;height:50px;background:var(--white);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:20px;color:var(--bd)">◎</div>
+                <div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--ink)">Collar de plata 925 con turquesa</div><div style="font-size:11px;color:var(--ink-l)">Carlos Rojas · hace 2h · 8 fotos · 1 video · 3D ✓</div></div>
+                <div style="display:flex;gap:7px"><button style="background:var(--sf);border:1px solid var(--bd);padding:6px 12px;border-radius:5px;font-size:11px;cursor:pointer;font-family:var(--sans);color:var(--ink-m)">Ver</button><button style="background:var(--white);color:var(--err);border:1px solid var(--err);padding:6px 12px;border-radius:5px;font-size:11px;cursor:pointer;font-family:var(--sans)">Rechazar</button><button style="background:var(--ok);color:var(--white);border:none;padding:6px 12px;border-radius:5px;font-size:11px;cursor:pointer;font-family:var(--sans);font-weight:500">Aprobar</button></div>
+              </div>
+              <div style="display:flex;gap:12px;align-items:center;padding:10px;background:var(--sf);border-radius:8px">
+                <div style="width:50px;height:50px;background:var(--white);border-radius:6px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:20px;color:var(--bd)">⌇</div>
+                <div style="flex:1"><div style="font-size:13px;font-weight:500;color:var(--ink)">Pendientes bronce cincelados serie primavera</div><div style="font-size:11px;color:var(--ink-l)">Ana Fuentes · hace 5h · 6 fotos · 1 video</div></div>
+                <div style="display:flex;gap:7px"><button style="background:var(--sf);border:1px solid var(--bd);padding:6px 12px;border-radius:5px;font-size:11px;cursor:pointer;font-family:var(--sans);color:var(--ink-m)">Ver</button><button style="background:var(--white);color:var(--err);border:1px solid var(--err);padding:6px 12px;border-radius:5px;font-size:11px;cursor:pointer;font-family:var(--sans)">Rechazar</button><button style="background:var(--ok);color:var(--white);border:none;padding:6px 12px;border-radius:5px;font-size:11px;cursor:pointer;font-family:var(--sans);font-weight:500">Aprobar</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="pcard2" style="margin-bottom:16px">
+            <div class="pcard2-title">Ventas por artesano</div>
+            <div style="display:flex;flex-direction:column;gap:0">
+              <div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--bd)"><div class="ava" style="width:26px;height:26px;font-size:11px">M</div><div style="flex:1;font-size:12px;color:var(--ink)">María Silva</div><div style="font-size:11px;color:var(--ink-l)">8 ventas</div><div style="font-size:12px;font-weight:500;min-width:80px;text-align:right">$1.200.000</div></div>
+              <div style="display:flex;align-items:center;gap:9px;padding:8px 0;border-bottom:1px solid var(--bd)"><div class="ava" style="width:26px;height:26px;font-size:11px;background:#E8F0EE;color:#3B6D60">C</div><div style="flex:1;font-size:12px;color:var(--ink)">Carlos Rojas</div><div style="font-size:11px;color:var(--ink-l)">9 ventas</div><div style="font-size:12px;font-weight:500;min-width:80px;text-align:right">$980.000</div></div>
+              <div style="display:flex;align-items:center;gap:9px;padding:8px 0"><div class="ava" style="width:26px;height:26px;font-size:11px;background:#EEE8F0;color:#6B3B8A">A</div><div style="flex:1;font-size:12px;color:var(--ink)">Ana Fuentes</div><div style="font-size:11px;color:var(--ink-l)">6 ventas</div><div style="font-size:12px;font-weight:500;min-width:80px;text-align:right">$720.000</div></div>
+            </div>
+          </div>
+          <div class="pcard2">
+            <div class="pcard2-title">Ventas diarias — Abril</div>
+            <div style="display:flex;align-items:flex-end;gap:5px;height:100px;padding:0 4px">
+              <div style="flex:1;background:var(--gold-l);border-radius:3px 3px 0 0;height:40%"></div>
+              <div style="flex:1;background:var(--gold-l);border-radius:3px 3px 0 0;height:65%"></div>
+              <div style="flex:1;background:var(--gold-l);border-radius:3px 3px 0 0;height:30%"></div>
+              <div style="flex:1;background:var(--gold-l);border-radius:3px 3px 0 0;height:80%"></div>
+              <div style="flex:1;background:var(--gold-l);border-radius:3px 3px 0 0;height:55%"></div>
+              <div style="flex:1;background:var(--gold-l);border-radius:3px 3px 0 0;height:45%"></div>
+              <div style="flex:1;background:var(--gold-l);border-radius:3px 3px 0 0;height:70%"></div>
+              <div style="flex:1;background:var(--gold);border-radius:3px 3px 0 0;height:90%"></div>
+              <div style="flex:1;background:var(--gold-l);border-radius:3px 3px 0 0;height:50%"></div>
+              <div style="flex:1;background:var(--gold-l);border-radius:3px 3px 0 0;height:60%"></div>
+              <div style="flex:1;background:var(--gold-l);border-radius:3px 3px 0 0;height:35%"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- ══ NUEVA PIEZA / EDITAR PIEZA (ARTESANO) ══ -->
+<div class="sc" id="s-newpiece">
+  <div class="pw">
+    <div class="psb">
+      <div class="psb-logo">Crisol</div>
+      <div class="psb-user"><div class="ava">M</div><div><div class="psb-nm">María Silva</div><div class="psb-role">Artesana</div></div></div>
+      <div class="psb-nav">
+        <div class="psb-lbl">General</div>
+        <div class="pni">⊞ Dashboard</div>
+        <div class="pni on">◈ Mis piezas</div>
+        <div class="pni">✦ Encargos</div>
+        <div class="psb-lbl">Ventas</div>
+        <div class="pni">📦 Pedidos</div>
+        <div class="pni">$ Balance</div>
+        <div class="psb-lbl">Cuenta</div>
+        <div class="pni">◎ Mi perfil</div>
+      </div>
+    </div>
+    <div class="pmain" style="max-width:820px">
+      <div class="ptop" style="margin-bottom:8px">
+        <div>
+          <div style="font-size:12px;color:var(--ink-l);margin-bottom:4px"><a style="color:var(--gold);text-decoration:none;cursor:pointer">← Mis piezas</a></div>
+          <div class="ph1">Nueva pieza</div>
+        </div>
+        <div class="pacts">
+          <button class="pbtn pbtn-s">Guardar borrador</button>
+          <button class="pbtn pbtn-p">Enviar a revisión →</button>
+        </div>
+      </div>
+      <!-- Step indicator -->
+      <div style="display:flex;gap:0;margin-bottom:24px;border-bottom:1px solid var(--bd);padding-bottom:0">
+        <div style="padding:10px 20px;font-size:12px;font-weight:500;color:var(--ink);border-bottom:2px solid var(--gold);cursor:pointer">1. Información</div>
+        <div style="padding:10px 20px;font-size:12px;color:var(--ink-m);border-bottom:2px solid transparent;cursor:pointer">2. Variantes y precio</div>
+        <div style="padding:10px 20px;font-size:12px;color:var(--ink-m);border-bottom:2px solid transparent;cursor:pointer">3. Multimedia</div>
+        <div style="padding:10px 20px;font-size:12px;color:var(--ink-m);border-bottom:2px solid transparent;cursor:pointer">4. Tags y SEO</div>
+      </div>
+      <!-- Step 1: Información básica (activo) -->
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:22px;margin-bottom:14px">
+        <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--bd)">Información básica</div>
+        <div class="col" style="gap:14px">
+          <div class="f-group"><div class="f-lbl">Título de la pieza <span style="color:var(--err)">*</span></div><input class="f-inp focus" value="Collar de plata 925 con cuarzo rosa"></div>
+          <div class="f-grid">
+            <div class="f-group"><div class="f-lbl">Categoría <span style="color:var(--err)">*</span></div><select class="f-inp"><option>Collares</option><option>Anillos</option><option>Pendientes</option><option>Pulseras</option><option>Arte decorativo</option></select></div>
+            <div class="f-group"><div class="f-lbl">Tipo de pieza <span style="color:var(--err)">*</span></div><select class="f-inp"><option>Joyería en serie</option><option>Joyería única</option><option>Arte decorativo</option></select></div>
+          </div>
+          <div class="f-group">
+            <div class="f-lbl">Descripción</div>
+            <textarea class="f-inp" rows="4" style="resize:vertical">Collar forjado a mano en plata 925 con cuarzo rosa natural. Cada pieza es irrepetible debido a las variaciones naturales de la piedra. Largo de cadena ajustable entre 42 y 48 cm.</textarea>
+            <div style="font-size:11px;color:var(--ink-l);text-align:right;margin-top:3px">186 / 2000 caracteres</div>
+          </div>
+          <div style="display:flex;align-items:center;gap:14px;padding:12px;background:var(--sf);border-radius:8px;border:1px solid var(--bd)">
+            <div>
+              <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px">¿Es una pieza única?</div>
+              <div style="font-size:12px;color:var(--ink-l)">Si está activado, el stock máximo será 1 y pasará a "Vendida" automáticamente al venderse.</div>
+            </div>
+            <div style="margin-left:auto;width:38px;height:22px;background:var(--bd);border-radius:11px;position:relative;cursor:pointer;flex-shrink:0"><div style="width:18px;height:18px;border-radius:50%;background:var(--white);position:absolute;top:2px;left:2px;transition:left .15s"></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Step 2: Precio -->
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:22px;margin-bottom:14px">
+        <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--bd)">Precio base y variantes</div>
+        <div class="f-grid" style="margin-bottom:16px">
+          <div class="f-group"><div class="f-lbl">Precio base <span style="color:var(--err)">*</span></div><div style="position:relative"><span style="position:absolute;left:12px;top:50%;transform:translateY(-50%);font-size:13px;color:var(--ink-m)">$</span><input class="f-inp" style="padding-left:22px" value="95.000"></div></div>
+          <div class="f-group"><div class="f-lbl">Moneda</div><select class="f-inp"><option>CLP — Peso chileno</option><option>USD — Dólar</option></select></div>
+        </div>
+        <!-- Variants table -->
+        <div style="font-size:12px;font-weight:500;color:var(--ink-m);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between">
+          <span>Variantes (opcional)</span>
+          <button style="font-size:11px;background:var(--sf);border:1px solid var(--bd);padding:5px 10px;border-radius:5px;cursor:pointer;font-family:var(--sans);color:var(--ink-m)">+ Agregar variante</button>
+        </div>
+        <table class="tbl" style="font-size:12px">
+          <tr><th>Talla</th><th>Material</th><th>Color</th><th>Piedras</th><th>+/– Precio</th><th>Stock</th><th></th></tr>
+          <tr><td><input style="border:1px solid var(--bd);border-radius:4px;padding:4px 7px;width:60px;font-size:12px;font-family:var(--sans)" value="Única"></td><td><input style="border:1px solid var(--bd);border-radius:4px;padding:4px 7px;width:90px;font-size:12px;font-family:var(--sans)" value="Plata 925"></td><td><input style="border:1px solid var(--bd);border-radius:4px;padding:4px 7px;width:70px;font-size:12px;font-family:var(--sans)" value="—"></td><td><input style="border:1px solid var(--bd);border-radius:4px;padding:4px 7px;width:80px;font-size:12px;font-family:var(--sans)" value="Cuarzo rosa"></td><td><input style="border:1px solid var(--bd);border-radius:4px;padding:4px 7px;width:70px;font-size:12px;font-family:var(--sans)" value="$0"></td><td><input style="border:1px solid var(--bd);border-radius:4px;padding:4px 7px;width:50px;font-size:12px;font-family:var(--sans)" value="3"></td><td style="color:var(--err);cursor:pointer;font-size:14px">✕</td></tr>
+          <tr><td><input style="border:1px solid var(--bd);border-radius:4px;padding:4px 7px;width:60px;font-size:12px;font-family:var(--sans)" value="Única"></td><td><input style="border:1px solid var(--bd);border-radius:4px;padding:4px 7px;width:90px;font-size:12px;font-family:var(--sans)" value="Oro 18k"></td><td><input style="border:1px solid var(--bd);border-radius:4px;padding:4px 7px;width:70px;font-size:12px;font-family:var(--sans)" value="—"></td><td><input style="border:1px solid var(--bd);border-radius:4px;padding:4px 7px;width:80px;font-size:12px;font-family:var(--sans)" value="Cuarzo rosa"></td><td><input style="border:1px solid var(--bd);border-radius:4px;padding:4px 7px;width:70px;font-size:12px;font-family:var(--sans)" value="+$35.000"></td><td><input style="border:1px solid var(--bd);border-radius:4px;padding:4px 7px;width:50px;font-size:12px;font-family:var(--sans)" value="1"></td><td style="color:var(--err);cursor:pointer;font-size:14px">✕</td></tr>
+        </table>
+      </div>
+      <!-- Step 3: Multimedia -->
+      <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:22px">
+        <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--bd)">Multimedia (fotos, video y modelo 3D)</div>
+        <!-- Photos -->
+        <div class="f-lbl" style="margin-bottom:10px">Fotos <span style="font-weight:400;color:var(--ink-l)">(3 de 10 · arrastra para reordenar · primera = portada)</span></div>
+        <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap">
+          <div style="width:90px;height:90px;background:var(--gold-l);border:2px solid var(--gold);border-radius:7px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:move">
+            <div style="font-family:var(--serif);font-size:30px;color:var(--bd)">◎</div>
+            <div style="position:absolute;top:4px;left:4px;background:var(--gold);color:var(--white);font-size:9px;padding:2px 5px;border-radius:3px">portada</div>
+            <div style="position:absolute;top:4px;right:4px;background:rgba(26,23,20,.6);color:var(--white);font-size:12px;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">✕</div>
+          </div>
+          <div style="width:90px;height:90px;background:var(--sf);border:1px solid var(--bd);border-radius:7px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:move">
+            <div style="font-family:var(--serif);font-size:30px;color:var(--bd)">◎</div>
+            <div style="position:absolute;top:4px;right:4px;background:rgba(26,23,20,.6);color:var(--white);font-size:12px;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">✕</div>
+          </div>
+          <div style="width:90px;height:90px;background:var(--sf);border:1px solid var(--bd);border-radius:7px;position:relative;overflow:hidden;display:flex;align-items:center;justify-content:center;cursor:move">
+            <div style="font-family:var(--serif);font-size:30px;color:var(--bd)">◎</div>
+            <div style="position:absolute;top:4px;right:4px;background:rgba(26,23,20,.6);color:var(--white);font-size:12px;width:18px;height:18px;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer">✕</div>
+          </div>
+          <div style="width:90px;height:90px;border:2px dashed var(--bd);border-radius:7px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;color:var(--ink-l);font-size:11px;gap:4px">
+            <div style="font-size:22px">+</div>Agregar foto
+          </div>
+        </div>
+        <!-- Video -->
+        <div class="f-lbl" style="margin-bottom:10px">Video <span style="font-weight:400;color:var(--ink-l)">(máx. 1 · MP4 o MOV · máx. 200MB)</span></div>
+        <div style="border:2px dashed var(--bd);border-radius:8px;padding:20px;text-align:center;margin-bottom:16px;cursor:pointer">
+          <div style="font-size:24px;color:var(--bd);margin-bottom:6px">▶</div>
+          <div style="font-size:13px;color:var(--ink-m);margin-bottom:4px">Arrastra un video aquí o <span style="color:var(--gold)">selecciona archivo</span></div>
+          <div style="font-size:11px;color:var(--ink-l)">Ideal: video 360° o detalle de la pieza · Máx. 200MB</div>
+        </div>
+        <!-- 3D Model -->
+        <div class="f-lbl" style="margin-bottom:10px">Modelo 3D <span style="font-weight:400;color:var(--ink-l)">(máx. 1 · formato .glb / .gltf · máx. 50MB)</span></div>
+        <div style="border:2px dashed var(--bd);border-radius:8px;padding:20px;text-align:center;cursor:pointer">
+          <div style="font-size:24px;color:var(--bd);margin-bottom:6px">⟐</div>
+          <div style="font-size:13px;color:var(--ink-m);margin-bottom:4px">Arrastra el modelo 3D aquí o <span style="color:var(--gold)">selecciona archivo</span></div>
+          <div style="font-size:11px;color:var(--ink-l)">Formatos aceptados: .glb · .gltf · Máx. 50MB</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LISTADO PÚBLICO DE ENCARGOS ══ -->
+<div class="sc" id="s-encargos" style="background:var(--cream)">
+  <header class="hdr"><div class="logo">C<em>r</em>isol</div><nav class="nav"><a href="#">Catálogo</a><a href="#">Artesanos</a><a href="#" class="on">Encargos</a><a href="#">Blog</a></nav><div class="acts"><div class="btn-sm">ES | CLP ▾</div><div class="btn-sm">Mi cuenta</div><div class="btn-dark">Carrito <div class="cart-dot">1</div></div></div></header>
+  <!-- Hero encargos -->
+  <div style="background:var(--ink);padding:32px 36px;display:flex;align-items:center;justify-content:space-between">
+    <div>
+      <div style="font-size:10px;color:var(--gold);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px">Piezas por encargo</div>
+      <div style="font-family:var(--serif);font-size:26px;color:var(--white);font-weight:300;margin-bottom:6px">Diseña tu pieza única</div>
+      <div style="font-size:13px;color:rgba(255,255,255,.45);max-width:480px">Reserva un slot con uno de nuestros artesanos y crea juntos la pieza exacta que tienes en mente.</div>
+    </div>
+    <div style="font-size:13px;color:rgba(255,255,255,.35)">6 slots disponibles ahora</div>
+  </div>
+  <!-- Filters bar -->
+  <div style="background:var(--white);border-bottom:1px solid var(--bd);padding:14px 36px;display:flex;gap:12px;align-items:center">
+    <span style="font-size:12px;color:var(--ink-m)">Filtrar:</span>
+    <select style="border:1px solid var(--bd);padding:6px 10px;font-size:12px;border-radius:5px;background:var(--white);font-family:var(--sans);color:var(--ink)"><option>Todos los artesanos</option><option>María Silva</option><option>Carlos Rojas</option></select>
+    <select style="border:1px solid var(--bd);padding:6px 10px;font-size:12px;border-radius:5px;background:var(--white);font-family:var(--sans);color:var(--ink)"><option>Cualquier precio</option><option>Hasta $100.000</option><option>$100.000 – $300.000</option></select>
+    <select style="border:1px solid var(--bd);padding:6px 10px;font-size:12px;border-radius:5px;background:var(--white);font-family:var(--sans);color:var(--ink)"><option>Cualquier plazo</option><option>Hasta 15 días</option><option>Hasta 30 días</option></select>
+    <span style="margin-left:auto;font-size:12px;color:var(--ink-l)">6 slots disponibles</span>
+  </div>
+  <!-- Slots grid -->
+  <div style="padding:28px 36px;display:grid;grid-template-columns:repeat(2,1fr);gap:18px;max-width:1000px">
+    <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:20px">
+      <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px">
+        <div class="ava" style="width:44px;height:44px;font-size:18px;flex-shrink:0">M</div>
+        <div style="flex:1"><div style="font-family:var(--serif);font-size:16px;color:var(--ink);margin-bottom:2px">Anillo personalizado con piedra</div><div style="font-size:12px;color:var(--gold)">María Silva</div></div>
+        <div style="text-align:right"><div style="font-family:var(--serif);font-size:18px;color:var(--ink)">$120.000</div><div style="font-size:10px;color:var(--ink-l)">precio base</div></div>
+      </div>
+      <div style="font-size:13px;color:var(--ink-m);line-height:1.6;margin-bottom:14px">Diseño exclusivo en oro o plata con piedra natural a elección. Incluye 2 revisiones de diseño antes de la producción.</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+        <span style="font-size:11px;background:var(--sf);padding:3px 9px;border-radius:20px;color:var(--ink-m);border:1px solid var(--bd)">~21 días</span>
+        <span style="font-size:11px;background:var(--sf);padding:3px 9px;border-radius:20px;color:var(--ink-m);border:1px solid var(--bd)">Oro 18k / Plata 925</span>
+        <span style="font-size:11px;background:var(--sf);padding:3px 9px;border-radius:20px;color:var(--ink-m);border:1px solid var(--bd)">Con piedras</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:12px;color:var(--ok);font-weight:500">✓ 2 slots disponibles</div>
+        <div style="background:var(--ink);color:var(--white);padding:8px 18px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:500">Reservar slot</div>
+      </div>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:20px">
+      <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px">
+        <div class="ava" style="width:44px;height:44px;font-size:18px;flex-shrink:0;background:#E8F0EE;color:#3B6D60">C</div>
+        <div style="flex:1"><div style="font-family:var(--serif);font-size:16px;color:var(--ink);margin-bottom:2px">Collar o pulsera personalizada</div><div style="font-size:12px;color:var(--gold)">Carlos Rojas</div></div>
+        <div style="text-align:right"><div style="font-family:var(--serif);font-size:18px;color:var(--ink)">$85.000</div><div style="font-size:10px;color:var(--ink-l)">precio base</div></div>
+      </div>
+      <div style="font-size:13px;color:var(--ink-m);line-height:1.6;margin-bottom:14px">Plata 925 con piedras semi-preciosas chilenas. Especialidad en lapislázuli y cuarzo ahumado local.</div>
+      <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+        <span style="font-size:11px;background:var(--sf);padding:3px 9px;border-radius:20px;color:var(--ink-m);border:1px solid var(--bd)">~15 días</span>
+        <span style="font-size:11px;background:var(--sf);padding:3px 9px;border-radius:20px;color:var(--ink-m);border:1px solid var(--bd)">Plata 925</span>
+        <span style="font-size:11px;background:var(--sf);padding:3px 9px;border-radius:20px;color:var(--ink-m);border:1px solid var(--bd)">Piedras chilenas</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:12px;color:var(--ok);font-weight:500">✓ 3 slots disponibles</div>
+        <div style="background:var(--ink);color:var(--white);padding:8px 18px;border-radius:6px;font-size:12px;cursor:pointer;font-weight:500">Reservar slot</div>
+      </div>
+    </div>
+    <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:20px;opacity:.6">
+      <div style="display:flex;gap:12px;align-items:flex-start;margin-bottom:14px">
+        <div class="ava" style="width:44px;height:44px;font-size:18px;flex-shrink:0;background:#EEE8F0;color:#6B3B8A">A</div>
+        <div style="flex:1"><div style="font-family:var(--serif);font-size:16px;color:var(--ink);margin-bottom:2px">Escultura decorativa en bronce</div><div style="font-size:12px;color:var(--gold)">Ana Fuentes</div></div>
+        <div style="text-align:right"><div style="font-family:var(--serif);font-size:18px;color:var(--ink)">$280.000</div><div style="font-size:10px;color:var(--ink-l)">precio base</div></div>
+      </div>
+      <div style="font-size:13px;color:var(--ink-m);line-height:1.6;margin-bottom:14px">Piezas decorativas únicas en bronce o cobre. Técnica de cincelado y repoussé tradicional.</div>
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div style="font-size:12px;color:var(--err);font-weight:500">✕ Sin slots disponibles</div>
+        <div style="border:1px solid var(--bd);color:var(--ink-m);padding:8px 18px;border-radius:6px;font-size:12px;cursor:pointer">Avisar cuando haya slots</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ MIS PEDIDOS (LISTADO + DETALLE) ══ -->
+<div class="sc" id="s-orders" style="background:var(--cream)">
+  <header class="hdr"><div class="logo">C<em>r</em>isol</div><nav class="nav"><a href="#">Catálogo</a><a href="#">Artesanos</a><a href="#">Encargos</a><a href="#">Blog</a></nav><div class="acts"><div class="btn-sm">ES | CLP ▾</div><div class="btn-sm">Mi cuenta ▾</div><div class="btn-dark">Carrito <div class="cart-dot">0</div></div></div></header>
+  <div style="display:flex">
+    <!-- Account sidebar -->
+    <div style="width:200px;flex-shrink:0;background:var(--white);border-right:1px solid var(--bd);min-height:calc(100vh - 104px);padding:20px 0;position:sticky;top:104px">
+      <div style="padding:0 18px 14px;border-bottom:1px solid var(--bd);margin-bottom:8px"><div style="font-family:var(--serif);font-size:15px;color:var(--ink)">Ana Torres</div><div style="font-size:11px;color:var(--ink-l)">ana@ejemplo.cl</div></div>
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 18px;font-size:13px;color:var(--white);background:var(--ink);border-left:2px solid var(--gold);cursor:pointer">📦 Mis pedidos</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 18px;font-size:13px;color:var(--ink-m);cursor:pointer">✦ Mis puntos</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 18px;font-size:13px;color:var(--ink-m);cursor:pointer">♡ Favoritos</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 18px;font-size:13px;color:var(--ink-m);cursor:pointer">📍 Mis direcciones</div>
+      <div style="display:flex;align-items:center;gap:8px;padding:8px 18px;font-size:13px;color:var(--ink-m);cursor:pointer">⚙ Mi perfil</div>
+    </div>
+    <!-- Main content: list + detail side by side -->
+    <div style="flex:1;display:grid;grid-template-columns:320px 1fr">
+      <!-- Orders list -->
+      <div style="border-right:1px solid var(--bd);padding:20px 0">
+        <div style="padding:0 18px 14px;border-bottom:1px solid var(--bd);margin-bottom:4px">
+          <div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:10px">Mis pedidos (7)</div>
+          <select style="width:100%;border:1px solid var(--bd);padding:7px 10px;font-size:12px;border-radius:5px;background:var(--white);font-family:var(--sans);color:var(--ink)"><option>Todos los estados</option><option>En preparación</option><option>Enviados</option><option>Entregados</option></select>
+        </div>
+        <!-- Order row - active -->
+        <div style="padding:14px 18px;border-left:3px solid var(--gold);background:var(--gold-l);cursor:pointer">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><div style="font-size:12px;font-weight:500;color:var(--ink)">#1047</div><span class="stag s-prep">En preparación</span></div>
+          <div style="font-size:12px;color:var(--ink-m);margin-bottom:3px">Anillo solitario + Pulsera filigrana</div>
+          <div style="font-size:11px;color:var(--ink-l)">11 abr 2026 · $369.490</div>
+        </div>
+        <!-- Order rows -->
+        <div style="padding:14px 18px;border-left:3px solid transparent;border-bottom:1px solid var(--bd);cursor:pointer">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><div style="font-size:12px;font-weight:500;color:var(--ink)">#1031</div><span class="stag s-ship">Enviado</span></div>
+          <div style="font-size:12px;color:var(--ink-m);margin-bottom:3px">Collar plata 925 con cuarzo</div>
+          <div style="font-size:11px;color:var(--ink-l)">1 abr 2026 · $95.000</div>
+        </div>
+        <div style="padding:14px 18px;border-left:3px solid transparent;border-bottom:1px solid var(--bd);cursor:pointer">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><div style="font-size:12px;font-weight:500;color:var(--ink)">#1018</div><span class="stag s-paid">Entregado</span></div>
+          <div style="font-size:12px;color:var(--ink-m);margin-bottom:3px">Pendientes bronce cincelados</div>
+          <div style="font-size:11px;color:var(--ink-l)">15 mar 2026 · $68.000</div>
+        </div>
+        <div style="padding:14px 18px;border-left:3px solid transparent;cursor:pointer">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px"><div style="font-size:12px;font-weight:500;color:var(--ink)">#0998</div><span class="stag s-paid">Entregado</span></div>
+          <div style="font-size:12px;color:var(--ink-m);margin-bottom:3px">Anillo plata 925 serie forja</div>
+          <div style="font-size:11px;color:var(--ink-l)">2 feb 2026 · $45.000</div>
+        </div>
+      </div>
+      <!-- Order detail -->
+      <div style="padding:24px 28px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
+          <div><div style="font-size:14px;font-weight:500;color:var(--ink)">Pedido #1047</div><div style="font-size:12px;color:var(--ink-l)">11 de abril 2026 · María Silva</div></div>
+          <span class="stag s-prep">En preparación</span>
+        </div>
+        <!-- Tracking steps -->
+        <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:18px;margin-bottom:16px">
+          <div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:14px">Estado del envío</div>
+          <div style="display:flex;flex-direction:column;gap:0">
+            <div style="display:flex;gap:12px;align-items:flex-start;padding-bottom:14px;position:relative">
+              <div style="width:20px;height:20px;border-radius:50%;background:var(--ok);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;position:relative;z-index:1">✓</div>
+              <div style="position:absolute;left:9px;top:20px;bottom:-14px;width:2px;background:var(--bd)"></div>
+              <div><div style="font-size:13px;font-weight:500;color:var(--ink)">Pago confirmado</div><div style="font-size:11px;color:var(--ink-l)">11 abr · 15:32h</div></div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start;padding-bottom:14px;position:relative">
+              <div style="width:20px;height:20px;border-radius:50%;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;position:relative;z-index:1">→</div>
+              <div style="position:absolute;left:9px;top:20px;bottom:-14px;width:2px;background:var(--bd)"></div>
+              <div><div style="font-size:13px;font-weight:500;color:var(--ink)">En preparación</div><div style="font-size:11px;color:var(--ink-l)">María Silva está trabajando en tu pedido</div></div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start;padding-bottom:14px;position:relative;opacity:.4">
+              <div style="width:20px;height:20px;border-radius:50%;background:var(--bd);color:var(--ink-l);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0;position:relative;z-index:1">3</div>
+              <div style="position:absolute;left:9px;top:20px;bottom:-14px;width:2px;background:var(--bd)"></div>
+              <div><div style="font-size:13px;color:var(--ink-m)">Enviado</div></div>
+            </div>
+            <div style="display:flex;gap:12px;align-items:flex-start;opacity:.4">
+              <div style="width:20px;height:20px;border-radius:50%;background:var(--bd);color:var(--ink-l);display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0">4</div>
+              <div><div style="font-size:13px;color:var(--ink-m)">Entregado</div></div>
+            </div>
+          </div>
+        </div>
+        <!-- Items -->
+        <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:18px;margin-bottom:16px">
+          <div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:12px">Piezas del pedido</div>
+          <div style="display:flex;gap:12px;margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--bd)">
+            <div style="width:52px;height:52px;background:var(--sf);border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:22px;color:var(--bd);flex-shrink:0">◎</div>
+            <div style="flex:1"><div style="font-size:13px;color:var(--ink)">Anillo solitario oro 18k · Talla 15</div><div style="font-size:12px;color:var(--ink-l);margin-top:2px">María Silva</div></div>
+            <div style="font-size:13px;font-weight:500">$185.000</div>
+          </div>
+          <div style="display:flex;gap:12px">
+            <div style="width:52px;height:52px;background:#F5EDF0;border-radius:6px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:22px;color:var(--bd);flex-shrink:0">◈</div>
+            <div style="flex:1"><div style="font-size:13px;color:var(--ink)">Pulsera filigrana oro 14k</div><div style="font-size:12px;color:var(--ink-l);margin-top:2px">María Silva</div></div>
+            <div style="font-size:13px;font-weight:500">$220.000</div>
+          </div>
+        </div>
+        <div style="display:flex;justify-content:space-between;font-size:13px;color:var(--ink-m);margin-bottom:6px"><span>Total pagado</span><span style="color:var(--ink);font-weight:500">$369.490</span></div>
+        <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--ink-l)"><span>Envío a</span><span>Av. Providencia 1234, Santiago</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ REVISAR PIEZA — ADMIN ══ -->
+<div class="sc" id="s-review" style="background:var(--cream)">
+  <div class="pw">
+    <div class="psb" style="background:#141210">
+      <div class="psb-logo" style="font-size:14px">Crisol<div style="font-size:8px;color:rgba(255,255,255,.2);letter-spacing:.1em;margin-top:1px">ADMIN</div></div>
+      <div class="psb-nav">
+        <div class="psb-lbl">Catálogo</div>
+        <div class="pni on">◈ Cola de revisión <span class="badge">4</span></div>
+        <div class="psb-lbl">Comercio</div>
+        <div class="pni">📦 Pedidos</div>
+        <div class="psb-lbl">Reportes</div>
+        <div class="pni">📊 Ventas</div>
+      </div>
+    </div>
+    <div class="pmain" style="padding:0">
+      <!-- Top bar -->
+      <div style="padding:14px 28px;border-bottom:1px solid var(--bd);background:var(--white);display:flex;align-items:center;gap:16px">
+        <a style="font-size:12px;color:var(--gold);text-decoration:none;cursor:pointer">← Cola de revisión</a>
+        <div style="font-size:14px;font-weight:500;color:var(--ink)">Revisando pieza — Carlos Rojas</div>
+        <div style="margin-left:auto;display:flex;gap:10px">
+          <button style="background:var(--white);color:var(--err);border:1.5px solid var(--err);padding:8px 18px;border-radius:6px;font-size:13px;cursor:pointer;font-family:var(--sans);font-weight:500">Rechazar</button>
+          <button style="background:var(--ok);color:var(--white);border:none;padding:8px 20px;border-radius:6px;font-size:13px;cursor:pointer;font-family:var(--sans);font-weight:500">✓ Aprobar y publicar</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 320px;height:calc(100vh - 108px)">
+        <!-- Product preview (left) -->
+        <div style="padding:24px 28px;overflow-y:auto">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-bottom:20px">
+            <!-- Gallery -->
+            <div>
+              <div style="background:var(--white);border:1px solid var(--bd);border-radius:8px;height:260px;display:flex;align-items:center;justify-content:center;margin-bottom:10px;position:relative">
+                <div style="font-family:var(--serif);font-size:80px;color:var(--bd)">◎</div>
+                <div style="position:absolute;bottom:10px;right:10px;background:var(--ink);color:var(--white);font-size:11px;padding:5px 12px;border-radius:5px;cursor:pointer">⟐ Ver 3D</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <div style="width:54px;height:54px;background:var(--gold-l);border:2px solid var(--gold);border-radius:5px;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:18px;color:var(--bd)">◎</div>
+                <div style="width:54px;height:54px;background:var(--sf);border:1px solid var(--bd);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-family:var(--serif);font-size:18px;color:var(--bd)">◎</div>
+                <div style="width:54px;height:54px;background:var(--sf);border:1px solid var(--bd);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--ink-m)">▶ video</div>
+                <div style="width:54px;height:54px;background:var(--ink);border:1px solid var(--bd);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:10px;color:var(--white)">3D</div>
+                <div style="font-size:11px;color:var(--ink-l);display:flex;align-items:center">+4</div>
+              </div>
+            </div>
+            <!-- Info -->
+            <div>
+              <div style="font-size:10px;color:var(--gold);letter-spacing:.07em;text-transform:uppercase;margin-bottom:4px">Collares · Pieza en serie</div>
+              <div style="font-family:var(--serif);font-size:20px;color:var(--ink);margin-bottom:10px">Collar de plata 925 con turquesa</div>
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;padding:8px 10px;background:var(--sf);border-radius:6px">
+                <div class="ava" style="width:28px;height:28px;font-size:11px;background:#E8F0EE;color:#3B6D60">C</div>
+                <div style="font-size:12px;color:var(--ink)">Carlos Rojas</div>
+              </div>
+              <div style="font-family:var(--serif);font-size:22px;color:var(--ink);margin-bottom:10px">$95.000 CLP</div>
+              <div style="font-size:13px;color:var(--ink-m);line-height:1.6;margin-bottom:10px">Collar artesanal en plata 925 con turquesa natural. La piedra es importada de la zona norte de Chile y cada una tiene variaciones únicas de color.</div>
+              <div style="display:flex;gap:6px;flex-wrap:wrap">
+                <span style="font-size:11px;background:var(--sf);padding:3px 9px;border-radius:20px;color:var(--ink-m);border:1px solid var(--bd)">Plata 925</span>
+                <span style="font-size:11px;background:var(--sf);padding:3px 9px;border-radius:20px;color:var(--ink-m);border:1px solid var(--bd)">Forjado a mano</span>
+                <span style="font-size:11px;background:var(--sf);padding:3px 9px;border-radius:20px;color:var(--ink-m);border:1px solid var(--bd)">Regalo</span>
+              </div>
+            </div>
+          </div>
+          <!-- Variants -->
+          <div style="background:var(--white);border:1px solid var(--bd);border-radius:8px;padding:14px">
+            <div style="font-size:12px;font-weight:500;color:var(--ink);margin-bottom:10px">Variantes declaradas</div>
+            <table class="tbl"><tr><th>Material</th><th>Piedra</th><th>+/– Precio</th><th>Stock</th></tr><tr><td>Plata 925</td><td>Turquesa</td><td>$0</td><td>5</td></tr><tr><td>Plata 925</td><td>Lapis lázuli</td><td>+$10.000</td><td>3</td></tr></table>
+          </div>
+        </div>
+        <!-- Review panel (right) -->
+        <div style="border-left:1px solid var(--bd);padding:24px;background:var(--white);overflow-y:auto">
+          <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:16px">Revisión editorial</div>
+          <div style="display:flex;flex-direction:column;gap:10px;margin-bottom:18px">
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px"><span style="color:var(--ink-m)">Fotos subidas</span><span style="color:var(--ok);font-weight:500">8 / 10 ✓</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px"><span style="color:var(--ink-m)">Video</span><span style="color:var(--ok);font-weight:500">1 ✓</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px"><span style="color:var(--ink-m)">Modelo 3D</span><span style="color:var(--ok);font-weight:500">GLB 2.4MB ✓</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px"><span style="color:var(--ink-m)">Descripción</span><span style="color:var(--ok);font-weight:500">186 chars ✓</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px"><span style="color:var(--ink-m)">Variantes</span><span style="color:var(--ok);font-weight:500">2 ✓</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:13px"><span style="color:var(--ink-m)">Tags</span><span style="color:var(--gold-d);font-weight:500">3 (mín. 2) ✓</span></div>
+          </div>
+          <div class="sep"></div>
+          <div style="font-size:12px;font-weight:500;color:var(--ink);margin:14px 0 8px">Notas para el artesano</div>
+          <div style="font-size:12px;color:var(--ink-l);margin-bottom:8px">Solo requerido al rechazar. El artesano verá este mensaje.</div>
+          <textarea class="f-inp" rows="4" style="resize:none;font-size:12px" placeholder="Ej: Las fotos no muestran el cierre del collar. Por favor agrega al menos 2 fotos del detalle del cierre y el largo de cadena."></textarea>
+          <div class="sep"></div>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:14px">
+            <button style="width:100%;background:var(--ok);color:var(--white);border:none;padding:11px;border-radius:7px;font-size:13px;cursor:pointer;font-family:var(--sans);font-weight:500">✓ Aprobar y publicar</button>
+            <button style="width:100%;background:var(--white);color:var(--err);border:1.5px solid var(--err);padding:11px;border-radius:7px;font-size:13px;cursor:pointer;font-family:var(--sans);font-weight:500">Rechazar con notas</button>
+          </div>
+          <div style="margin-top:14px;padding:10px;background:var(--sf);border-radius:6px;font-size:11px;color:var(--ink-l);line-height:1.6">Al aprobar, la pieza se publicará inmediatamente y se regenerará la página ISR del catálogo. El artesano recibirá notificación por email y push.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ ONBOARDING STRIPE CONNECT ══ -->
+<div class="sc" id="s-stripe" style="background:var(--cream)">
+  <div class="pw">
+    <div class="psb">
+      <div class="psb-logo">Crisol</div>
+      <div class="psb-user"><div class="ava">M</div><div><div class="psb-nm">María Silva</div><div class="psb-role">Artesana</div></div></div>
+      <div class="psb-nav">
+        <div class="psb-lbl">General</div>
+        <div class="pni on">⊞ Dashboard</div>
+        <div class="pni">◈ Mis piezas</div>
+        <div class="pni">$ Balance</div>
+      </div>
+    </div>
+    <div class="pmain">
+      <!-- Warning banner (visible cuando stripe NO está activado) -->
+      <div style="background:#FFF3CD;border:1px solid #F0AD00;border-radius:8px;padding:14px 18px;margin-bottom:20px;display:flex;align-items:center;gap:14px">
+        <div style="font-size:22px;flex-shrink:0">⚠</div>
+        <div style="flex:1">
+          <div style="font-size:13px;font-weight:500;color:#7A5300;margin-bottom:2px">Cuenta de pagos no configurada</div>
+          <div style="font-size:12px;color:#9A6800">Para recibir pagos de tus ventas necesitas conectar tu cuenta de Stripe. Hasta que no lo hagas, tus piezas no podrán publicarse.</div>
+        </div>
+        <div style="background:#7A5300;color:var(--white);padding:8px 16px;border-radius:6px;font-size:12px;cursor:pointer;white-space:nowrap;font-weight:500">Configurar ahora →</div>
+      </div>
+      <!-- Onboarding steps flow -->
+      <div style="max-width:580px;margin:0 auto">
+        <div style="font-family:var(--serif);font-size:24px;font-weight:400;color:var(--ink);margin-bottom:6px;text-align:center">Configura tu cuenta de pagos</div>
+        <div style="font-size:13px;color:var(--ink-m);text-align:center;margin-bottom:32px">Necesitas una cuenta Stripe para recibir el pago de tus ventas automáticamente.</div>
+        <!-- Steps -->
+        <div style="display:flex;flex-direction:column;gap:12px;margin-bottom:28px">
+          <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:18px;display:flex;gap:14px;align-items:flex-start">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--ok);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">✓</div>
+            <div>
+              <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px">1. Registrarse en Crisol</div>
+              <div style="font-size:12px;color:var(--ink-l)">Tu perfil de artesana ya está creado.</div>
+            </div>
+          </div>
+          <div style="background:var(--white);border:2px solid var(--gold);border-radius:10px;padding:18px;display:flex;gap:14px;align-items:flex-start">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--white);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;font-weight:600">2</div>
+            <div style="flex:1">
+              <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px">Conectar cuenta Stripe</div>
+              <div style="font-size:12px;color:var(--ink-m);margin-bottom:12px;line-height:1.6">Serás redirigida al formulario de Stripe para verificar tu identidad y datos bancarios. Toma ~5 minutos. Crisol nunca accede a tus datos bancarios directamente.</div>
+              <div style="display:flex;gap:10px;align-items:center">
+                <div style="background:var(--ink);color:var(--white);padding:10px 20px;border-radius:6px;font-size:13px;cursor:pointer;font-weight:500;display:flex;align-items:center;gap:8px"><span style="font-size:16px">S</span>Ir a Stripe →</div>
+                <div style="font-size:11px;color:var(--ink-l)">Abrirá una nueva pestaña</div>
+              </div>
+            </div>
+          </div>
+          <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:18px;display:flex;gap:14px;align-items:flex-start;opacity:.5">
+            <div style="width:32px;height:32px;border-radius:50%;background:var(--bd);color:var(--ink-l);display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">3</div>
+            <div>
+              <div style="font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px">Publicar tu primera pieza</div>
+              <div style="font-size:12px;color:var(--ink-l)">Una vez verificada tu cuenta, podrás subir piezas y empezar a vender.</div>
+            </div>
+          </div>
+        </div>
+        <!-- Estado: volviendo de Stripe (estado pendiente) -->
+        <div style="background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:18px;text-align:center">
+          <div style="font-size:12px;color:var(--ink-l);margin-bottom:8px">¿Ya completaste el formulario de Stripe?</div>
+          <button style="font-size:12px;background:var(--sf);border:1px solid var(--bd);padding:8px 18px;border-radius:6px;cursor:pointer;font-family:var(--sans);color:var(--ink-m)">Verificar estado de mi cuenta</button>
+        </div>
+        <!-- Estado: Stripe activado (lo que ve cuando termina) -->
+        <div style="background:#EAF3DE;border:1px solid var(--ok);border-radius:10px;padding:18px;margin-top:12px;display:flex;align-items:center;gap:12px">
+          <div style="font-size:24px;color:var(--ok)">✓</div>
+          <div><div style="font-size:13px;font-weight:500;color:var(--ok)">Cuenta de pagos activada</div><div style="font-size:12px;color:#3B6D11">Recibirás el neto de cada venta automáticamente en tu cuenta bancaria.</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+function go(id, btn) {
+  document.querySelectorAll('.sc').forEach(s => s.classList.remove('on'));
+  document.querySelectorAll('.sb').forEach(b => b.classList.remove('on'));
+  document.getElementById('s-' + id).classList.add('on');
+  btn.classList.add('on');
+}
+// Price range slider
+const rMin = document.getElementById('rMin');
+const rMax = document.getElementById('rMax');
+const vMin = document.getElementById('vMin');
+const vMax = document.getElementById('vMax');
+const fill = document.querySelector('.range-fill');
+function fmt(v) { return '$' + parseInt(v).toLocaleString('es-CL'); }
+function updateRange() {
+  if (!rMin) return;
+  let lo = parseInt(rMin.value), hi = parseInt(rMax.value);
+  if (lo > hi) { let t = lo; lo = hi; hi = t; }
+  const pct1 = (lo / 1000000) * 100;
+  const pct2 = (hi / 1000000) * 100;
+  if(fill) { fill.style.left = pct1 + '%'; fill.style.width = (pct2 - pct1) + '%'; }
+  if(vMin) vMin.textContent = fmt(lo);
+  if(vMax) vMax.textContent = fmt(hi);
+}
+if(rMin) rMin.addEventListener('input', updateRange);
+if(rMax) rMax.addEventListener('input', updateRange);
+updateRange();
+</script>
+</body>
+</html>

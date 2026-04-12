@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crisol — Diagrama de Arquitectura</title>
+<style>
+  body { font-family: sans-serif; background: #f9f9f7; color: #3d3d3a; margin: 0; padding: 24px; }
+  h1 { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+  p  { font-size: 13px; color: #73726c; margin: 0 0 20px; }
+
+  .layer {
+    border: 1px solid #e0dfda; border-radius: 10px;
+    padding: 10px 12px 12px; margin-bottom: 4px; position: relative;
+  }
+  .layer-lbl {
+    font-size: 11px; font-weight: 600; letter-spacing: .05em; text-transform: uppercase;
+    color: #a8a79f; position: absolute; top: -9px; left: 12px;
+    background: #f9f9f7; padding: 0 6px;
+  }
+  .svc-row { display: flex; flex-wrap: wrap; gap: 7px; }
+  .sc {
+    font-size: 12px; padding: 5px 12px; border-radius: 20px;
+    border: 1px solid; cursor: pointer; transition: transform .12s;
+    user-select: none;
+  }
+  .sc:hover { transform: scale(1.05); }
+
+  .sc-purple { background: #eeedfe; border-color: #534ab7; color: #3c3489; }
+  .sc-teal   { background: #e1f5ee; border-color: #0f6e56; color: #085041; }
+  .sc-blue   { background: #e6f1fb; border-color: #185fa5; color: #0c447c; }
+  .sc-amber  { background: #faeeda; border-color: #ba7517; color: #633806; }
+  .sc-gray   { background: #f1efe8; border-color: #5f5e5a; color: #444441; }
+  .sc-coral  { background: #faece7; border-color: #993c1d; color: #712b13; }
+
+  .arr { text-align: center; font-size: 16px; color: #a8a79f; margin: 3px 0; line-height: 1; }
+
+  .dp {
+    margin-top: 10px; padding: 12px 14px;
+    background: #f1efe8;
+    border-left: 3px solid #b4b2a9;
+    font-size: 13px; display: none;
+  }
+  .dp-title { font-weight: 600; color: #2c2c2a; margin-bottom: 3px; }
+  .dp-role  { color: #5f5e5a; line-height: 1.5; }
+  .dp-tech  { font-size: 11px; margin-top: 6px; color: #888780; font-family: monospace; }
+
+  @media (prefers-color-scheme: dark) {
+    body { background: #1e1e1c; color: #c2c0b6; }
+    h1 { color: #e8e6dc; }
+    p { color: #9c9a92; }
+    .layer { border-color: #3a3a38; }
+    .layer-lbl { color: #5f5e5a; background: #1e1e1c; }
+    .sc-purple { background: #26215c; border-color: #afa9ec; color: #cecbf6; }
+    .sc-teal   { background: #04342c; border-color: #5dcaa5; color: #9fe1cb; }
+    .sc-blue   { background: #042c53; border-color: #85b7eb; color: #b5d4f4; }
+    .sc-amber  { background: #412402; border-color: #ef9f27; color: #fac775; }
+    .sc-gray   { background: #2c2c2a; border-color: #b4b2a9; color: #d3d1c7; }
+    .sc-coral  { background: #4a1b0c; border-color: #f0997b; color: #f5c4b3; }
+    .arr { color: #5f5e5a; }
+    .dp { background: #2a2a28; border-left-color: #5f5e5a; }
+    .dp-title { color: #e8e6dc; }
+    .dp-role  { color: #9c9a92; }
+    .dp-tech  { color: #5f5e5a; }
+  }
+</style>
+</head>
+<body>
+<h1>Crisol — Arquitectura del sistema</h1>
+<p>6 capas del sistema · haz clic en cualquier servicio para ver su rol y tecnología</p>
+
+<div class="layer">
+  <span class="layer-lbl">Cliente</span>
+  <div class="svc-row">
+    <div class="sc sc-purple" data-s="browser">Navegador web (responsive)</div>
+    <div class="sc sc-amber"  data-s="mv">model-viewer (visor 3D)</div>
+    <div class="sc sc-gray"   data-s="push">Web Push API</div>
+  </div>
+</div>
+
+<div class="arr">↕</div>
+
+<div class="layer">
+  <span class="layer-lbl">Edge &amp; Hosting</span>
+  <div class="svc-row">
+    <div class="sc sc-purple" data-s="vercel">Vercel</div>
+    <div class="sc sc-purple" data-s="edge">Edge Middleware</div>
+    <div class="sc sc-gray"   data-s="vanalytics">Vercel Analytics</div>
+    <div class="sc sc-gray"   data-s="cdn">CDN global</div>
+  </div>
+</div>
+
+<div class="arr">↕</div>
+
+<div class="layer">
+  <span class="layer-lbl">Aplicación — Next.js 14</span>
+  <div class="svc-row">
+    <div class="sc sc-purple" data-s="approuter">App Router SSR/SSG/ISR</div>
+    <div class="sc sc-purple" data-s="apiroutes">API Routes</div>
+    <div class="sc sc-purple" data-s="i18n">next-intl (i18n)</div>
+    <div class="sc sc-gray"   data-s="sitemap">next-sitemap</div>
+    <div class="sc sc-gray"   data-s="lhci">Lighthouse CI</div>
+  </div>
+</div>
+
+<div class="arr">↕</div>
+
+<div class="layer">
+  <span class="layer-lbl">Servicios núcleo</span>
+  <div class="svc-row">
+    <div class="sc sc-teal"  data-s="supabase">Supabase</div>
+    <div class="sc sc-blue"  data-s="stripe">Stripe Connect</div>
+    <div class="sc sc-blue"  data-s="coinbase">Coinbase Commerce</div>
+    <div class="sc sc-amber" data-s="cloudinary">Cloudinary</div>
+    <div class="sc sc-coral" data-s="resend">Resend</div>
+  </div>
+</div>
+
+<div class="arr">↕</div>
+
+<div class="layer">
+  <span class="layer-lbl">APIs externas — envíos</span>
+  <div class="svc-row">
+    <div class="sc sc-gray" data-s="chilexpress">Chilexpress</div>
+    <div class="sc sc-gray" data-s="starken">Starken</div>
+    <div class="sc sc-gray" data-s="dhl">DHL Express</div>
+    <div class="sc sc-gray" data-s="fedex">FedEx</div>
+  </div>
+</div>
+
+<div class="arr">↕</div>
+
+<div class="layer">
+  <span class="layer-lbl">Marketing &amp; SEO</span>
+  <div class="svc-row">
+    <div class="sc sc-gray" data-s="ga4">Google Analytics 4</div>
+    <div class="sc sc-gray" data-s="gsc">Search Console</div>
+    <div class="sc sc-gray" data-s="gbp">Google Business Profile</div>
+    <div class="sc sc-gray" data-s="pinterest">Pinterest Shopping</div>
+    <div class="sc sc-gray" data-s="instagram">Instagram Shopping</div>
+  </div>
+</div>
+
+<div class="dp" id="dp">
+  <div class="dp-title" id="dp-t"></div>
+  <div class="dp-role"  id="dp-r"></div>
+  <div class="dp-tech"  id="dp-tc"></div>
+</div>
+
+<script>
+const data = {
+  browser:    { t:'Navegador web', r:'Cliente único de la plataforma. Web 100% responsive, sin app nativa. Soporte ES2020+ en todos los navegadores modernos.', tc:'Chrome · Safari · Firefox · Edge' },
+  mv:         { t:'@google/model-viewer', r:'Renderiza modelos 3D de piezas embebido en la página de producto con rotación y zoom. WebXR-ready para AR futura.', tc:'Custom element <model-viewer> · GLB/GLTF · WebGL' },
+  push:       { t:'Web Push API', r:'Notificaciones push en el navegador del artesano (nuevos pedidos, encargos reservados) y del comprador (cambios de estado de envío).', tc:'Push API · Service Worker · Notification API' },
+  vercel:     { t:'Vercel', r:'Hosting del frontend Next.js. Deploy automático desde Git con preview environments. Dominio personalizado, SSL automático.', tc:'Vercel Pro · Serverless Functions · Preview URLs' },
+  edge:       { t:'Edge Middleware', r:'Middleware en el borde de la red para redirecciones i18n por locale, autenticación de rutas protegidas y headers de seguridad/SEO.', tc:'Vercel Edge Runtime (V8 isolates) · next/middleware' },
+  vanalytics: { t:'Vercel Analytics', r:'Monitoreo de Core Web Vitals (LCP, INP, CLS) en tiempo real por URL. Alertas automáticas si una página cae del verde.', tc:'@vercel/analytics · Web Vitals API · p75/p95 percentiles' },
+  cdn:        { t:'CDN global', r:'Distribución de assets estáticos (JS, CSS, fuentes, imágenes). Caché agresivo de páginas ISR — la tienda es rápida desde cualquier país.', tc:'Vercel Edge Network · 100+ PoPs · Brotli/Gzip' },
+  approuter:  { t:'App Router SSR/SSG/ISR', r:'SSG para páginas de catálogo (rápido, indexable), ISR para piezas individuales (se regeneran al aprobar cambios), SSR para checkout y dashboards.', tc:'Next.js 14 App Router · React Server Components · Streaming' },
+  apiroutes:  { t:'API Routes', r:'Endpoints internos: webhooks de Stripe (confirmación de pago), callbacks de couriers (tracking), y orquestación de servicios externos.', tc:'Next.js Route Handlers · Edge-compatible · Zod validation' },
+  i18n:       { t:'next-intl', r:'Sistema de internacionalización. La arquitectura soporta múltiples idiomas desde el inicio. Lanzamiento en español, inglés activable sin refactorización.', tc:'next-intl · ICU message format · locale-aware routing' },
+  sitemap:    { t:'next-sitemap', r:'Genera sitemap.xml dinámico automáticamente. Se actualiza en cada deploy con nuevas piezas, artesanos y artículos de blog publicados.', tc:'next-sitemap · robots.txt · sitemap index · hreflang' },
+  lhci:       { t:'Lighthouse CI', r:'Auditoría automática de performance y SEO en cada pull request. Bloquea merge si los Core Web Vitals caen por debajo del umbral configurado.', tc:'LHCI · GitHub Actions · Budget assertions · Treemap' },
+  supabase:   { t:'Supabase', r:'Base de datos PostgreSQL con Row Level Security por rol, autenticación (email + OAuth), storage de archivos (fotos, videos, modelos 3D) y eventos en tiempo real.', tc:'PostgreSQL 15 · Auth · Storage · Realtime · pgvector' },
+  stripe:     { t:'Stripe Connect', r:'Pagos con tarjeta y split automático: al confirmar el pago, Stripe descuenta la comisión configurada y transfiere el neto al artesano. PCI DSS compliant.', tc:'Stripe Connect Standard · Payment Intents · Webhooks · Transfers API' },
+  coinbase:   { t:'Coinbase Commerce', r:'Pasarela de pago en criptomonedas (BTC, ETH, USDC). El comprador genera una dirección de pago; al confirmar on-chain, se crea el pedido.', tc:'Coinbase Commerce API v1 · Charge webhooks · Multi-currency' },
+  cloudinary: { t:'Cloudinary', r:'CDN de multimedia: convierte imágenes a WebP/AVIF automáticamente al subir, comprime videos, sirve archivos 3D y aplica transformaciones on-the-fly.', tc:'Upload API · Auto-format & quality · Eager transformations · CDN' },
+  resend:     { t:'Resend', r:'Emails transaccionales: confirmación de pedido, cambio de estado, novedades de artesanos seguidos y aprobación/rechazo de piezas. Templates en React Email.', tc:'Resend API · React Email · SPF/DKIM/DMARC · Webhooks' },
+  chilexpress:{ t:'Chilexpress API', r:'Cálculo automático de tarifas y tiempos nacionales por peso y destino. Generación de guías de despacho directamente desde el panel del artesano.', tc:'Chilexpress REST API · Cotización · Guías · Tracking' },
+  starken:    { t:'Starken API', r:'Courier nacional alternativo. El artesano selecciona entre Chilexpress y Starken al despachar según disponibilidad y precio en la ruta.', tc:'Starken API · Cotización + OT · Tracking webhook' },
+  dhl:        { t:'DHL Express', r:'Courier internacional principal. Cotización en tiempo real por peso, dimensiones y país destino. Tracking integrado visible en el panel del comprador.', tc:'DHL Express API · MyDHL+ · Rate & Ship · Tracking events' },
+  fedex:      { t:'FedEx API', r:'Alternativa internacional complementaria a DHL. El sistema cotiza ambos y presenta el más conveniente al artesano antes de generar la guía.', tc:'FedEx Web Services · Rate API · Ship API · Track API' },
+  ga4:        { t:'Google Analytics 4', r:'Tráfico, comportamiento de usuarios, embudos de conversión, productos más vistos y rendimiento de campañas. Datos disponibles en el panel de admin.', tc:'GA4 · gtag.js · Enhanced Ecommerce · BigQuery export' },
+  gsc:        { t:'Google Search Console', r:'Indexación, queries de búsqueda, impresiones y CTR por URL. La API se integra en el panel de admin para ver datos SEO sin salir del sistema.', tc:'Search Console API v1 · Index Coverage · Core Web Vitals · Sitemaps' },
+  gbp:        { t:'Google Business Profile', r:'Presencia de Crisol en búsquedas locales y Google Maps. NAP (nombre, dirección, teléfono) consistente para SEO local y punto de retiro.', tc:'Google Business Profile API · Schema LocalBusiness · Posts API' },
+  pinterest:  { t:'Pinterest Shopping', r:'Feed de catálogo sincronizado automáticamente con Pinterest. Motor de búsqueda visual dominante en joyería — fuente de tráfico orgánico clave.', tc:'Pinterest Catalog API · Product feed XML/CSV · Rich Pins · Shopping ads ready' },
+  instagram:  { t:'Instagram Shopping', r:'Etiquetas de producto en publicaciones. El usuario va de Instagram al checkout de Crisol en un clic. Catálogo sincronizado vía Meta Commerce Manager.', tc:'Meta Commerce Manager · Instagram Graph API · Product catalog · Checkout redirect' },
+};
+
+document.querySelectorAll('.sc').forEach(card => {
+  card.addEventListener('click', () => {
+    const d = data[card.dataset.s];
+    if (!d) return;
+    document.getElementById('dp-t').textContent = d.t;
+    document.getElementById('dp-r').textContent = d.r;
+    document.getElementById('dp-tc').textContent = d.tc;
+    const dp = document.getElementById('dp');
+    dp.style.display = 'block';
+    dp.style.borderLeftColor = getComputedStyle(card).borderColor;
+  });
+});
+</script>
+</body>
+</html>
