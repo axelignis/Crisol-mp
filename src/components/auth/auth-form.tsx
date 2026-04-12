@@ -25,50 +25,50 @@ export function AuthForm({ mode, locale }: AuthFormProps) {
     setError(null)
     setSuccess(null)
 
-    const supabase = createClient()
+    try {
+      const supabase = createClient()
 
-    if (mode === 'login') {
-      const { error } = await supabase.auth.signInWithPassword({ email, password })
-      if (error) {
-        setError('Credenciales incorrectas. Intenta de nuevo.')
-        setLoading(false)
+      if (mode === 'login') {
+        const { error } = await supabase.auth.signInWithPassword({ email, password })
+        if (error) {
+          setError('Credenciales incorrectas. Intenta de nuevo.')
+          return
+        }
+        router.push(`/${locale}`)
+        router.refresh()
         return
       }
-      router.push(`/${locale}`)
-      router.refresh()
-      return
-    }
 
-    if (mode === 'register') {
-      const { error } = await supabase.auth.signUp({
-        email,
-        password,
-        options: {
-          data: { full_name: fullName },
-          emailRedirectTo: `${window.location.origin}/${locale}/auth/callback`,
-        },
-      })
-      if (error) {
-        setError('No se pudo crear la cuenta. Intenta con otro email.')
-        setLoading(false)
+      if (mode === 'register') {
+        const { error } = await supabase.auth.signUp({
+          email,
+          password,
+          options: {
+            data: { full_name: fullName },
+            emailRedirectTo: `${window.location.origin}/${locale}/auth/callback`,
+          },
+        })
+        if (error) {
+          setError('No se pudo crear la cuenta. Intenta con otro email.')
+          return
+        }
+        router.push(`/${locale}?verified=false`)
         return
       }
-      router.push(`/${locale}?verified=false`)
-      return
-    }
 
-    if (mode === 'recover') {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/${locale}/auth/callback?next=/${locale}/auth/reset-password`,
-      })
-      if (error) {
-        setError('No se pudo enviar el correo. Intenta de nuevo.')
-        setLoading(false)
+      if (mode === 'recover') {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/${locale}/auth/callback?next=/${locale}/auth/reset-password`,
+        })
+        if (error) {
+          setError('No se pudo enviar el correo. Intenta de nuevo.')
+          return
+        }
+        setSuccess('Revisa tu bandeja de entrada para restablecer tu contrasena.')
         return
       }
-      setSuccess('Revisa tu bandeja de entrada para restablecer tu contrasena.')
+    } finally {
       setLoading(false)
-      return
     }
   }
 
