@@ -1,0 +1,18 @@
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin/
+Disallow: /artesano/
+Disallow: /cuenta/
+Disallow: /checkout/
+
+Sitemap: https://www.crisol.cl/sitemap.xml
