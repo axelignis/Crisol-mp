@@ -1,6 +1,6 @@
 -- ============================================================
 -- CRISOL -- Migracion 010: Row Level Security
--- RLS en todas las tablas con auth.user_role() basado en JWT.
+-- RLS en todas las tablas con public.user_role() basado en JWT.
 -- ============================================================
 
 -- ------------------------------------------------------------
@@ -8,7 +8,8 @@
 -- ------------------------------------------------------------
 
 -- Rol del usuario desde JWT claim (NO desde DB query)
-CREATE OR REPLACE FUNCTION auth.user_role()
+-- En schema public porque Supabase no permite DDL en auth schema
+CREATE OR REPLACE FUNCTION public.user_role()
 RETURNS text AS $$
   SELECT COALESCE(
     (auth.jwt() ->> 'user_role'),
@@ -76,7 +77,7 @@ CREATE POLICY "user: editar propio perfil"
 
 CREATE POLICY "admin: gestionar todos los usuarios"
   ON "user" FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- ARTISAN
@@ -91,7 +92,7 @@ CREATE POLICY "artisan: editar propio perfil"
 
 CREATE POLICY "admin: gestionar artesanos"
   ON artisan FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- BUYER
@@ -106,7 +107,7 @@ CREATE POLICY "buyer: editar propio perfil"
 
 CREATE POLICY "admin: ver todos los compradores"
   ON buyer FOR SELECT
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- PRODUCT
@@ -129,7 +130,7 @@ CREATE POLICY "artisan: editar piezas propias"
 
 CREATE POLICY "admin: gestionar todas las piezas"
   ON product FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- PRODUCT_VARIANT
@@ -150,7 +151,7 @@ CREATE POLICY "artisan: gestionar variantes de sus piezas"
 
 CREATE POLICY "admin: gestionar todas las variantes"
   ON product_variant FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- PRODUCT_MEDIA
@@ -171,15 +172,15 @@ CREATE POLICY "artisan: gestionar media de sus piezas"
 
 CREATE POLICY "admin: gestionar todo el media"
   ON product_media FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- CATEGORIAS Y TAGS -- lectura publica, escritura solo admin
 -- ------------------------------------------------------------
 CREATE POLICY "category: lectura publica"          ON category FOR SELECT USING (true);
-CREATE POLICY "admin: gestionar categorias"        ON category FOR ALL   USING (auth.user_role() = 'admin');
+CREATE POLICY "admin: gestionar categorias"        ON category FOR ALL   USING (public.user_role() = 'admin');
 CREATE POLICY "tag: lectura publica"               ON tag      FOR SELECT USING (true);
-CREATE POLICY "admin: gestionar tags"              ON tag      FOR ALL   USING (auth.user_role() = 'admin');
+CREATE POLICY "admin: gestionar tags"              ON tag      FOR ALL   USING (public.user_role() = 'admin');
 CREATE POLICY "product_tag: lectura publica"       ON product_tag FOR SELECT USING (true);
 CREATE POLICY "artisan: gestionar tags de sus piezas"
   ON product_tag FOR ALL
@@ -201,7 +202,7 @@ CREATE POLICY "artisan: gestionar propios slots"
 
 CREATE POLICY "admin: gestionar todos los slots"
   ON commission_slot FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- ORDER
@@ -223,7 +224,7 @@ CREATE POLICY "order: cualquiera puede crear pedido"
 
 CREATE POLICY "admin: gestionar todos los pedidos"
   ON "order" FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- ORDER_ITEM
@@ -245,7 +246,7 @@ CREATE POLICY "item: cualquiera puede insertar"
 
 CREATE POLICY "admin: gestionar todos los items"
   ON order_item FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- PAYMENT
@@ -266,7 +267,7 @@ CREATE POLICY "payment: artesano ve pagos de sus pedidos"
 
 CREATE POLICY "admin: gestionar todos los pagos"
   ON payment FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- SHIPMENT
@@ -284,7 +285,7 @@ CREATE POLICY "artisan: gestionar propios envios"
 
 CREATE POLICY "admin: gestionar todos los envios"
   ON shipment FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- SHIPPING_ADDRESS
@@ -302,7 +303,7 @@ CREATE POLICY "address: cualquiera puede insertar"
 
 CREATE POLICY "admin: gestionar todas las direcciones"
   ON shipping_address FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- ARTISAN_PAYOUT
@@ -313,7 +314,7 @@ CREATE POLICY "payout: artesano ve sus propios payouts"
 
 CREATE POLICY "admin: gestionar todos los payouts"
   ON artisan_payout FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- COUPON / COMMISSION_CONFIG / MEMBERSHIP_LEVEL
@@ -321,17 +322,17 @@ CREATE POLICY "admin: gestionar todos los payouts"
 CREATE POLICY "coupon: activos visibles para todos"
   ON coupon FOR SELECT USING (is_active = true);
 CREATE POLICY "admin: gestionar cupones"
-  ON coupon FOR ALL USING (auth.user_role() = 'admin');
+  ON coupon FOR ALL USING (public.user_role() = 'admin');
 
 CREATE POLICY "commission_config: lectura publica"
   ON commission_config FOR SELECT USING (true);
 CREATE POLICY "admin: gestionar comision"
-  ON commission_config FOR ALL USING (auth.user_role() = 'admin');
+  ON commission_config FOR ALL USING (public.user_role() = 'admin');
 
 CREATE POLICY "membership_level: lectura publica"
   ON membership_level FOR SELECT USING (true);
 CREATE POLICY "admin: gestionar membresias"
-  ON membership_level FOR ALL USING (auth.user_role() = 'admin');
+  ON membership_level FOR ALL USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- LOYALTY_TRANSACTION
@@ -342,7 +343,7 @@ CREATE POLICY "loyalty: comprador ve sus transacciones"
 
 CREATE POLICY "admin: gestionar todas las transacciones"
   ON loyalty_transaction FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- REVIEW
@@ -369,7 +370,7 @@ CREATE POLICY "review: comprador puede crear resena de pedido entregado"
 
 CREATE POLICY "admin: moderar resenas"
   ON review FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- WISHLIST / FOLLOWER
@@ -394,14 +395,14 @@ CREATE POLICY "blog: posts publicados visibles para todos"
 
 CREATE POLICY "admin: gestionar blog"
   ON blog_post FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 CREATE POLICY "seo_meta: lectura publica"
   ON seo_meta FOR SELECT USING (true);
 
 CREATE POLICY "admin: gestionar seo_meta"
   ON seo_meta FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- NOTIFICATION
@@ -416,11 +417,11 @@ CREATE POLICY "notif: usuario puede marcar como leida"
 
 CREATE POLICY "admin: gestionar todas las notificaciones"
   ON notification FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
 
 -- ------------------------------------------------------------
 -- WEBHOOK_EVENT -- solo admin
 -- ------------------------------------------------------------
 CREATE POLICY "webhook_event: admin only"
   ON webhook_event FOR ALL
-  USING (auth.user_role() = 'admin');
+  USING (public.user_role() = 'admin');
