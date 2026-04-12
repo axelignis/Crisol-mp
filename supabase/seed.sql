@@ -1,6 +1,7 @@
 -- ============================================================
--- CRISOL -- Migracion 012: Seed data
+-- CRISOL -- Seed data
 -- Comision inicial, categorias y tags.
+-- Run via: supabase db reset (uses sql_paths in config.toml)
 -- ============================================================
 
 -- ------------------------------------------------------------
