@@ -30,12 +30,13 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. RLS policies return correct data for each role when queried with real JWTs (not superuser) — verified by integration tests on every table
   4. Commission calculation produces integer CLP values where commission + artisan net = exact total, with no floating-point artifacts
   5. State machine transition functions in PostgreSQL reject invalid state changes and use row locks to prevent race conditions
-**Plans**: TBD
+**Plans**: 4 plans
 
 Plans:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01-PLAN.md — Database schema rewrite: 12 migrations with Stripe Connect, INTEGER CLP, RLS, state machines, auth hook
+- [ ] 01-02-PLAN.md — Core TypeScript utilities: CLP integer arithmetic and commission split calculation (TDD)
+- [ ] 01-03-PLAN.md — Auth pages with split-screen layout, callback route, layout guard fixes, type regeneration
+- [ ] 01-04-PLAN.md — E2E Playwright tests for auth flows: registration, login, recovery, role guards
 
 ### Phase 2: Catalog & Discovery
 **Goal**: Artisans can create and manage pieces with variants and media, admins can moderate submissions, and visitors can browse a public catalog with filtering, product detail, and artisan profiles
@@ -114,7 +115,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation & Auth | 0/3 | Not started | - |
+| 1. Foundation & Auth | 0/4 | Planned | - |
 | 2. Catalog & Discovery | 0/4 | Not started | - |
 | 3. Commerce | 0/3 | Not started | - |
 | 4. Order Lifecycle | 0/2 | Not started | - |
