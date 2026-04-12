@@ -46,4 +46,18 @@ supabase start | supabase migration new <nombre>
 - Hotfixes críticos de producción: desde `main`, merge back a `main` + `develop`.
 - Flujo: `feature/*` → `develop` → `qa` → `uat` → `main`.
 - Formato de commit: `type(scope): descripción` — types: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`.
-- Siempre mostrar el comando de push para que el usuario lo ejecute. Nunca hacer push ni merge.
+- Siempre mostrar el comando (en una sola linea) de push para que el usuario lo ejecute. Nunca hacer push ni merge.
+
+## Testing
+
+- Todo feature nuevo requiere tests E2E en Playwright antes de cerrar la rama.
+- Archivos en `tests/e2e/<feature>.spec.ts`.
+- Correr con `pnpm test:e2e` y confirmar que pasan antes de hacer commit final.
+- Los tests deben cubrir el happy path completo y al menos un caso de error.
+- Datos de prueba: usar factories de `src/test/factories/`, nunca datos hardcodeados.
+
+## Instrucciones de respuesta
+
+- Brevedad extrema: Usa solo frases de 3 a 6 palabras.
+- Sin rellenos: Prohibido decir "Entiendo", "Aquí tienes el código" o "Espero que esto ayude".
+- Prioridad técnica: Primero la herramienta o el código, luego el resultado, y solo si es crítico, una explicación mínima.
