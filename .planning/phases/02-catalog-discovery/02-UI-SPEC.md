@@ -54,15 +54,17 @@ Exceptions: Touch targets for mobile filter button and variant chips: min 44px h
 | Role | Size | Weight | Line Height |
 |------|------|--------|-------------|
 | Body | 16px | 400 (regular) | 1.5 |
-| Label | 14px | 500 (medium) | 1.4 |
+| Label | 14px | 600 (semibold) | 1.4 |
 | Heading | 24px | 600 (semibold) | 1.2 |
 | Display | 32px | 600 (semibold) | 1.1 |
+
+Two-weight system: 400 (regular) for body text and secondary/descriptive text, 600 (semibold) for all labels, headings, and emphasis.
 
 Notes:
 - Price display uses Label size (14px) at weight 600 for emphasis.
 - Artisan name on product cards uses Label size (14px) at weight 400.
 - Filter section headings use Label size (14px) at weight 600.
-- Wizard step labels use Label size (14px) at weight 500.
+- Wizard step labels use Label size (14px) at weight 600.
 
 ---
 
@@ -156,6 +158,8 @@ Accent reserved for: Primary CTA buttons ("Enviar a revision", "Aprobar"), activ
 - Items per page: 24 (desktop), 12 (mobile -- same endpoint, CSS handles density).
 - Sort options: "Mas recientes", "Precio: menor a mayor", "Precio: mayor a menor".
 
+**Product card visual anchor:** The cover photo is the primary focal point of each card. Eye flow follows a top-down hierarchy: cover photo (largest element, fills card width) -> title (semibold, immediately below photo) -> price (semibold, same line or directly below title) -> artisan name (regular weight, muted color, lowest visual priority).
+
 ### Product Detail (`/es/catalogo/[slug]`)
 
 ```
@@ -222,7 +226,7 @@ Step indicator:  (1)----(2)----(3)----(4)
 ```
 
 - Step indicator: horizontal progress bar with numbered circles.
-- Active step: accent color circle + bold label. Completed: success color check. Future: secondary color.
+- Active step: accent color circle + semibold label. Completed: success color check. Future: secondary color.
 - Max content width: 640px centered.
 - Auto-save indicator: small "Guardado" text with check icon near step indicator after each save.
 
