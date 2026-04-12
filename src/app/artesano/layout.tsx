@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
+import { DEFAULT_LOCALE } from '@/lib/utils/constants'
 
 export default async function ArtesanoLayout({ children }: { children: React.ReactNode }) {
   const supabase = await createClient()
@@ -7,7 +8,7 @@ export default async function ArtesanoLayout({ children }: { children: React.Rea
     data: { user },
   } = await supabase.auth.getUser()
 
-  if (!user) redirect('/es/auth/login')
+  if (!user) redirect(`/${DEFAULT_LOCALE}/auth/login`)
 
   const { data: profile } = await supabase
     .from('user')
@@ -16,7 +17,7 @@ export default async function ArtesanoLayout({ children }: { children: React.Rea
     .single()
 
   if (profile?.role !== 'artisan' && profile?.role !== 'admin') {
-    redirect('/es')
+    redirect(`/${DEFAULT_LOCALE}`)
   }
 
   return <div className="min-h-screen">{children}</div>

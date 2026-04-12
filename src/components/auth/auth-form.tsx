@@ -7,9 +7,10 @@ import { createClient } from '@/lib/supabase/client'
 
 interface AuthFormProps {
   mode: 'login' | 'register' | 'recover'
+  locale: string
 }
 
-export function AuthForm({ mode }: AuthFormProps) {
+export function AuthForm({ mode, locale }: AuthFormProps) {
   const router = useRouter()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -33,7 +34,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         setLoading(false)
         return
       }
-      router.push('/es')
+      router.push(`/${locale}`)
       router.refresh()
       return
     }
@@ -44,7 +45,7 @@ export function AuthForm({ mode }: AuthFormProps) {
         password,
         options: {
           data: { full_name: fullName },
-          emailRedirectTo: `${window.location.origin}/es/auth/callback`,
+          emailRedirectTo: `${window.location.origin}/${locale}/auth/callback`,
         },
       })
       if (error) {
@@ -52,13 +53,13 @@ export function AuthForm({ mode }: AuthFormProps) {
         setLoading(false)
         return
       }
-      router.push('/es?verified=false')
+      router.push(`/${locale}?verified=false`)
       return
     }
 
     if (mode === 'recover') {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/es/auth/callback?next=/es/auth/reset-password`,
+        redirectTo: `${window.location.origin}/${locale}/auth/callback?next=/${locale}/auth/reset-password`,
       })
       if (error) {
         setError('No se pudo enviar el correo. Intenta de nuevo.')
@@ -151,11 +152,11 @@ export function AuthForm({ mode }: AuthFormProps) {
       <div className="text-center text-sm text-gray-500">
         {mode === 'login' && (
           <>
-            <Link href="/es/auth/recuperar" className="hover:text-stone-700 underline">
+            <Link href={`/${locale}/auth/recuperar`} className="hover:text-stone-700 underline">
               Olvidaste tu contrasena?
             </Link>
             <span className="mx-2">|</span>
-            <Link href="/es/auth/registro" className="hover:text-stone-700 underline">
+            <Link href={`/${locale}/auth/registro`} className="hover:text-stone-700 underline">
               Crear cuenta
             </Link>
           </>
@@ -163,13 +164,13 @@ export function AuthForm({ mode }: AuthFormProps) {
         {mode === 'register' && (
           <span>
             Ya tienes cuenta?{' '}
-            <Link href="/es/auth/login" className="hover:text-stone-700 underline">
+            <Link href={`/${locale}/auth/login`} className="hover:text-stone-700 underline">
               Iniciar sesion
             </Link>
           </span>
         )}
         {mode === 'recover' && (
-          <Link href="/es/auth/login" className="hover:text-stone-700 underline">
+          <Link href={`/${locale}/auth/login`} className="hover:text-stone-700 underline">
             Volver al inicio de sesion
           </Link>
         )}
