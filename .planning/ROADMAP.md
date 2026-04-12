@@ -48,14 +48,16 @@ Plans:
   3. Only published pieces appear in the public catalog; visitors can filter by type, material, price range, occasion, and technique
   4. A visitor can view a product detail page with gallery, variants, and price, and an artisan profile page at /artesano/slug — both with correct SEO metadata
   5. Editing a piece or artisan profile triggers ISR revalidation so public pages reflect changes without full rebuild
-**Plans**: TBD
+**Plans**: 6 plans
 **UI hint**: yes
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
-- [ ] 02-04: TBD
+- [ ] 02-01-PLAN.md — shadcn/ui init, deps, shared types, queries, utilities, i18n messages
+- [ ] 02-02-PLAN.md — Artisan piece wizard: 4-step form, variants, media upload, auto-save
+- [ ] 02-03-PLAN.md — Admin moderation queue with approve/changes/reject and email notifications
+- [ ] 02-04-PLAN.md — Public catalog listing with filters, sort, pagination
+- [ ] 02-05-PLAN.md — Product detail, artisan profile, gallery, variant selector, SEO
+- [ ] 02-06-PLAN.md — Seed migration, database push, E2E Playwright tests
 
 ### Phase 3: Commerce
 **Goal**: A visitor (guest or registered) can add pieces to a cart, proceed through checkout with shipping quote and coupon, and pay via Stripe Connect with automatic commission split — creating a confirmed order
@@ -116,7 +118,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation & Auth | 0/4 | Planned | - |
-| 2. Catalog & Discovery | 0/4 | Not started | - |
+| 2. Catalog & Discovery | 0/6 | Planned | - |
 | 3. Commerce | 0/3 | Not started | - |
 | 4. Order Lifecycle | 0/2 | Not started | - |
 | 5. Dashboards & Operations | 0/3 | Not started | - |
