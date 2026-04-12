@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crisol — ERD Núcleo Comercial</title>
+<style>
+  body {
+    font-family: sans-serif;
+    background: #f9f9f7;
+    color: #3d3d3a;
+    margin: 0;
+    padding: 24px;
+  }
+  h1 { font-size: 20px; font-weight: 500; margin-bottom: 4px; }
+  p  { font-size: 13px; color: #73726c; margin-top: 0 0 20px; }
+  #erd1 { background: #fff; border: 1px solid #e0dfda; border-radius: 12px; padding: 16px; }
+  #erd1 svg { width: 100%; height: auto; }
+  @media (prefers-color-scheme: dark) {
+    body { background: #1e1e1c; color: #c2c0b6; }
+    #erd1 { background: #2a2a28; border-color: #3a3a38; }
+  }
+</style>
+</head>
+<body>
+<h1>Crisol — ERD Módulo 1: Núcleo Comercial</h1>
+<p>Catálogo · Variantes · Multimedia · Pedidos · Pagos · Despacho · Comisiones</p>
+<div id="erd1"></div>
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: 'sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '13px',
+    fontFamily: 'sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+    primaryColor: dark ? '#3C3489' : '#EEEDFE',
+    primaryTextColor: dark ? '#CECBF6' : '#3C3489',
+    primaryBorderColor: dark ? '#534AB7' : '#534AB7',
+    secondaryColor: dark ? '#085041' : '#E1F5EE',
+    tertiaryColor: dark ? '#3C3489' : '#EEEDFE',
+  },
+});
+const diagram = `erDiagram
+  PRODUCT {
+    uuid id PK
+    uuid artisan_id FK
+    uuid category_id FK
+    string title
+    string slug
+    text description
+    decimal base_price
+    string currency
+    boolean is_unique
+    enum status
+    timestamp published_at
+  }
+  PRODUCT_VARIANT {
+    uuid id PK
+    uuid product_id FK
+    string size
+    string material
+    string color
+    string stones
+    decimal price_modifier
+    int stock
+  }
+  PRODUCT_MEDIA {
+    uuid id PK
+    uuid product_id FK
+    enum type
+    string url
+    string cloudinary_id
+    int sort_order
+    boolean is_cover
+  }
+  CATEGORY {
+    uuid id PK
+    string name
+    string slug
+    uuid parent_id FK
+  }
+  TAG {
+    uuid id PK
+    string name
+    enum type
+  }
+  PRODUCT_TAG {
+    uuid product_id FK
+    uuid tag_id FK
+  }
+  COMMISSION_SLOT {
+    uuid id PK
+    uuid artisan_id FK
+    string title
+    text description
+    decimal price
+    int estimated_days
+    boolean is_available
+    int max_slots
+    int reserved_slots
+  }
+  ORDER {
+    uuid id PK
+    uuid buyer_id FK
+    string guest_email
+    enum status
+    decimal subtotal
+    decimal shipping_cost
+    decimal commission_amount
+    decimal total
+    string currency
+    int points_redeemed
+    uuid coupon_id FK
+    timestamp created_at
+  }
+  ORDER_ITEM {
+    uuid id PK
+    uuid order_id FK
+    uuid product_id FK
+    uuid variant_id FK
+    uuid commission_slot_id FK
+    int quantity
+    decimal unit_price
+    string snapshot_title
+  }
+  PAYMENT {
+    uuid id PK
+    uuid order_id FK
+    enum method
+    string stripe_payment_id
+    string stripe_transfer_id
+    decimal artisan_net
+    decimal commission_amount
+    enum status
+    timestamp paid_at
+  }
+  SHIPMENT {
+    uuid id PK
+    uuid order_id FK
+    uuid artisan_id FK
+    string courier
+    string tracking_number
+    enum status
+    timestamp shipped_at
+    timestamp delivered_at
+  }
+  SHIPPING_ADDRESS {
+    uuid id PK
+    uuid order_id FK
+    string full_name
+    string address_line1
+    string city
+    string country_code
+    string postal_code
+    string phone
+  }
+  COUPON {
+    uuid id PK
+    string code
+    enum discount_type
+    decimal discount_value
+    int uses_limit
+    int uses_count
+    timestamp expires_at
+    boolean is_active
+  }
+  COMMISSION_CONFIG {
+    uuid id PK
+    decimal commission_pct
+    decimal free_shipping_threshold
+    timestamp effective_from
+  }
+
+  CATEGORY ||--o{ PRODUCT : "categoriza"
+  CATEGORY ||--o{ CATEGORY : "padre de"
+  PRODUCT ||--o{ PRODUCT_VARIANT : "tiene"
+  PRODUCT ||--o{ PRODUCT_MEDIA : "tiene"
+  PRODUCT ||--o{ PRODUCT_TAG : "etiquetado con"
+  TAG ||--o{ PRODUCT_TAG : "etiqueta"
+  ORDER ||--o{ ORDER_ITEM : "contiene"
+  PRODUCT ||--o{ ORDER_ITEM : "incluido en"
+  PRODUCT_VARIANT ||--o{ ORDER_ITEM : "especifica"
+  COMMISSION_SLOT ||--o{ ORDER_ITEM : "reservado en"
+  ORDER ||--|| PAYMENT : "pagado por"
+  ORDER ||--o{ SHIPMENT : "despachado como"
+  ORDER ||--|| SHIPPING_ADDRESS : "enviar a"
+  ORDER ||--o| COUPON : "aplica"
+`;
+const { svg } = await mermaid.render('erd1-svg', diagram);
+document.getElementById('erd1').innerHTML = svg;
+document.querySelectorAll('#erd1 svg .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+    if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+  }
+  firstPath.replaceWith(rect);
+});
+document.querySelectorAll('#erd1 svg .row-rect-odd path, #erd1 svg .row-rect-even path').forEach(p => {
+  p.setAttribute('stroke', 'none');
+});
+</script>
+</body>
+</html>

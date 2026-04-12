@@ -1,0 +1,2254 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crisol — Especificación de API v1.0</title>
+<style>
+:root {
+  --purple-600:#534AB7;--purple-50:#EEEDFE;--purple-800:#3C3489;
+  --teal-600:#0F6E56;--teal-50:#E1F5EE;--teal-800:#085041;
+  --blue-600:#185FA5;--blue-50:#E6F1FB;--blue-800:#0C447C;
+  --amber-600:#BA7517;--amber-50:#FAEEDA;--amber-800:#633806;
+  --coral-600:#993C1D;--coral-50:#FAECE7;
+  --gray-50:#F1EFE8;--gray-200:#B4B2A9;--gray-600:#5F5E5A;--gray-800:#444441;
+  --green-50:#EAF3DE;--green-600:#3B6D11;--green-800:#27500A;
+  --red-50:#FCEBEB;--red-600:#A32D2D;--red-800:#791F1F;
+  --bg:#FAFAF8;--surface:#FFFFFF;--border:#E0DFD9;--text:#2C2C2A;--muted:#73726C;
+  --sidebar-w:280px;--font:'Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+code{font-family:'Courier New',monospace;font-size:12px;background:var(--gray-50);padding:2px 6px;border-radius:4px;color:var(--purple-800)}
+pre.code-block{background:#f4f3f0;border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-family:'Courier New',monospace;font-size:12px;overflow-x:auto;line-height:1.6;white-space:pre;color:var(--text)}
+a{color:var(--blue-600);text-decoration:none}
+.layout{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+.main{flex:1;padding:32px 40px;max-width:900px}
+.sidebar-header{padding:18px 16px 12px;border-bottom:1px solid var(--border)}
+.sidebar-logo{font-size:16px;font-weight:600;color:var(--purple-800)}
+.sidebar-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.nav-section{padding:4px 0;border-bottom:1px solid var(--border)}
+.nav-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--gray-200);padding:10px 14px 4px}
+.nav-item{display:flex;align-items:center;gap:7px;padding:5px 14px;font-size:12px;color:var(--muted);border-left:2px solid transparent;transition:all .1s;overflow:hidden}
+.nav-item:hover{background:var(--bg);border-left-color:var(--gray-200);color:var(--text)}
+.nav-ep-title{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;flex:1}
+.nav-method{font-size:9px;font-weight:700;padding:2px 5px;border-radius:3px;flex-shrink:0;letter-spacing:.03em}
+.method-get-nav   {background:var(--blue-50);color:var(--blue-800)}
+.method-post-nav  {background:var(--green-50);color:var(--green-800)}
+.method-patch-nav {background:var(--teal-50);color:var(--teal-800)}
+.method-put-nav   {background:var(--amber-50);color:var(--amber-800)}
+.method-delete-nav{background:var(--red-50);color:var(--red-800)}
+.page-header{margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+.page-header h1{font-size:26px;font-weight:600;margin-bottom:6px}
+.page-meta{display:flex;gap:16px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.section{margin-bottom:40px;scroll-margin-top:24px}
+.section-header{margin-bottom:20px;padding-bottom:12px;border-bottom:2px solid var(--border)}
+.section-header h2{font-size:19px;font-weight:600}
+h3{font-size:15px;font-weight:600;margin:16px 0 8px}
+p{color:var(--muted);margin:6px 0}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+th{text-align:left;padding:7px 10px;background:var(--bg);border-bottom:1.5px solid var(--border);font-weight:600;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+td{padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.badge-method{font-size:11px;font-weight:700;padding:3px 10px;border-radius:4px;letter-spacing:.04em;flex-shrink:0}
+.method-get   {background:var(--blue-50);color:var(--blue-800)}
+.method-post  {background:var(--green-50);color:var(--green-800)}
+.method-patch {background:var(--teal-50);color:var(--teal-800)}
+.method-put   {background:var(--amber-50);color:var(--amber-800)}
+.method-delete{background:var(--red-50);color:var(--red-800)}
+.badge-auth{font-size:11px;font-weight:500;padding:3px 8px;border-radius:20px;border:1px solid;flex-shrink:0}
+.endpoint{background:var(--surface);border:1px solid var(--border);border-radius:10px;margin-bottom:16px;overflow:hidden}
+.ep-header{padding:16px 18px;border-bottom:1px solid var(--border)}
+.ep-title-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:8px}
+.ep-path{font-size:14px;font-weight:500;color:var(--text);padding:0;background:none}
+.ep-title{font-size:15px;font-weight:600;color:var(--text)}
+.ep-desc{font-size:13px;color:var(--muted);margin-top:6px;line-height:1.6}
+.ep-note{margin-top:8px;padding:8px 12px;background:var(--amber-50);border-radius:6px;font-size:12px;color:var(--amber-800);border-left:3px solid var(--amber-600)}
+.ep-body{padding:16px 18px}
+.params-section{margin-bottom:16px}
+.params-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px}
+.params-table{font-size:13px}
+.type-pill{background:var(--gray-50);color:var(--gray-800);padding:1px 6px;border-radius:4px;font-size:11px;font-family:monospace}
+.req-yes{color:var(--coral-600);font-weight:600;font-size:12px}
+.req-no{color:var(--gray-200);font-size:12px}
+.error-list{list-style:none;padding:0}
+.error-list li{padding:4px 0;font-size:13px;color:var(--muted);padding-left:16px;position:relative}
+.error-list li::before{content:'→';position:absolute;left:0;color:var(--red-600)}
+@media (max-width:768px){.sidebar{display:none}.main{padding:20px}}
+</style>
+</head>
+<body>
+<div class="layout">
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">💎 Crisol</div>
+    <div class="sidebar-sub">Especificación de API v1.0</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Convenciones generales</div>
+    <a class="nav-item" href="#conventions">Convenciones</a>
+  </div><div class="nav-section">
+    <div class="nav-label">Catálogo</div>
+    <a class="nav-item" href="#ep--api-catalogo">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Listar productos del catálogo</span>
+       </a><a class="nav-item" href="#ep--api-catalogo--slug">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Obtener detalle de una pieza</span>
+       </a><a class="nav-item" href="#ep--api-artesanos--slug">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Obtener perfil público del artesano</span>
+       </a><a class="nav-item" href="#ep--api-categorias">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Obtener árbol de categorías</span>
+       </a>
+  </div><div class="nav-section">
+    <div class="nav-label">Encargos (Slots)</div>
+    <a class="nav-item" href="#ep--api-encargos">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Listar slots de encargo disponibles</span>
+       </a>
+  </div><div class="nav-section">
+    <div class="nav-label">Pedidos</div>
+    <a class="nav-item" href="#ep--api-orders">
+        <span class="nav-method method-post-nav">POST</span>
+        <span class="nav-ep-title">Crear pedido</span>
+       </a><a class="nav-item" href="#ep--api-orders">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Listar pedidos</span>
+       </a><a class="nav-item" href="#ep--api-orders--id">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Obtener detalle de pedido</span>
+       </a><a class="nav-item" href="#ep--api-orders--id-status">
+        <span class="nav-method method-patch-nav">PATCH</span>
+        <span class="nav-ep-title">Actualizar estado del pedido</span>
+       </a>
+  </div><div class="nav-section">
+    <div class="nav-label">Pagos y Webhooks</div>
+    <a class="nav-item" href="#ep--api-payments-stripe-intent">
+        <span class="nav-method method-post-nav">POST</span>
+        <span class="nav-ep-title">Crear Payment Intent de Stripe</span>
+       </a><a class="nav-item" href="#ep--api-webhooks-stripe">
+        <span class="nav-method method-post-nav">POST</span>
+        <span class="nav-ep-title">Webhook de Stripe</span>
+       </a><a class="nav-item" href="#ep--api-webhooks-coinbase">
+        <span class="nav-method method-post-nav">POST</span>
+        <span class="nav-ep-title">Webhook de Coinbase Commerce</span>
+       </a>
+  </div><div class="nav-section">
+    <div class="nav-label">Couriers y Envíos</div>
+    <a class="nav-item" href="#ep--api-couriers-quote">
+        <span class="nav-method method-post-nav">POST</span>
+        <span class="nav-ep-title">Cotizar envío</span>
+       </a>
+  </div><div class="nav-section">
+    <div class="nav-label">Subida de archivos</div>
+    <a class="nav-item" href="#ep--api-upload-signature">
+        <span class="nav-method method-post-nav">POST</span>
+        <span class="nav-ep-title">Obtener firma de upload para Cloudinary</span>
+       </a>
+  </div><div class="nav-section">
+    <div class="nav-label">Fidelización y Membresía</div>
+    <a class="nav-item" href="#ep--api-loyalty">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Obtener balance de puntos y membresía</span>
+       </a>
+  </div><div class="nav-section">
+    <div class="nav-label">Reseñas</div>
+    <a class="nav-item" href="#ep--api-reviews">
+        <span class="nav-method method-post-nav">POST</span>
+        <span class="nav-ep-title">Crear reseña</span>
+       </a><a class="nav-item" href="#ep--api-reviews--productId">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Listar reseñas de una pieza</span>
+       </a>
+  </div><div class="nav-section">
+    <div class="nav-label">Favoritos</div>
+    <a class="nav-item" href="#ep--api-wishlist">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Obtener lista de favoritos</span>
+       </a><a class="nav-item" href="#ep--api-wishlist">
+        <span class="nav-method method-post-nav">POST</span>
+        <span class="nav-ep-title">Agregar pieza a favoritos</span>
+       </a><a class="nav-item" href="#ep--api-wishlist--productId">
+        <span class="nav-method method-delete-nav">DELETE</span>
+        <span class="nav-ep-title">Quitar pieza de favoritos</span>
+       </a>
+  </div><div class="nav-section">
+    <div class="nav-label">Seguimiento de artesanos</div>
+    <a class="nav-item" href="#ep--api-artesanos--id-follow">
+        <span class="nav-method method-post-nav">POST</span>
+        <span class="nav-ep-title">Seguir artesano</span>
+       </a><a class="nav-item" href="#ep--api-artesanos--id-follow">
+        <span class="nav-method method-delete-nav">DELETE</span>
+        <span class="nav-ep-title">Dejar de seguir artesano</span>
+       </a>
+  </div><div class="nav-section">
+    <div class="nav-label">Panel del artesano</div>
+    <a class="nav-item" href="#ep--api-artesano-piezas">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Listar mis piezas</span>
+       </a><a class="nav-item" href="#ep--api-artesano-piezas">
+        <span class="nav-method method-post-nav">POST</span>
+        <span class="nav-ep-title">Crear nueva pieza</span>
+       </a><a class="nav-item" href="#ep--api-artesano-piezas--id-submit">
+        <span class="nav-method method-post-nav">POST</span>
+        <span class="nav-ep-title">Enviar pieza a revisión</span>
+       </a><a class="nav-item" href="#ep--api-artesano-balance">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Obtener balance y comisiones</span>
+       </a>
+  </div><div class="nav-section">
+    <div class="nav-label">Panel de administración</div>
+    <a class="nav-item" href="#ep--api-admin-piezas-revision">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Cola de moderación de piezas</span>
+       </a><a class="nav-item" href="#ep--api-admin-piezas--id-review">
+        <span class="nav-method method-patch-nav">PATCH</span>
+        <span class="nav-ep-title">Aprobar o rechazar pieza</span>
+       </a><a class="nav-item" href="#ep--api-admin-reportes-ventas">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Reporte de ventas</span>
+       </a><a class="nav-item" href="#ep--api-admin-comision">
+        <span class="nav-method method-post-nav">POST</span>
+        <span class="nav-ep-title">Actualizar configuración de comisión</span>
+       </a><a class="nav-item" href="#ep--api-admin-resenas--id">
+        <span class="nav-method method-patch-nav">PATCH</span>
+        <span class="nav-ep-title">Moderar reseña</span>
+       </a>
+  </div><div class="nav-section">
+    <div class="nav-label">Utilitarios</div>
+    <a class="nav-item" href="#ep--api-currency">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Obtener tipo de cambio CLP/USD</span>
+       </a><a class="nav-item" href="#ep--api-revalidate">
+        <span class="nav-method method-post-nav">POST</span>
+        <span class="nav-ep-title">Revalidar página (ISR on-demand)</span>
+       </a><a class="nav-item" href="#ep--api-og">
+        <span class="nav-method method-get-nav">GET</span>
+        <span class="nav-ep-title">Generar imagen Open Graph</span>
+       </a>
+  </div>
+</nav>
+<main class="main">
+  <div class="page-header">
+    <h1>Especificación de API — Crisol</h1>
+    <div class="page-meta">
+      <span><strong>Versión:</strong> 1.0</span>
+      <span><strong>Base URL:</strong> <code>https://www.crisol.cl/api</code></span>
+      <span><strong>Formato:</strong> JSON (application/json)</span>
+      <span><strong>Actualizado:</strong> Abril 2026</span>
+    </div>
+  </div>
+  
+  <section class="section" id="conventions">
+    <div class="section-header">
+      <h2>Convenciones generales</h2>
+    </div>
+    
+      <p>Todos los endpoints siguen las siguientes convenciones.</p>
+      <h3>Base URL</h3>
+      <pre>https://www.crisol.cl/api</pre>
+      <h3>Autenticación</h3>
+      <p>Los endpoints protegidos requieren el header <code>Authorization: Bearer &lt;supabase_jwt&gt;</code>. El token se obtiene de <code>supabase.auth.getSession()</code> en el cliente.</p>
+      <h3>Formato de respuesta</h3>
+      <p>Todas las respuestas son <code>application/json</code>. Las listas siempre incluyen paginación.</p>
+      <pre>{"data": {...}, "error": null}
+{"data": null, "error": {"code": "NOT_FOUND", "message": "Pieza no encontrada"}}</pre>
+      <h3>Paginación</h3>
+      <pre>{"data": [...], "pagination": {"page": 1, "limit": 20, "total": 148, "pages": 8}}</pre>
+      <h3>Moneda y locale</h3>
+      <p>Los precios se devuelven en la moneda solicitada via query param <code>currency=CLP|USD</code>. El locale se pasa como <code>locale=es|en</code>.</p>
+      <h3>Códigos de error estándar</h3>
+      <table>
+        <tr><th>Código HTTP</th><th>Error code</th><th>Significado</th></tr>
+        <tr><td>400</td><td>VALIDATION_ERROR</td><td>Body o params inválidos</td></tr>
+        <tr><td>401</td><td>UNAUTHORIZED</td><td>Token ausente o expirado</td></tr>
+        <tr><td>403</td><td>FORBIDDEN</td><td>Sin permisos para este recurso</td></tr>
+        <tr><td>404</td><td>NOT_FOUND</td><td>Recurso no encontrado</td></tr>
+        <tr><td>409</td><td>CONFLICT</td><td>Conflicto de estado (ej: pieza ya publicada)</td></tr>
+        <tr><td>422</td><td>UNPROCESSABLE</td><td>Lógica de negocio inválida</td></tr>
+        <tr><td>429</td><td>RATE_LIMITED</td><td>Demasiadas peticiones</td></tr>
+        <tr><td>500</td><td>INTERNAL_ERROR</td><td>Error del servidor</td></tr>
+      </table>
+    
+    
+  </section>
+
+  <section class="section" id="catalog">
+    <div class="section-header">
+      <h2>Catálogo</h2>
+    </div>
+    
+    
+<div class="endpoint" id="ep--api-catalogo">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/catalogo</code>
+      <span class="badge-auth" style="background:#F1EFE8;border-color:#5F5E5A;color:#444441">Público</span>
+    </div>
+    <h3 class="ep-title">Listar productos del catálogo</h3>
+    <p class="ep-desc">Devuelve los productos publicados con soporte de filtros, búsqueda y paginación. Esta ruta alimenta el catálogo público y los resultados de búsqueda. Renderizado con ISR.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    <div class="params-section">
+    <div class="params-label">Parámetros de query</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>page</code></td>
+        <td><span class="type-pill">integer</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Página (default: 1)</td>
+      </tr><tr>
+        <td><code>limit</code></td>
+        <td><span class="type-pill">integer</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Resultados por página (default: 20, max: 100)</td>
+      </tr><tr>
+        <td><code>q</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Búsqueda de texto libre en título y descripción</td>
+      </tr><tr>
+        <td><code>category</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Slug de categoría</td>
+      </tr><tr>
+        <td><code>tags</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Slugs de tags separados por coma: "oro-18k,forjado-mano"</td>
+      </tr><tr>
+        <td><code>artisan</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Slug del artesano</td>
+      </tr><tr>
+        <td><code>min_price</code></td>
+        <td><span class="type-pill">number</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Precio mínimo en la moneda seleccionada</td>
+      </tr><tr>
+        <td><code>max_price</code></td>
+        <td><span class="type-pill">number</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Precio máximo</td>
+      </tr><tr>
+        <td><code>currency</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>CLP | USD (default: CLP)</td>
+      </tr><tr>
+        <td><code>sort</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>newest | price_asc | price_desc | popular (default: newest)</td>
+      </tr><tr>
+        <td><code>locale</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>es | en (default: es)</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": [
+    {
+      "id": "d4f2a1b3-...",
+      "slug": "anillo-solitario-oro-18k",
+      "title": "Anillo solitario oro 18k",
+      "base_price": 185000,
+      "currency": "CLP",
+      "is_unique": true,
+      "status": "published",
+      "cover_image": "https://res.cloudinary.com/crisol/image/upload/...",
+      "artisan": {
+        "id": "a1b2c3...",
+        "slug": "maria-silva",
+        "full_name": "María Silva",
+        "photo_url": "..."
+      },
+      "category": { "id": "...", "name": "Anillos", "slug": "anillos" },
+      "avg_rating": 4.8,
+      "review_count": 12
+    }
+  ],
+  "pagination": { "page": 1, "limit": 20, "total": 84, "pages": 5 },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>400 VALIDATION_ERROR — parámetros inválidos</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-catalogo--slug">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/catalogo/:slug</code>
+      <span class="badge-auth" style="background:#F1EFE8;border-color:#5F5E5A;color:#444441">Público</span>
+    </div>
+    <h3 class="ep-title">Obtener detalle de una pieza</h3>
+    <p class="ep-desc">Devuelve la información completa de una pieza publicada: variantes, multimedia (fotos, video, URL del modelo 3D), perfil del artesano y reseñas aprobadas. Base del SSG/ISR de la página de producto.</p>
+    
+  </div>
+  <div class="ep-body">
+    <div class="params-section">
+    <div class="params-label">Parámetros de ruta</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>slug</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>Slug único de la pieza</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section">
+    <div class="params-label">Parámetros de query</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>currency</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>CLP | USD</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "id": "d4f2a1b3-...",
+    "slug": "anillo-solitario-oro-18k",
+    "title": "Anillo solitario oro 18k",
+    "description": "Pieza única forjada a mano en oro...",
+    "base_price": 185000,
+    "currency": "CLP",
+    "is_unique": true,
+    "status": "published",
+    "published_at": "2026-03-15T10:30:00Z",
+    "artisan": {
+      "id": "a1b2c3...",
+      "slug": "maria-silva",
+      "full_name": "María Silva",
+      "bio": "Orfebre con 15 años de experiencia...",
+      "photo_url": "...",
+      "instagram": "@maria.silva.orfebre"
+    },
+    "category": { "id": "...", "name": "Anillos", "slug": "anillos" },
+    "tags": [
+      {"id": "...", "name": "Oro 18k", "slug": "oro-18k", "type": "material"}
+    ],
+    "variants": [
+      {
+        "id": "v1...", "size": "15", "material": "Oro 18k",
+        "color": null, "stones": null,
+        "price_modifier": 0, "stock": 1, "is_available": true
+      }
+    ],
+    "media": [
+      {
+        "id": "m1...", "type": "photo",
+        "url": "https://res.cloudinary.com/crisol/...",
+        "is_cover": true, "sort_order": 0
+      },
+      {
+        "id": "m2...", "type": "model_3d",
+        "url": "https://res.cloudinary.com/crisol/raw/upload/anillo.glb",
+        "is_cover": false, "sort_order": 99
+      }
+    ],
+    "reviews": [
+      {
+        "id": "r1...", "rating": 5,
+        "comment": "Pieza increíble, superó mis expectativas.",
+        "buyer_name": "Carolina M.",
+        "created_at": "2026-02-10T14:00:00Z"
+      }
+    ],
+    "avg_rating": 4.8,
+    "review_count": 12,
+    "seo_meta": {
+      "meta_title": "Anillo solitario oro 18k — Crisol",
+      "meta_description": "...",
+      "schema_json": {...}
+    }
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>404 NOT_FOUND — pieza no encontrada o no publicada</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-artesanos--slug">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/artesanos/:slug</code>
+      <span class="badge-auth" style="background:#F1EFE8;border-color:#5F5E5A;color:#444441">Público</span>
+    </div>
+    <h3 class="ep-title">Obtener perfil público del artesano</h3>
+    <p class="ep-desc">Devuelve el perfil público del artesano con sus piezas publicadas. Base del ISR de la página de perfil.</p>
+    
+  </div>
+  <div class="ep-body">
+    <div class="params-section">
+    <div class="params-label">Parámetros de ruta</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>slug</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>Slug del artesano</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section">
+    <div class="params-label">Parámetros de query</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>page</code></td>
+        <td><span class="type-pill">integer</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Página de productos</td>
+      </tr><tr>
+        <td><code>currency</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>CLP | USD</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "id": "a1b2c3...",
+    "slug": "maria-silva",
+    "full_name": "María Silva",
+    "bio": "Orfebre con 15 años de experiencia...",
+    "photo_url": "...",
+    "instagram": "@maria.silva.orfebre",
+    "website": "https://mariasilva.cl",
+    "products": [...],
+    "commission_slots": [
+      {
+        "id": "cs1...", "title": "Anillo personalizado",
+        "price": 120000, "estimated_days": 21,
+        "available_slots": 2
+      }
+    ],
+    "follower_count": 234,
+    "product_count": 18
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>404 NOT_FOUND</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-categorias">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/categorias</code>
+      <span class="badge-auth" style="background:#F1EFE8;border-color:#5F5E5A;color:#444441">Público</span>
+    </div>
+    <h3 class="ep-title">Obtener árbol de categorías</h3>
+    <p class="ep-desc">Devuelve el árbol completo de categorías con sus subcategorías. Usado para el menú de navegación y los filtros del catálogo.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": [
+    {
+      "id": "...", "name": "Anillos", "slug": "anillos",
+      "product_count": 34, "children": []
+    },
+    {
+      "id": "...", "name": "Joyería", "slug": "joyeria",
+      "product_count": 82,
+      "children": [
+        {"id": "...", "name": "Collares", "slug": "collares", "product_count": 28}
+      ]
+    }
+  ],
+  "error": null
+}</pre></div>
+    
+  </div>
+</div>
+  </section>
+
+  <section class="section" id="slots">
+    <div class="section-header">
+      <h2>Encargos (Slots)</h2>
+    </div>
+    
+    
+<div class="endpoint" id="ep--api-encargos">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/encargos</code>
+      <span class="badge-auth" style="background:#F1EFE8;border-color:#5F5E5A;color:#444441">Público</span>
+    </div>
+    <h3 class="ep-title">Listar slots de encargo disponibles</h3>
+    <p class="ep-desc">Devuelve los slots de encargo disponibles para reserva.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    <div class="params-section">
+    <div class="params-label">Parámetros de query</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>artisan_id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Filtrar por artesano</td>
+      </tr><tr>
+        <td><code>currency</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>CLP | USD</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": [
+    {
+      "id": "cs1...",
+      "title": "Anillo personalizado con piedra",
+      "description": "Diseño exclusivo según tus especificaciones...",
+      "price": 120000,
+      "currency": "CLP",
+      "estimated_days": 21,
+      "available_slots": 2,
+      "artisan": {
+        "slug": "maria-silva",
+        "full_name": "María Silva",
+        "photo_url": "..."
+      }
+    }
+  ],
+  "error": null
+}</pre></div>
+    
+  </div>
+</div>
+  </section>
+
+  <section class="section" id="orders">
+    <div class="section-header">
+      <h2>Pedidos</h2>
+    </div>
+    
+    
+<div class="endpoint" id="ep--api-orders">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-post">POST</span>
+      <code class="ep-path">/api/orders</code>
+      <span class="badge-auth" style="background:#F1EFE8;border-color:#5F5E5A;color:#444441">Público</span>
+    </div>
+    <h3 class="ep-title">Crear pedido</h3>
+    <p class="ep-desc">Crea un nuevo pedido para un comprador registrado o invitado. Valida stock, aplica cupón y descuento de puntos, calcula comisión según COMMISSION_CONFIG vigente y retorna el order_id y el client_secret de Stripe para completar el pago.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    
+    <div class="params-section">
+    <div class="params-label">Body (JSON)</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>items</code></td>
+        <td><span class="type-pill">array</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>Lista de {product_id|commission_slot_id, variant_id?, quantity}</td>
+      </tr><tr>
+        <td><code>shipping_address</code></td>
+        <td><span class="type-pill">object</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>Dirección completa de envío</td>
+      </tr><tr>
+        <td><code>courier</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>chilexpress | starken | dhl | fedex | pickup</td>
+      </tr><tr>
+        <td><code>payment_method</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>stripe | crypto | bank_transfer</td>
+      </tr><tr>
+        <td><code>currency</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>CLP | USD</td>
+      </tr><tr>
+        <td><code>coupon_code</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Código de cupón a aplicar</td>
+      </tr><tr>
+        <td><code>points_to_redeem</code></td>
+        <td><span class="type-pill">integer</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Puntos a canjear (solo compradores registrados)</td>
+      </tr><tr>
+        <td><code>guest_email</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Requerido si no hay token de sesión</td>
+      </tr><tr>
+        <td><code>guest_name</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Nombre del comprador invitado</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section"><div class="params-label">Ejemplo de request</div><pre class="code-block">{
+  "items": [
+    {
+      "product_id": "d4f2a1b3-...",
+      "variant_id": "v1b2c3-...",
+      "quantity": 1
+    }
+  ],
+  "shipping_address": {
+    "full_name": "Ana Torres",
+    "address_line1": "Av. Providencia 1234, Depto 5B",
+    "city": "Santiago",
+    "state_province": "Región Metropolitana",
+    "country_code": "CL",
+    "postal_code": "7500000",
+    "phone": "+56912345678"
+  },
+  "courier": "chilexpress",
+  "payment_method": "stripe",
+  "currency": "CLP",
+  "coupon_code": "PRIMAVERA10",
+  "points_to_redeem": 50
+}</pre></div>
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "order_id": "ord1a2b3-...",
+    "status": "pending_payment",
+    "subtotal": 185000,
+    "shipping_cost": 4990,
+    "discount_amount": 19490,
+    "commission_amount": 17001,
+    "total": 170500,
+    "currency": "CLP",
+    "stripe_client_secret": "pi_3O...secret_xyz",
+    "coinbase_hosted_url": null
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>400 VALIDATION_ERROR — campos inválidos o faltantes</li><li>409 CONFLICT — producto agotado o slot no disponible</li><li>422 UNPROCESSABLE — cupón inválido, expirado o sin usos restantes</li><li>422 UNPROCESSABLE — puntos insuficientes para canjear</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-orders">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/orders</code>
+      <span class="badge-auth" style="background:#FAEEDA;border-color:#BA7517;color:#633806">Autenticado</span>
+    </div>
+    <h3 class="ep-title">Listar pedidos</h3>
+    <p class="ep-desc">Devuelve pedidos filtrados según el rol. Compradores ven sus propios pedidos. Artesanos ven pedidos que contienen sus piezas. Admin ve todos.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    <div class="params-section">
+    <div class="params-label">Parámetros de query</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>status</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Filtrar por estado: pending_payment | paid | in_preparation | shipped | delivered</td>
+      </tr><tr>
+        <td><code>page</code></td>
+        <td><span class="type-pill">integer</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Página</td>
+      </tr><tr>
+        <td><code>limit</code></td>
+        <td><span class="type-pill">integer</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Resultados por página (default: 20)</td>
+      </tr><tr>
+        <td><code>from</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Fecha inicio ISO 8601</td>
+      </tr><tr>
+        <td><code>to</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Fecha fin ISO 8601</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": [
+    {
+      "id": "ord1a2b3-...",
+      "status": "shipped",
+      "total": 170500,
+      "currency": "CLP",
+      "item_count": 1,
+      "created_at": "2026-04-01T15:30:00Z",
+      "shipment": {
+        "courier": "chilexpress",
+        "tracking_number": "9912345678",
+        "status": "in_transit"
+      }
+    }
+  ],
+  "pagination": {"page": 1, "limit": 20, "total": 7, "pages": 1},
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>401 UNAUTHORIZED</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-orders--id">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/orders/:id</code>
+      <span class="badge-auth" style="background:#FAEEDA;border-color:#BA7517;color:#633806">Autenticado</span>
+    </div>
+    <h3 class="ep-title">Obtener detalle de pedido</h3>
+    <p class="ep-desc">Devuelve el detalle completo del pedido. Los compradores solo pueden ver sus propios pedidos. Los artesanos solo los pedidos con sus ítems.</p>
+    
+  </div>
+  <div class="ep-body">
+    <div class="params-section">
+    <div class="params-label">Parámetros de ruta</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>ID del pedido (UUID)</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "id": "ord1a2b3-...",
+    "status": "shipped",
+    "subtotal": 185000,
+    "shipping_cost": 4990,
+    "discount_amount": 19490,
+    "total": 170500,
+    "currency": "CLP",
+    "points_redeemed": 50,
+    "created_at": "2026-04-01T15:30:00Z",
+    "items": [
+      {
+        "id": "oi1...",
+        "snapshot_title": "Anillo solitario oro 18k",
+        "unit_price": 185000,
+        "quantity": 1,
+        "artisan": { "slug": "maria-silva", "full_name": "María Silva" }
+      }
+    ],
+    "shipping_address": {
+      "full_name": "Ana Torres",
+      "address_line1": "Av. Providencia 1234...",
+      "city": "Santiago",
+      "country_code": "CL"
+    },
+    "payment": {
+      "method": "stripe",
+      "status": "paid",
+      "paid_at": "2026-04-01T15:32:00Z"
+    },
+    "shipment": {
+      "courier": "chilexpress",
+      "tracking_number": "9912345678",
+      "tracking_url": "https://chilexpress.cl/tracking/9912345678",
+      "status": "in_transit",
+      "shipped_at": "2026-04-02T09:00:00Z"
+    }
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>401 UNAUTHORIZED</li><li>403 FORBIDDEN — pedido de otro usuario</li><li>404 NOT_FOUND</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-orders--id-status">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-patch">PATCH</span>
+      <code class="ep-path">/api/orders/:id/status</code>
+      <span class="badge-auth" style="background:#E1F5EE;border-color:#0F6E56;color:#085041">Artesano</span>
+    </div>
+    <h3 class="ep-title">Actualizar estado del pedido</h3>
+    <p class="ep-desc">El artesano avanza el estado del pedido y agrega información de tracking al marcar como enviado. Solo puede actualizar pedidos que contienen sus propias piezas.</p>
+    
+  </div>
+  <div class="ep-body">
+    <div class="params-section">
+    <div class="params-label">Parámetros de ruta</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>ID del pedido</td>
+      </tr>
+    </table>
+  </div>
+    
+    <div class="params-section">
+    <div class="params-label">Body (JSON)</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>status</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>in_preparation | shipped | delivered</td>
+      </tr><tr>
+        <td><code>tracking_number</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Requerido cuando status = shipped</td>
+      </tr><tr>
+        <td><code>tracking_url</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>URL de seguimiento del courier</td>
+      </tr><tr>
+        <td><code>courier</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Requerido cuando status = shipped</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section"><div class="params-label">Ejemplo de request</div><pre class="code-block">{
+  "status": "shipped",
+  "tracking_number": "9912345678",
+  "tracking_url": "https://chilexpress.cl/tracking/9912345678",
+  "courier": "chilexpress"
+}</pre></div>
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "id": "ord1a2b3-...",
+    "status": "shipped",
+    "shipment": {
+      "tracking_number": "9912345678",
+      "shipped_at": "2026-04-02T09:00:00Z"
+    }
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>403 FORBIDDEN — pedido no pertenece al artesano</li><li>409 CONFLICT — transición de estado inválida</li><li>422 UNPROCESSABLE — tracking_number requerido para estado shipped</li></ul></div>
+  </div>
+</div>
+  </section>
+
+  <section class="section" id="payments">
+    <div class="section-header">
+      <h2>Pagos y Webhooks</h2>
+    </div>
+    
+    
+<div class="endpoint" id="ep--api-payments-stripe-intent">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-post">POST</span>
+      <code class="ep-path">/api/payments/stripe/intent</code>
+      <span class="badge-auth" style="background:#F1EFE8;border-color:#5F5E5A;color:#444441">Público</span>
+    </div>
+    <h3 class="ep-title">Crear Payment Intent de Stripe</h3>
+    <p class="ep-desc">Crea o recupera el Payment Intent de Stripe para un pedido existente. Devuelve el client_secret para inicializar Stripe Elements en el cliente. Si el pedido ya tiene un Payment Intent activo, lo devuelve sin crear uno nuevo.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    
+    <div class="params-section">
+    <div class="params-label">Body (JSON)</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>order_id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>ID del pedido creado en POST /api/orders</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section"><div class="params-label">Ejemplo de request</div><pre class="code-block">{ "order_id": "ord1a2b3-..." }</pre></div>
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "client_secret": "pi_3OxxxxxxxxxxxxxxX_secret_yyyyyyy",
+    "amount": 170500,
+    "currency": "clp",
+    "payment_intent_id": "pi_3Oxxxxxxxxxxxxxxx"
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>404 NOT_FOUND — pedido no encontrado</li><li>409 CONFLICT — pedido ya pagado</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-webhooks-stripe">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-post">POST</span>
+      <code class="ep-path">/api/webhooks/stripe</code>
+      <span class="badge-auth" style="background:#FAECE7;border-color:#993C1D;color:#712B13">Webhook</span>
+    </div>
+    <h3 class="ep-title">Webhook de Stripe</h3>
+    <p class="ep-desc">Recibe y procesa eventos de Stripe. Verifica la firma con STRIPE_WEBHOOK_SECRET antes de procesar. Al recibir payment_intent.succeeded ejecuta: crea PAYMENT, calcula y registra el split, actualiza ORDER a "paid", crea LOYALTY_TRANSACTION si hay comprador registrado, y envía notificaciones.</p>
+    <div class="ep-note"><strong>Nota:</strong> Header requerido: Stripe-Signature. Eventos escuchados: payment_intent.succeeded, payment_intent.payment_failed, account.updated</div>
+  </div>
+  <div class="ep-body">
+    
+    
+    <div class="params-section">
+    <div class="params-label">Body (JSON)</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>type</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>Tipo de evento de Stripe</td>
+      </tr><tr>
+        <td><code>data.object</code></td>
+        <td><span class="type-pill">object</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>Objeto del evento (PaymentIntent, Transfer, etc.)</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section"><div class="params-label">Ejemplo de request</div><pre class="code-block">{
+  "id": "evt_1O...",
+  "type": "payment_intent.succeeded",
+  "data": {
+    "object": {
+      "id": "pi_3O...",
+      "amount": 17050000,
+      "currency": "clp",
+      "status": "succeeded",
+      "metadata": { "order_id": "ord1a2b3-..." }
+    }
+  }
+}</pre></div>
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{ "received": true }</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>400 — firma inválida</li><li>500 — error procesando evento</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-webhooks-coinbase">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-post">POST</span>
+      <code class="ep-path">/api/webhooks/coinbase</code>
+      <span class="badge-auth" style="background:#FAECE7;border-color:#993C1D;color:#712B13">Webhook</span>
+    </div>
+    <h3 class="ep-title">Webhook de Coinbase Commerce</h3>
+    <p class="ep-desc">Recibe eventos de Coinbase Commerce para pagos en criptomonedas. Verifica la firma HMAC-SHA256 con COINBASE_COMMERCE_WEBHOOK_SECRET.</p>
+    <div class="ep-note"><strong>Nota:</strong> Header requerido: X-CC-Webhook-Signature. Eventos: charge:confirmed, charge:failed</div>
+  </div>
+  <div class="ep-body">
+    
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de request</div><pre class="code-block">{
+  "id": "...",
+  "type": "charge:confirmed",
+  "data": {
+    "id": "cb_charge_...",
+    "metadata": { "order_id": "ord1a2b3-..." },
+    "payments": [{ "status": "CONFIRMED", "value": { "crypto": { "amount": "0.0015", "currency": "BTC" } } }]
+  }
+}</pre></div>
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{ "received": true }</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>400 — firma inválida</li></ul></div>
+  </div>
+</div>
+  </section>
+
+  <section class="section" id="couriers">
+    <div class="section-header">
+      <h2>Couriers y Envíos</h2>
+    </div>
+    
+    
+<div class="endpoint" id="ep--api-couriers-quote">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-post">POST</span>
+      <code class="ep-path">/api/couriers/quote</code>
+      <span class="badge-auth" style="background:#F1EFE8;border-color:#5F5E5A;color:#444441">Público</span>
+    </div>
+    <h3 class="ep-title">Cotizar envío</h3>
+    <p class="ep-desc">Cotiza el costo de envío consultando las APIs de los couriers seleccionados en paralelo. Devuelve opciones ordenadas por precio. Aplica la lógica de envío gratuito según COMMISSION_CONFIG.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    
+    <div class="params-section">
+    <div class="params-label">Body (JSON)</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>items</code></td>
+        <td><span class="type-pill">array</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>Lista de {product_id, variant_id, quantity} — se usa para calcular peso y dimensiones</td>
+      </tr><tr>
+        <td><code>destination</code></td>
+        <td><span class="type-pill">object</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>{country_code, city, postal_code}</td>
+      </tr><tr>
+        <td><code>couriers</code></td>
+        <td><span class="type-pill">array</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>["chilexpress","starken","dhl","fedex"] — default: todos los disponibles según destino</td>
+      </tr><tr>
+        <td><code>currency</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>CLP | USD</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section"><div class="params-label">Ejemplo de request</div><pre class="code-block">{
+  "items": [
+    {"product_id": "d4f2a1b3-...", "variant_id": "v1...", "quantity": 1}
+  ],
+  "destination": {
+    "country_code": "CL",
+    "city": "Santiago",
+    "postal_code": "7500000"
+  },
+  "currency": "CLP"
+}</pre></div>
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "quotes": [
+      {
+        "courier": "chilexpress",
+        "courier_label": "Chilexpress",
+        "service": "Estándar",
+        "price": 4990,
+        "currency": "CLP",
+        "estimated_days": 3,
+        "is_free": false
+      },
+      {
+        "courier": "starken",
+        "courier_label": "Starken",
+        "service": "Express",
+        "price": 5900,
+        "currency": "CLP",
+        "estimated_days": 2,
+        "is_free": false
+      }
+    ],
+    "free_shipping_threshold": 50000,
+    "free_shipping_eligible": false
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>400 VALIDATION_ERROR</li><li>503 — API de courier no disponible temporalmente</li></ul></div>
+  </div>
+</div>
+  </section>
+
+  <section class="section" id="upload">
+    <div class="section-header">
+      <h2>Subida de archivos</h2>
+    </div>
+    
+    
+<div class="endpoint" id="ep--api-upload-signature">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-post">POST</span>
+      <code class="ep-path">/api/upload/signature</code>
+      <span class="badge-auth" style="background:#E1F5EE;border-color:#0F6E56;color:#085041">Artesano</span>
+    </div>
+    <h3 class="ep-title">Obtener firma de upload para Cloudinary</h3>
+    <p class="ep-desc">Genera una firma server-side para que el artesano pueda subir archivos directamente a Cloudinary desde el cliente sin exponer el API Secret. La firma expira en 60 segundos.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    
+    <div class="params-section">
+    <div class="params-label">Body (JSON)</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>product_id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>ID de la pieza a la que pertenece el archivo</td>
+      </tr><tr>
+        <td><code>resource_type</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>image | video | raw (para modelos 3D)</td>
+      </tr><tr>
+        <td><code>media_type</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>photo | video | model_3d</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section"><div class="params-label">Ejemplo de request</div><pre class="code-block">{
+  "product_id": "d4f2a1b3-...",
+  "resource_type": "image",
+  "media_type": "photo"
+}</pre></div>
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "signature": "a4d8e3f2...",
+    "timestamp": 1712850000,
+    "api_key": "123456789012345",
+    "cloud_name": "crisol-store",
+    "upload_preset": "crisol_pieces",
+    "folder": "crisol/pieces/d4f2a1b3",
+    "transformation": "f_auto,q_auto"
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>403 FORBIDDEN — producto no pertenece al artesano</li><li>422 UNPROCESSABLE — producto no existe o está publicado (no editable)</li></ul></div>
+  </div>
+</div>
+  </section>
+
+  <section class="section" id="loyalty">
+    <div class="section-header">
+      <h2>Fidelización y Membresía</h2>
+    </div>
+    
+    
+<div class="endpoint" id="ep--api-loyalty">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/loyalty</code>
+      <span class="badge-auth" style="background:#E6F1FB;border-color:#185FA5;color:#0C447C">Comprador</span>
+    </div>
+    <h3 class="ep-title">Obtener balance de puntos y membresía</h3>
+    <p class="ep-desc">Devuelve el balance de puntos actual, el nivel de membresía, los beneficios activos y las últimas transacciones.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "total_points": 7,
+    "membership": {
+      "id": "ml1...",
+      "name": "Estándar",
+      "points_threshold": 0,
+      "discount_pct": 0,
+      "free_shipping": false,
+      "early_access": false
+    },
+    "next_level": {
+      "name": "Premium",
+      "points_threshold": 500,
+      "points_needed": 493
+    },
+    "points_value_clp": 70,
+    "recent_transactions": [
+      {
+        "id": "lt1...",
+        "type": "earn_purchase",
+        "points_delta": 1,
+        "balance_after": 7,
+        "description": "Compra #ord1a2b3",
+        "created_at": "2026-04-01T15:32:00Z"
+      }
+    ]
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>401 UNAUTHORIZED</li></ul></div>
+  </div>
+</div>
+  </section>
+
+  <section class="section" id="reviews">
+    <div class="section-header">
+      <h2>Reseñas</h2>
+    </div>
+    
+    
+<div class="endpoint" id="ep--api-reviews">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-post">POST</span>
+      <code class="ep-path">/api/reviews</code>
+      <span class="badge-auth" style="background:#E6F1FB;border-color:#185FA5;color:#0C447C">Comprador</span>
+    </div>
+    <h3 class="ep-title">Crear reseña</h3>
+    <p class="ep-desc">Crea una reseña para una pieza comprada. Valida que el comprador tenga un pedido entregado que contenga esa pieza. La reseña queda pendiente de moderación (is_approved: false).</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    
+    <div class="params-section">
+    <div class="params-label">Body (JSON)</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>product_id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>ID de la pieza</td>
+      </tr><tr>
+        <td><code>order_id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>ID del pedido entregado</td>
+      </tr><tr>
+        <td><code>rating</code></td>
+        <td><span class="type-pill">integer</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>1 a 5</td>
+      </tr><tr>
+        <td><code>comment</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Comentario del comprador</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section"><div class="params-label">Ejemplo de request</div><pre class="code-block">{
+  "product_id": "d4f2a1b3-...",
+  "order_id": "ord1a2b3-...",
+  "rating": 5,
+  "comment": "Pieza extraordinaria, exactamente como en las fotos."
+}</pre></div>
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "id": "rev1...",
+    "rating": 5,
+    "comment": "Pieza extraordinaria...",
+    "is_approved": false,
+    "created_at": "2026-04-10T18:00:00Z"
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>409 CONFLICT — ya existe una reseña para este producto/pedido</li><li>422 UNPROCESSABLE — pedido no entregado o no contiene la pieza</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-reviews--productId">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/reviews/:productId</code>
+      <span class="badge-auth" style="background:#F1EFE8;border-color:#5F5E5A;color:#444441">Público</span>
+    </div>
+    <h3 class="ep-title">Listar reseñas de una pieza</h3>
+    <p class="ep-desc">Devuelve solo las reseñas aprobadas de una pieza.</p>
+    
+  </div>
+  <div class="ep-body">
+    <div class="params-section">
+    <div class="params-label">Parámetros de ruta</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>productId</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>ID de la pieza</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section">
+    <div class="params-label">Parámetros de query</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>page</code></td>
+        <td><span class="type-pill">integer</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Página</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": [
+    {
+      "id": "rev1...",
+      "rating": 5,
+      "comment": "Pieza extraordinaria...",
+      "buyer_name": "Ana T.",
+      "created_at": "2026-04-10T18:00:00Z"
+    }
+  ],
+  "pagination": {"page": 1, "limit": 10, "total": 12},
+  "meta": { "avg_rating": 4.8 },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>404 NOT_FOUND — pieza no existe</li></ul></div>
+  </div>
+</div>
+  </section>
+
+  <section class="section" id="wishlist">
+    <div class="section-header">
+      <h2>Favoritos</h2>
+    </div>
+    
+    
+<div class="endpoint" id="ep--api-wishlist">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/wishlist</code>
+      <span class="badge-auth" style="background:#E6F1FB;border-color:#185FA5;color:#0C447C">Comprador</span>
+    </div>
+    <h3 class="ep-title">Obtener lista de favoritos</h3>
+    <p class="ep-desc">Devuelve las piezas guardadas por el comprador.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": [
+    {
+      "id": "wi1...",
+      "product": {
+        "id": "d4f2a1b3-...",
+        "slug": "anillo-solitario-oro-18k",
+        "title": "Anillo solitario oro 18k",
+        "base_price": 185000,
+        "cover_image": "...",
+        "status": "published"
+      },
+      "added_at": "2026-03-20T10:00:00Z"
+    }
+  ],
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>401 UNAUTHORIZED</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-wishlist">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-post">POST</span>
+      <code class="ep-path">/api/wishlist</code>
+      <span class="badge-auth" style="background:#E6F1FB;border-color:#185FA5;color:#0C447C">Comprador</span>
+    </div>
+    <h3 class="ep-title">Agregar pieza a favoritos</h3>
+    
+    
+  </div>
+  <div class="ep-body">
+    
+    
+    <div class="params-section">
+    <div class="params-label">Body (JSON)</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>product_id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>ID de la pieza</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section"><div class="params-label">Ejemplo de request</div><pre class="code-block">{ "product_id": "d4f2a1b3-..." }</pre></div>
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{ "data": { "id": "wi2...", "added_at": "2026-04-11T..." }, "error": null }</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>409 CONFLICT — pieza ya en favoritos</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-wishlist--productId">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-delete">DELETE</span>
+      <code class="ep-path">/api/wishlist/:productId</code>
+      <span class="badge-auth" style="background:#E6F1FB;border-color:#185FA5;color:#0C447C">Comprador</span>
+    </div>
+    <h3 class="ep-title">Quitar pieza de favoritos</h3>
+    
+    
+  </div>
+  <div class="ep-body">
+    <div class="params-section">
+    <div class="params-label">Parámetros de ruta</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>productId</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>ID de la pieza</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{ "data": { "removed": true }, "error": null }</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>404 NOT_FOUND — pieza no estaba en favoritos</li></ul></div>
+  </div>
+</div>
+  </section>
+
+  <section class="section" id="following">
+    <div class="section-header">
+      <h2>Seguimiento de artesanos</h2>
+    </div>
+    
+    
+<div class="endpoint" id="ep--api-artesanos--id-follow">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-post">POST</span>
+      <code class="ep-path">/api/artesanos/:id/follow</code>
+      <span class="badge-auth" style="background:#E6F1FB;border-color:#185FA5;color:#0C447C">Comprador</span>
+    </div>
+    <h3 class="ep-title">Seguir artesano</h3>
+    <p class="ep-desc">Suscribe al comprador a las novedades del artesano. Al publicarse una nueva pieza, el comprador recibirá una notificación.</p>
+    
+  </div>
+  <div class="ep-body">
+    <div class="params-section">
+    <div class="params-label">Parámetros de ruta</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>ID del artesano</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{ "data": { "following": true }, "error": null }</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>409 CONFLICT — ya sigue a este artesano</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-artesanos--id-follow">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-delete">DELETE</span>
+      <code class="ep-path">/api/artesanos/:id/follow</code>
+      <span class="badge-auth" style="background:#E6F1FB;border-color:#185FA5;color:#0C447C">Comprador</span>
+    </div>
+    <h3 class="ep-title">Dejar de seguir artesano</h3>
+    
+    
+  </div>
+  <div class="ep-body">
+    <div class="params-section">
+    <div class="params-label">Parámetros de ruta</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>ID del artesano</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{ "data": { "following": false }, "error": null }</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>404 NOT_FOUND — no seguía a este artesano</li></ul></div>
+  </div>
+</div>
+  </section>
+
+  <section class="section" id="artisan_panel">
+    <div class="section-header">
+      <h2>Panel del artesano</h2>
+    </div>
+    
+    
+<div class="endpoint" id="ep--api-artesano-piezas">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/artesano/piezas</code>
+      <span class="badge-auth" style="background:#E1F5EE;border-color:#0F6E56;color:#085041">Artesano</span>
+    </div>
+    <h3 class="ep-title">Listar mis piezas</h3>
+    <p class="ep-desc">Devuelve todas las piezas del artesano con sus estados. Incluye las piezas en borrador y en revisión, no visibles para el público.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    <div class="params-section">
+    <div class="params-label">Parámetros de query</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>status</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>draft | pending_review | published | changes_requested | rejected | sold</td>
+      </tr><tr>
+        <td><code>page</code></td>
+        <td><span class="type-pill">integer</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Página</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": [
+    {
+      "id": "d4f2a1b3-...",
+      "title": "Anillo solitario oro 18k",
+      "status": "published",
+      "base_price": 185000,
+      "cover_image": "...",
+      "published_at": "2026-03-15T10:30:00Z",
+      "variant_count": 3,
+      "review_count": 12
+    }
+  ],
+  "pagination": {"page": 1, "limit": 20, "total": 18},
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>401 UNAUTHORIZED</li><li>403 FORBIDDEN</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-artesano-piezas">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-post">POST</span>
+      <code class="ep-path">/api/artesano/piezas</code>
+      <span class="badge-auth" style="background:#E1F5EE;border-color:#0F6E56;color:#085041">Artesano</span>
+    </div>
+    <h3 class="ep-title">Crear nueva pieza</h3>
+    <p class="ep-desc">Crea una pieza en estado "draft". El artesano puede continuar editando y subiendo multimedia antes de enviarla a revisión.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    
+    <div class="params-section">
+    <div class="params-label">Body (JSON)</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>title</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>Título de la pieza</td>
+      </tr><tr>
+        <td><code>description</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Descripción detallada</td>
+      </tr><tr>
+        <td><code>category_id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>ID de categoría</td>
+      </tr><tr>
+        <td><code>base_price</code></td>
+        <td><span class="type-pill">number</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>Precio base en la moneda indicada</td>
+      </tr><tr>
+        <td><code>currency</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>CLP | USD</td>
+      </tr><tr>
+        <td><code>is_unique</code></td>
+        <td><span class="type-pill">boolean</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>true = pieza única (stock máx 1)</td>
+      </tr><tr>
+        <td><code>type</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>jewelry_unique | jewelry_series | decorative</td>
+      </tr><tr>
+        <td><code>tag_ids</code></td>
+        <td><span class="type-pill">array</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Lista de IDs de tags</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section"><div class="params-label">Ejemplo de request</div><pre class="code-block">{
+  "title": "Collar de plata 925 con cuarzo",
+  "description": "Pieza única forjada a mano...",
+  "category_id": "cat-collares-...",
+  "base_price": 95000,
+  "currency": "CLP",
+  "is_unique": true,
+  "type": "jewelry_unique",
+  "tag_ids": ["tag-plata-925-...", "tag-forjado-mano-..."]
+}</pre></div>
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "id": "new-product-...",
+    "slug": "collar-de-plata-925-con-cuarzo",
+    "status": "draft",
+    "created_at": "2026-04-11T..."
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>400 VALIDATION_ERROR</li><li>403 FORBIDDEN — artesano suspendido</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-artesano-piezas--id-submit">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-post">POST</span>
+      <code class="ep-path">/api/artesano/piezas/:id/submit</code>
+      <span class="badge-auth" style="background:#E1F5EE;border-color:#0F6E56;color:#085041">Artesano</span>
+    </div>
+    <h3 class="ep-title">Enviar pieza a revisión</h3>
+    <p class="ep-desc">Cambia el estado de la pieza de "draft" o "changes_requested" a "pending_review" y notifica al admin. Valida que la pieza tenga al menos una foto antes de enviar.</p>
+    
+  </div>
+  <div class="ep-body">
+    <div class="params-section">
+    <div class="params-label">Parámetros de ruta</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>ID de la pieza</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": { "id": "...", "status": "pending_review" },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>409 CONFLICT — pieza ya en revisión o publicada</li><li>422 UNPROCESSABLE — pieza sin fotos, no se puede enviar a revisión</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-artesano-balance">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/artesano/balance</code>
+      <span class="badge-auth" style="background:#E1F5EE;border-color:#0F6E56;color:#085041">Artesano</span>
+    </div>
+    <h3 class="ep-title">Obtener balance y comisiones</h3>
+    <p class="ep-desc">Devuelve el resumen financiero del artesano: ventas totales, comisiones descontadas, neto recibido y desglose por período.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    <div class="params-section">
+    <div class="params-label">Parámetros de query</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>from</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Fecha inicio ISO 8601 (default: inicio del mes actual)</td>
+      </tr><tr>
+        <td><code>to</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Fecha fin ISO 8601 (default: hoy)</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "period": { "from": "2026-04-01", "to": "2026-04-11" },
+    "sales_count": 3,
+    "gross_amount": 455000,
+    "commission_total": 45500,
+    "commission_pct": 10,
+    "net_amount": 409500,
+    "currency": "CLP",
+    "payments": [
+      {
+        "order_id": "ord1...",
+        "amount": 170500,
+        "commission": 17050,
+        "net": 153450,
+        "stripe_transfer_id": "tr_...",
+        "paid_at": "2026-04-01T15:32:00Z"
+      }
+    ]
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>401 UNAUTHORIZED</li></ul></div>
+  </div>
+</div>
+  </section>
+
+  <section class="section" id="admin_panel">
+    <div class="section-header">
+      <h2>Panel de administración</h2>
+    </div>
+    
+    
+<div class="endpoint" id="ep--api-admin-piezas-revision">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/admin/piezas/revision</code>
+      <span class="badge-auth" style="background:#EEEDFE;border-color:#534AB7;color:#3C3489">Admin</span>
+    </div>
+    <h3 class="ep-title">Cola de moderación de piezas</h3>
+    <p class="ep-desc">Devuelve las piezas pendientes de aprobación ordenadas por fecha de envío (más antiguas primero).</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    <div class="params-section">
+    <div class="params-label">Parámetros de query</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>page</code></td>
+        <td><span class="type-pill">integer</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Página</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": [
+    {
+      "id": "d4f2a1b3-...",
+      "title": "Collar de plata 925",
+      "status": "pending_review",
+      "submitted_at": "2026-04-10T09:00:00Z",
+      "artisan": { "slug": "maria-silva", "full_name": "María Silva" },
+      "media_count": 8,
+      "has_3d_model": true
+    }
+  ],
+  "pagination": {"page": 1, "limit": 20, "total": 4},
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>401 UNAUTHORIZED</li><li>403 FORBIDDEN</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-admin-piezas--id-review">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-patch">PATCH</span>
+      <code class="ep-path">/api/admin/piezas/:id/review</code>
+      <span class="badge-auth" style="background:#EEEDFE;border-color:#534AB7;color:#3C3489">Admin</span>
+    </div>
+    <h3 class="ep-title">Aprobar o rechazar pieza</h3>
+    <p class="ep-desc">Aprueba o rechaza una pieza. Al aprobar: cambia status a "published", registra approved_by y approved_at, dispara revalidación ISR de la página y notifica al artesano. Al rechazar: cambia a "changes_requested" y notifica al artesano con el motivo.</p>
+    
+  </div>
+  <div class="ep-body">
+    <div class="params-section">
+    <div class="params-label">Parámetros de ruta</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>ID de la pieza</td>
+      </tr>
+    </table>
+  </div>
+    
+    <div class="params-section">
+    <div class="params-label">Body (JSON)</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>action</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>approve | reject</td>
+      </tr><tr>
+        <td><code>rejection_notes</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Requerido si action = reject</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section"><div class="params-label">Ejemplo de request</div><pre class="code-block">{ "action": "reject", "rejection_notes": "Las fotos no muestran claramente el acabado de la pieza. Por favor agrega fotos de detalle del reverso." }</pre></div>
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "id": "d4f2a1b3-...",
+    "status": "changes_requested",
+    "rejection_notes": "Las fotos no muestran...",
+    "notification_sent": true
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>404 NOT_FOUND</li><li>409 CONFLICT — pieza no está en pending_review</li><li>422 UNPROCESSABLE — rejection_notes requerido al rechazar</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-admin-reportes-ventas">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/admin/reportes/ventas</code>
+      <span class="badge-auth" style="background:#EEEDFE;border-color:#534AB7;color:#3C3489">Admin</span>
+    </div>
+    <h3 class="ep-title">Reporte de ventas</h3>
+    <p class="ep-desc">Devuelve el reporte de ventas con desglose por artesano, período y estado. Soporta exportación.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    <div class="params-section">
+    <div class="params-label">Parámetros de query</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>from</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Fecha inicio</td>
+      </tr><tr>
+        <td><code>to</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Fecha fin</td>
+      </tr><tr>
+        <td><code>artisan_id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Filtrar por artesano</td>
+      </tr><tr>
+        <td><code>format</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>json | csv (default: json)</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "period": { "from": "2026-04-01", "to": "2026-04-11" },
+    "summary": {
+      "total_orders": 23,
+      "total_gross": 3250000,
+      "total_commission": 325000,
+      "total_net_artisans": 2925000,
+      "currency": "CLP"
+    },
+    "by_artisan": [
+      {
+        "artisan_id": "a1...",
+        "full_name": "María Silva",
+        "orders": 8,
+        "gross": 1200000,
+        "commission": 120000,
+        "net": 1080000
+      }
+    ]
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>403 FORBIDDEN</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-admin-comision">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-post">POST</span>
+      <code class="ep-path">/api/admin/comision</code>
+      <span class="badge-auth" style="background:#EEEDFE;border-color:#534AB7;color:#3C3489">Admin</span>
+    </div>
+    <h3 class="ep-title">Actualizar configuración de comisión</h3>
+    <p class="ep-desc">Crea una nueva versión de COMMISSION_CONFIG. Las configuraciones anteriores se conservan para auditoría. La nueva config aplica a partir del siguiente pago.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    
+    <div class="params-section">
+    <div class="params-label">Body (JSON)</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>commission_pct</code></td>
+        <td><span class="type-pill">number</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>Porcentaje de comisión (ej: 10 = 10%)</td>
+      </tr><tr>
+        <td><code>free_shipping_threshold</code></td>
+        <td><span class="type-pill">number</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>Monto mínimo para envío gratis en CLP</td>
+      </tr><tr>
+        <td><code>points_per_purchase</code></td>
+        <td><span class="type-pill">integer</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Puntos por compra (default: 1)</td>
+      </tr><tr>
+        <td><code>points_to_clp_rate</code></td>
+        <td><span class="type-pill">number</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Valor en CLP de 1 punto</td>
+      </tr><tr>
+        <td><code>notes</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Motivo del cambio</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section"><div class="params-label">Ejemplo de request</div><pre class="code-block">{
+  "commission_pct": 12,
+  "free_shipping_threshold": 60000,
+  "points_per_purchase": 1,
+  "points_to_clp_rate": 10,
+  "notes": "Ajuste tarifario Q2 2026"
+}</pre></div>
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "id": "cc2...",
+    "commission_pct": 12,
+    "effective_from": "2026-04-11T20:00:00Z"
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>400 VALIDATION_ERROR — commission_pct fuera de rango (0-50)</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-admin-resenas--id">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-patch">PATCH</span>
+      <code class="ep-path">/api/admin/resenas/:id</code>
+      <span class="badge-auth" style="background:#EEEDFE;border-color:#534AB7;color:#3C3489">Admin</span>
+    </div>
+    <h3 class="ep-title">Moderar reseña</h3>
+    
+    
+  </div>
+  <div class="ep-body">
+    <div class="params-section">
+    <div class="params-label">Parámetros de ruta</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>id</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>ID de la reseña</td>
+      </tr>
+    </table>
+  </div>
+    
+    <div class="params-section">
+    <div class="params-label">Body (JSON)</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>action</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>approve | reject</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section"><div class="params-label">Ejemplo de request</div><pre class="code-block">{ "action": "approve" }</pre></div>
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{ "data": { "id": "rev1...", "is_approved": true }, "error": null }</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>404 NOT_FOUND</li><li>409 CONFLICT — ya moderada</li></ul></div>
+  </div>
+</div>
+  </section>
+
+  <section class="section" id="utility">
+    <div class="section-header">
+      <h2>Utilitarios</h2>
+    </div>
+    
+    
+<div class="endpoint" id="ep--api-currency">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/currency</code>
+      <span class="badge-auth" style="background:#F1EFE8;border-color:#5F5E5A;color:#444441">Público</span>
+    </div>
+    <h3 class="ep-title">Obtener tipo de cambio CLP/USD</h3>
+    <p class="ep-desc">Devuelve el tipo de cambio actual CLP/USD. El resultado se cachea por 1 hora en Vercel Edge.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{
+  "data": {
+    "CLP_to_USD": 0.001067,
+    "USD_to_CLP": 937.2,
+    "updated_at": "2026-04-11T18:00:00Z",
+    "source": "exchange-rate-api.com"
+  },
+  "error": null
+}</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>503 — proveedor de tipo de cambio no disponible</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-revalidate">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-post">POST</span>
+      <code class="ep-path">/api/revalidate</code>
+      <span class="badge-auth" style="background:#FAECE7;border-color:#993C1D;color:#712B13">Webhook</span>
+    </div>
+    <h3 class="ep-title">Revalidar página (ISR on-demand)</h3>
+    <p class="ep-desc">Dispara la revalidación ISR de una página específica. Usado internamente por webhooks y el panel de admin. Requiere el header X-Revalidate-Secret.</p>
+    <div class="ep-note"><strong>Nota:</strong> Header requerido: X-Revalidate-Secret: {REVALIDATE_SECRET}</div>
+  </div>
+  <div class="ep-body">
+    
+    
+    <div class="params-section">
+    <div class="params-label">Body (JSON)</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>type</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>product | artisan | blog | category</td>
+      </tr><tr>
+        <td><code>slug</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>Slug de la entidad a revalidar</td>
+      </tr>
+    </table>
+  </div>
+    <div class="params-section"><div class="params-label">Ejemplo de request</div><pre class="code-block">{ "type": "product", "slug": "anillo-solitario-oro-18k" }</pre></div>
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">{ "data": { "revalidated": true, "path": "/es/catalogo/anillo-solitario-oro-18k" }, "error": null }</pre></div>
+    <div class="params-section"><div class="params-label">Posibles errores</div><ul class="error-list"><li>401 — X-Revalidate-Secret inválido</li><li>404 NOT_FOUND — path no existe</li></ul></div>
+  </div>
+</div>
+<div class="endpoint" id="ep--api-og">
+  <div class="ep-header">
+    <div class="ep-title-row">
+      <span class="badge-method method-get">GET</span>
+      <code class="ep-path">/api/og</code>
+      <span class="badge-auth" style="background:#F1EFE8;border-color:#5F5E5A;color:#444441">Público</span>
+    </div>
+    <h3 class="ep-title">Generar imagen Open Graph</h3>
+    <p class="ep-desc">Genera dinámicamente una imagen OG para compartir en redes. Renderiza el título, precio, nombre del artesano y la foto de portada.</p>
+    
+  </div>
+  <div class="ep-body">
+    
+    <div class="params-section">
+    <div class="params-label">Parámetros de query</div>
+    <table class="params-table">
+      <tr><th>Nombre</th><th>Tipo</th><th>Req.</th><th>Descripción</th></tr>
+      <tr>
+        <td><code>title</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-yes">sí</span></td>
+        <td>Título de la pieza o página</td>
+      </tr><tr>
+        <td><code>artisan</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Nombre del artesano</td>
+      </tr><tr>
+        <td><code>price</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>Precio formateado</td>
+      </tr><tr>
+        <td><code>image</code></td>
+        <td><span class="type-pill">string</span></td>
+        <td><span class="req-no">no</span></td>
+        <td>URL de la imagen de portada</td>
+      </tr>
+    </table>
+  </div>
+    
+    
+    <div class="params-section"><div class="params-label">Ejemplo de respuesta</div><pre class="code-block">Content-Type: image/png (imagen de 1200×630px generada con @vercel/og)</pre></div>
+    
+  </div>
+</div>
+  </section>
+
+</main>
+</div>
+</body>
+</html>

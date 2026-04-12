@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crisol — Documentación Maestra del Proyecto</title>
+<style>
+:root {
+  --purple-50:#EEEDFE;--purple-200:#AFA9EC;--purple-600:#534AB7;--purple-800:#3C3489;--purple-900:#26215C;
+  --teal-50:#E1F5EE;--teal-200:#5DCAA5;--teal-600:#0F6E56;--teal-800:#085041;
+  --amber-50:#FAEEDA;--amber-200:#EF9F27;--amber-600:#854F0B;--amber-800:#633806;
+  --coral-50:#FAECE7;--coral-600:#993C1D;--coral-800:#712B13;
+  --blue-50:#E6F1FB;--blue-600:#185FA5;--blue-800:#0C447C;
+  --gray-50:#F1EFE8;--gray-200:#B4B2A9;--gray-600:#5F5E5A;--gray-800:#444441;
+  --green-50:#EAF3DE;--green-600:#3B6D11;--green-800:#27500A;
+  --bg:#FAFAF8;--surface:#FFFFFF;--border:#E0DFD9;--text:#2C2C2A;--muted:#73726C;--hint:#A8A79F;
+  --sidebar-w:240px;--font:'Segoe UI',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font);background:var(--bg);color:var(--text);font-size:14px;line-height:1.6}
+a{color:var(--purple-600);text-decoration:none}
+a:hover{text-decoration:underline}
+
+/* Layout */
+.layout{display:flex;min-height:100vh}
+.sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;flex-shrink:0}
+.main{flex:1;padding:40px 48px;max-width:960px}
+
+/* Sidebar */
+.sidebar-header{padding:20px 16px 12px;border-bottom:1px solid var(--border)}
+.sidebar-logo{font-size:18px;font-weight:600;color:var(--purple-800);letter-spacing:-.3px}
+.sidebar-sub{font-size:11px;color:var(--muted);margin-top:2px}
+.nav-section{padding:8px 0}
+.nav-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--hint);padding:8px 16px 4px}
+.nav-item{display:block;padding:6px 16px;font-size:13px;color:var(--muted);border-left:2px solid transparent;transition:all .12s}
+.nav-item:hover{color:var(--text);background:var(--bg);border-left-color:var(--gray-200);text-decoration:none}
+.nav-item.active{color:var(--purple-800);background:var(--purple-50);border-left-color:var(--purple-600);font-weight:500}
+.sidebar-footer{padding:12px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--hint)}
+
+/* Header */
+.page-header{margin-bottom:40px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+.project-tag{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--purple-600);background:var(--purple-50);padding:4px 10px;border-radius:20px;margin-bottom:12px}
+.project-tag span{width:6px;height:6px;border-radius:50%;background:var(--purple-600);display:inline-block}
+h1{font-size:28px;font-weight:600;letter-spacing:-.4px;color:var(--text);margin-bottom:6px}
+.header-meta{display:flex;gap:20px;font-size:13px;color:var(--muted);flex-wrap:wrap}
+.header-meta strong{color:var(--text)}
+
+/* Stats row */
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px;margin-bottom:40px}
+.stat-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:14px 16px}
+.stat-num{font-size:24px;font-weight:600;color:var(--purple-800);line-height:1}
+.stat-label{font-size:11px;color:var(--muted);margin-top:4px}
+
+/* Sections */
+.section{margin-bottom:48px;scroll-margin-top:24px}
+.section-header{display:flex;align-items:center;gap:10px;margin-bottom:20px}
+.section-num{width:26px;height:26px;border-radius:50%;background:var(--purple-600);color:#fff;font-size:12px;font-weight:600;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+h2{font-size:18px;font-weight:600;color:var(--text)}
+h3{font-size:15px;font-weight:600;color:var(--text);margin:20px 0 8px}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:500;padding:3px 8px;border-radius:20px}
+.badge-done{background:var(--green-50);color:var(--green-800)}
+.badge-wip{background:var(--amber-50);color:var(--amber-800)}
+.badge-pending{background:var(--gray-50);color:var(--gray-800)}
+.badge-critical{background:var(--coral-50);color:var(--coral-800)}
+.badge-purple{background:var(--purple-50);color:var(--purple-800)}
+.badge-blue{background:var(--blue-50);color:var(--blue-800)}
+.badge-teal{background:var(--teal-50);color:var(--teal-800)}
+
+/* Tables */
+table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0}
+th{text-align:left;padding:8px 12px;background:var(--bg);border-bottom:1.5px solid var(--border);font-weight:600;font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.04em}
+td{padding:9px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:last-child td{border-bottom:none}
+.table-wrap{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:12px 0}
+
+/* Cards */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:16px 18px;margin:8px 0}
+.card-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px;margin:12px 0}
+.rf-card{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.rf-id{font-size:11px;font-weight:600;color:var(--purple-600);margin-bottom:4px}
+.rf-title{font-size:13px;font-weight:500;color:var(--text);margin-bottom:4px}
+.rf-body{font-size:12px;color:var(--muted);line-height:1.5}
+
+/* Actor pills */
+.actor-row{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0}
+.actor-pill{display:inline-flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;border:1px solid}
+.actor-pill.admin{background:var(--purple-50);border-color:var(--purple-200);color:var(--purple-800)}
+.actor-pill.artisan{background:var(--teal-50);border-color:var(--teal-200);color:var(--teal-800)}
+.actor-pill.buyer{background:var(--blue-50);border-color:#85B7EB;color:var(--blue-800)}
+.actor-pill.guest{background:var(--gray-50);border-color:var(--gray-200);color:var(--gray-800)}
+.actor-pill strong{font-size:13px;font-weight:600;display:block}
+.actor-pill span{font-size:11px;opacity:.8}
+
+/* Tech stack */
+.stack-layer{margin:10px 0;padding:14px 16px;border-radius:10px;border:1px solid var(--border)}
+.stack-layer-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:8px}
+.stack-pills{display:flex;flex-wrap:wrap;gap:6px}
+.sp{font-size:12px;padding:4px 10px;border-radius:20px;border:1px solid}
+.sp-purple{background:var(--purple-50);border-color:var(--purple-200);color:var(--purple-800)}
+.sp-teal{background:var(--teal-50);border-color:var(--teal-200);color:var(--teal-800)}
+.sp-blue{background:var(--blue-50);border-color:#85B7EB;color:var(--blue-800)}
+.sp-amber{background:var(--amber-50);border-color:var(--amber-200);color:var(--amber-800)}
+.sp-gray{background:var(--gray-50);border-color:var(--gray-200);color:var(--gray-800)}
+.sp-coral{background:var(--coral-50);border-color:#F0997B;color:var(--coral-800)}
+
+/* Document registry */
+.artifact-row td:first-child{font-weight:500}
+.artifact-row td code{font-size:11px;background:var(--bg);padding:2px 6px;border-radius:4px;color:var(--purple-800);font-family:monospace}
+
+/* Open items */
+.open-item{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:8px;background:var(--amber-50);border:1px solid var(--amber-200);margin:6px 0;font-size:13px}
+.open-item::before{content:"⚠";font-size:14px;flex-shrink:0;margin-top:1px}
+
+/* ADR */
+.adr-card{border:1px solid var(--border);border-radius:8px;padding:14px 16px;margin:8px 0}
+.adr-header{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+.adr-num{font-size:11px;font-weight:600;color:var(--muted)}
+.adr-title{font-size:13px;font-weight:600;color:var(--text)}
+.adr-status{margin-left:auto}
+.adr-body{font-size:13px;color:var(--muted);line-height:1.5}
+.adr-reason{margin-top:6px;font-size:12px;color:var(--text)}
+.adr-reason strong{color:var(--purple-800)}
+
+/* Roadmap */
+.phase{border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:10px 0}
+.phase-header{padding:12px 16px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--border)}
+.phase-num{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;color:#fff;flex-shrink:0}
+.phase-title{font-size:14px;font-weight:600}
+.phase-est{margin-left:auto;font-size:12px;color:var(--muted)}
+.phase-items{padding:0}
+.phase-item{padding:8px 16px;font-size:13px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px}
+.phase-item:last-child{border-bottom:none}
+.phase-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+
+/* Print */
+@media print{
+  .sidebar{display:none}
+  .main{padding:20px}
+  .stats-row{grid-template-columns:repeat(4,1fr)}
+}
+
+/* Divider */
+hr{border:none;border-top:1px solid var(--border);margin:32px 0}
+
+/* Code */
+code{font-size:12px;background:var(--bg);padding:2px 6px;border-radius:4px;font-family:'Courier New',monospace;color:var(--purple-800)}
+pre{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-size:12px;overflow-x:auto;margin:10px 0;font-family:'Courier New',monospace;color:var(--text)}
+
+/* Version tag */
+.version-badge{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:500;background:var(--purple-50);color:var(--purple-800);border:1px solid var(--purple-200);padding:4px 10px;border-radius:20px}
+</style>
+</head>
+<body>
+<div class="layout">
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-header">
+    <div class="sidebar-logo">💎 Crisol</div>
+    <div class="sidebar-sub">Documentación maestra del proyecto</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Proyecto</div>
+    <a class="nav-item" href="#overview">Resumen ejecutivo</a>
+    <a class="nav-item" href="#actors">Actores y roles</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Requerimientos</div>
+    <a class="nav-item" href="#rf">Funcionales (RF)</a>
+    <a class="nav-item" href="#rnf">No funcionales (RNF)</a>
+    <a class="nav-item" href="#seo">SEO y performance</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Arquitectura</div>
+    <a class="nav-item" href="#stack">Stack tecnológico</a>
+    <a class="nav-item" href="#data">Modelo de datos</a>
+    <a class="nav-item" href="#usecases">Casos de uso</a>
+    <a class="nav-item" href="#flows">Flujos críticos</a>
+  </div>
+  <div class="nav-section">
+    <div class="nav-label">Gestión</div>
+    <a class="nav-item" href="#adr">Decisiones (ADR)</a>
+    <a class="nav-item" href="#roadmap">Roadmap</a>
+    <a class="nav-item" href="#open">Puntos abiertos</a>
+    <a class="nav-item" href="#artifacts">Artefactos</a>
+  </div>
+  <div class="sidebar-footer">v1.1 · Última actualización:<br>Abril 2026</div>
+</nav>
+
+<!-- MAIN -->
+<main class="main">
+
+  <!-- HEADER -->
+  <div class="page-header">
+    <div class="project-tag"><span></span>E-commerce artesanal</div>
+    <h1>Crisol — Documentación Maestra</h1>
+    <div class="header-meta">
+      <span><strong>Versión:</strong> 1.1</span>
+      <span><strong>Estado:</strong> <span class="badge badge-wip">En desarrollo</span></span>
+      <span><strong>Metodología:</strong> Kendall &amp; Kendall</span>
+      <span><strong>Actualizado:</strong> Abril 2026</span>
+    </div>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card"><div class="stat-num">19</div><div class="stat-label">Req. funcionales</div></div>
+    <div class="stat-card"><div class="stat-num">30</div><div class="stat-label">Casos de uso</div></div>
+    <div class="stat-card"><div class="stat-num">4</div><div class="stat-label">Actores del sistema</div></div>
+    <div class="stat-card"><div class="stat-num">22</div><div class="stat-label">Entidades en BD</div></div>
+    <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">Flujos críticos</div></div>
+    <div class="stat-card"><div class="stat-num">6</div><div class="stat-label">Capas de arquitectura</div></div>
+  </div>
+
+  <!-- 1. RESUMEN EJECUTIVO -->
+  <section class="section" id="overview">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <h2>Resumen ejecutivo</h2>
+    </div>
+    <div class="card">
+      <p style="font-size:14px;line-height:1.7;color:var(--muted)"><strong style="color:var(--text)">Crisol</strong> es una plataforma e-commerce multivvendedor de alcance internacional orientada a la venta de joyería artesanal, orfebrería y arte decorativo elaborados por miembros de una familia. Opera bajo un modelo de <strong style="color:var(--text)">marca híbrida</strong>: identidad unificada Crisol con perfiles de autor visibles por artesano. El administrador (desarrollador del sistema) gestiona la plataforma y percibe una <strong style="color:var(--text)">comisión fija automática</strong> por cada venta, descontada vía Stripe Connect.</p>
+    </div>
+    <div class="table-wrap" style="margin-top:16px">
+      <table>
+        <tr><th>Atributo</th><th>Valor</th></tr>
+        <tr><td>Modelo de negocio</td><td>Marketplace familiar + comisión automática por venta</td></tr>
+        <tr><td>Mercado objetivo</td><td>Internacional desde el lanzamiento</td></tr>
+        <tr><td>Plataforma</td><td>Web responsive únicamente (sin app nativa)</td></tr>
+        <tr><td>Monedas</td><td>CLP + USD con conversión en tiempo real</td></tr>
+        <tr><td>Idiomas</td><td>i18n desde la arquitectura; lanzamiento en español</td></tr>
+        <tr><td>Artesanos iniciales</td><td>4–6 miembros familiares, escalable sin refactorización</td></tr>
+        <tr><td>Política de devoluciones</td><td>Sin devoluciones (aviso explícito en checkout)</td></tr>
+        <tr><td>Plazo MVP</td><td>Sin fecha fija — calidad sobre velocidad</td></tr>
+        <tr><td>Presupuesto operativo</td><td>Servicios pagados justificados; low-cost al inicio</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 2. ACTORES -->
+  <section class="section" id="actors">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <h2>Actores y roles</h2>
+    </div>
+    <div class="actor-row">
+      <div class="actor-pill admin"><div><strong>Administrador</strong><span>Desarrollador / dueño de la plataforma</span></div></div>
+      <div class="actor-pill artisan"><div><strong>Artesano</strong><span>Miembro familiar con cuenta propia</span></div></div>
+      <div class="actor-pill buyer"><div><strong>Comprador</strong><span>Usuario registrado con fidelización</span></div></div>
+      <div class="actor-pill guest"><div><strong>Invitado</strong><span>Visitante sin cuenta</span></div></div>
+    </div>
+    <div class="table-wrap" style="margin-top:12px">
+      <table>
+        <tr><th>Actor</th><th>Puede hacer</th><th>No puede</th></tr>
+        <tr><td><span class="badge badge-purple">Admin</span></td><td>Todo — gestión completa de la plataforma, reportería, configuración</td><td>—</td></tr>
+        <tr><td><span class="badge badge-teal">Artesano</span></td><td>Publicar piezas, gestionar pedidos propios, ver balance personal</td><td>Ver datos de otros artesanos, modificar comisión</td></tr>
+        <tr><td><span class="badge badge-blue">Comprador</span></td><td>Comprar, reservar encargos, reseñar, acumular puntos, seguir artesanos</td><td>Acceder a paneles de gestión</td></tr>
+        <tr><td><span class="badge">Invitado</span></td><td>Explorar catálogo, ver piezas, comprar sin cuenta</td><td>Fidelización, historial, favoritos, encargos</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 3. REQUERIMIENTOS FUNCIONALES -->
+  <section class="section" id="rf">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <h2>Requerimientos funcionales</h2>
+    </div>
+    <div class="card-grid">
+      <div class="rf-card"><div class="rf-id">RF-01</div><div class="rf-title">Gestión de productos</div><div class="rf-body">Joyas únicas, en serie, por encargo y arte decorativo. Variantes: talla, material, color, piedras. Piezas vendidas permanecen visibles como portafolio.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-02</div><div class="rf-title">Multimedia por pieza</div><div class="rf-body">Hasta 10 fotos (JPG/PNG/WebP), 1 video y 1 modelo 3D. Visor 3D embebido con @google/model-viewer.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-03</div><div class="rf-title">Flujo de publicación</div><div class="rf-body">Piezas nuevas requieren aprobación del admin. Ediciones menores se publican directamente. Artesano notificado del resultado.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-04</div><div class="rf-title">Catálogo y búsqueda</div><div class="rf-body">Filtros: tipo de pieza, material, rango de precio, ocasión y técnica artesanal. Perfil público por artesano con URL amigable.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-05</div><div class="rf-title">Piezas por encargo</div><div class="rf-body">Artesano publica slots disponibles con precio y tiempo estimado. Comprador reserva y paga el monto completo al confirmar.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-06</div><div class="rf-title">Carrito y checkout</div><div class="rf-body">Disponible para invitados. Política de no devoluciones y aviso de impuestos internacionales visibles antes de confirmar.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-07</div><div class="rf-title">Pagos y comisiones</div><div class="rf-body">Stripe Connect (tarjeta), Coinbase Commerce (cripto) y transferencia bancaria. Split automático: comisión configurable → neto al artesano.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-08</div><div class="rf-title">Envíos</div><div class="rf-body">Cada artesano despacha sus piezas. Cotización automática: Chilexpress + Starken (nacional), DHL + FedEx (internacional). Envío gratis configurable. Retiro en persona.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-09</div><div class="rf-title">Ciclo de pedido</div><div class="rf-body">Pendiente → Pagado → En preparación → Enviado → Entregado. Estados gestionados por el artesano. Notificaciones email + push en cada cambio.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-10</div><div class="rf-title">Puntos y membresía</div><div class="rf-body">1 punto por compra. 2 niveles (umbral y beneficios configurables). Canje como descuento directo en carrito. Acceso anticipado, envío gratis y descuentos en encargos para el nivel superior.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-11</div><div class="rf-title">Panel del artesano</div><div class="rf-body">Gestión de piezas y slots, ventas, estado de pedidos, balance neto, comisiones descontadas, perfil público y notificaciones.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-12</div><div class="rf-title">Panel del admin</div><div class="rf-body">Reportería completa (ventas, comisiones, tráfico, encargos), exportación CSV/Excel/PDF, gestión de artesanos, catálogo, cupones, membresías y reseñas.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-13</div><div class="rf-title">Funcionalidades comprador</div><div class="rf-body">Favoritos, historial, reseñas verificadas, seguir artesanos, panel de puntos y membresía.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-14</div><div class="rf-title">Blog y contenido editorial</div><div class="rf-body">Sección editorial gestionable desde el panel de admin. Soporte para contenido con IA como asistente de redacción.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-15</div><div class="rf-title">Notificaciones</div><div class="rf-body">Email transaccional (Resend) + Web Push para artesanos (nuevos pedidos) y compradores (cambios de estado).</div></div>
+      <div class="rf-card"><div class="rf-id">RF-16</div><div class="rf-title">Internacionalización</div><div class="rf-body">Arquitectura i18n desde el inicio con next-intl. Lanzamiento en español. Hreflang preparado para agregar idiomas sin refactorización.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-17</div><div class="rf-title">Multi-moneda</div><div class="rf-body">CLP y USD con conversión en tiempo real. Precios mostrados en la moneda del visitante.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-18</div><div class="rf-title">Cupones y promociones</div><div class="rf-body">Códigos de descuento (porcentaje o monto fijo) con límite de usos, expiración y reglas de aplicación.</div></div>
+      <div class="rf-card"><div class="rf-id">RF-19</div><div class="rf-title">Configuración global</div><div class="rf-body">COMMISSION_CONFIG versionada: % de comisión, umbral de envío gratis, umbrales de membresía y tasa de conversión de puntos — todo configurable desde el panel.</div></div>
+    </div>
+  </section>
+
+  <!-- 4. RNF -->
+  <section class="section" id="rnf">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <h2>Requerimientos no funcionales</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Categoría</th><th>Requerimiento</th><th>Métrica</th></tr>
+        <tr><td><span class="badge badge-purple">Performance</span></td><td>Core Web Vitals en verde en todas las páginas de producto</td><td>LCP &lt;2.5s · INP &lt;200ms · CLS &lt;0.1</td></tr>
+        <tr><td><span class="badge badge-purple">Performance</span></td><td>Imágenes convertidas automáticamente a WebP/AVIF al subir</td><td>Cloudinary auto-format</td></tr>
+        <tr><td><span class="badge badge-teal">Seguridad</span></td><td>Autenticación con roles y Row Level Security en Supabase</td><td>RLS por tabla + JWT claims</td></tr>
+        <tr><td><span class="badge badge-teal">Seguridad</span></td><td>Pagos PCI-compliant, nunca se almacenan datos de tarjeta</td><td>Stripe PCI DSS Level 1</td></tr>
+        <tr><td><span class="badge badge-blue">Escalabilidad</span></td><td>Soportar de 4–6 a N artesanos sin refactorización</td><td>Diseño multitenant desde el inicio</td></tr>
+        <tr><td><span class="badge badge-blue">Escalabilidad</span></td><td>ISR para páginas de producto — escala sin costo adicional</td><td>Vercel ISR + on-demand revalidation</td></tr>
+        <tr><td><span class="badge">Mantenibilidad</span></td><td>Auditoría automática en cada deploy</td><td>Lighthouse CI — bloquea merge si falla</td></tr>
+        <tr><td><span class="badge">Disponibilidad</span></td><td>Hosting en Vercel con 99.99% SLA</td><td>Vercel Pro SLA</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 5. SEO -->
+  <section class="section" id="seo">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <h2>Estrategia SEO, Performance y AEO</h2>
+    </div>
+    <h3>Motores objetivo</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px">
+      <span class="badge badge-blue">Google</span>
+      <span class="badge badge-blue">Bing</span>
+      <span class="badge badge-blue">Yahoo</span>
+      <span class="badge badge-purple">ChatGPT Search</span>
+      <span class="badge badge-purple">Perplexity</span>
+      <span class="badge badge-purple">Gemini</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Módulo</th><th>Implementación</th></tr>
+        <tr><td><span class="badge badge-done">SEO técnico</span></td><td>URLs amigables, metadatos únicos por entidad, canonical tags, hreflang, sitemap XML dinámico, robots.txt con GPTBot permitido</td></tr>
+        <tr><td><span class="badge badge-done">Schema.org</span></td><td>Product, BreadcrumbList, Person/ProfilePage, FAQPage, Organization, BlogPosting, ItemList</td></tr>
+        <tr><td><span class="badge badge-done">Performance</span></td><td>Lazy loading, WebP/AVIF automático, CDN global, SSG/ISR, prefetching, Brotli, Lighthouse CI en cada deploy</td></tr>
+        <tr><td><span class="badge badge-done">AEO</span></td><td>FAQ sobre joyería artesanal, glosario de orfebrería, guías de compra, historias E-E-A-T por artesano, llms.txt en raíz</td></tr>
+        <tr><td><span class="badge badge-done">Local &amp; Social</span></td><td>Google Business Profile, directorios de artesanía, Pinterest Shopping (feed sincronizado), Instagram Shopping</td></tr>
+        <tr><td><span class="badge badge-done">Monitoreo</span></td><td>GA4, Search Console API integrada en admin, Vercel Analytics, alertas de Core Web Vitals</td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 6. STACK -->
+  <section class="section" id="stack">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <h2>Stack tecnológico</h2>
+    </div>
+    <div class="stack-layer">
+      <div class="stack-layer-label">Cliente</div>
+      <div class="stack-pills">
+        <span class="sp sp-purple">Navegador web (responsive)</span>
+        <span class="sp sp-amber">@google/model-viewer (3D)</span>
+        <span class="sp sp-gray">Web Push API</span>
+      </div>
+    </div>
+    <div class="stack-layer">
+      <div class="stack-layer-label">Edge &amp; Hosting</div>
+      <div class="stack-pills">
+        <span class="sp sp-purple">Vercel (hosting + deploy)</span>
+        <span class="sp sp-purple">Edge Middleware (i18n + auth)</span>
+        <span class="sp sp-gray">Vercel Analytics (CWV)</span>
+        <span class="sp sp-gray">CDN global</span>
+      </div>
+    </div>
+    <div class="stack-layer">
+      <div class="stack-layer-label">Aplicación — Next.js 14</div>
+      <div class="stack-pills">
+        <span class="sp sp-purple">App Router (SSR/SSG/ISR)</span>
+        <span class="sp sp-purple">API Routes (webhooks + orquestación)</span>
+        <span class="sp sp-purple">next-intl (i18n)</span>
+        <span class="sp sp-gray">next-sitemap (XML dinámico)</span>
+        <span class="sp sp-gray">Lighthouse CI</span>
+      </div>
+    </div>
+    <div class="stack-layer">
+      <div class="stack-layer-label">Servicios núcleo</div>
+      <div class="stack-pills">
+        <span class="sp sp-teal">Supabase (PostgreSQL + Auth + Storage)</span>
+        <span class="sp sp-blue">Stripe Connect (pagos + split)</span>
+        <span class="sp sp-blue">Coinbase Commerce (cripto)</span>
+        <span class="sp sp-amber">Cloudinary (media CDN + optimización)</span>
+        <span class="sp sp-coral">Resend (email transaccional)</span>
+      </div>
+    </div>
+    <div class="stack-layer">
+      <div class="stack-layer-label">APIs externas — Envíos</div>
+      <div class="stack-pills">
+        <span class="sp sp-gray">Chilexpress API</span>
+        <span class="sp sp-gray">Starken API</span>
+        <span class="sp sp-gray">DHL Express API</span>
+        <span class="sp sp-gray">FedEx API</span>
+      </div>
+    </div>
+    <div class="stack-layer">
+      <div class="stack-layer-label">Marketing &amp; SEO</div>
+      <div class="stack-pills">
+        <span class="sp sp-gray">Google Analytics 4</span>
+        <span class="sp sp-gray">Google Search Console</span>
+        <span class="sp sp-gray">Google Business Profile</span>
+        <span class="sp sp-gray">Pinterest Shopping</span>
+        <span class="sp sp-gray">Instagram Shopping</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7. MODELO DE DATOS -->
+  <section class="section" id="data">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <h2>Modelo de datos</h2>
+    </div>
+    <p style="color:var(--muted);font-size:13px;margin-bottom:12px">22 entidades organizadas en dos módulos. Ver artefactos ERD para el diagrama completo.</p>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Entidad</th><th>Módulo</th><th>Descripción</th></tr>
+        <tr><td><code>USER</code></td><td><span class="badge badge-purple">Usuarios</span></td><td>Tabla base única para todos los roles. Autenticación vía Supabase Auth.</td></tr>
+        <tr><td><code>ARTISAN</code></td><td><span class="badge badge-purple">Usuarios</span></td><td>Perfil público del artesano (bio, foto, redes). 1:1 con USER.</td></tr>
+        <tr><td><code>BUYER</code></td><td><span class="badge badge-purple">Usuarios</span></td><td>Comprador con puntos y nivel de membresía. 1:1 con USER.</td></tr>
+        <tr><td><code>PRODUCT</code></td><td><span class="badge badge-teal">Catálogo</span></td><td>Pieza artesanal con tipo, precio, estado de publicación y slug SEO.</td></tr>
+        <tr><td><code>PRODUCT_VARIANT</code></td><td><span class="badge badge-teal">Catálogo</span></td><td>Variante de talla, material, color o piedras con stock y modificador de precio.</td></tr>
+        <tr><td><code>PRODUCT_MEDIA</code></td><td><span class="badge badge-teal">Catálogo</span></td><td>Fotos (máx 10), 1 video y 1 modelo 3D por pieza, con sort_order y is_cover.</td></tr>
+        <tr><td><code>CATEGORY / TAG</code></td><td><span class="badge badge-teal">Catálogo</span></td><td>Taxonomía jerárquica del catálogo. Categorías con parent_id para subcategorías.</td></tr>
+        <tr><td><code>COMMISSION_SLOT</code></td><td><span class="badge badge-teal">Catálogo</span></td><td>Slot de encargo publicado por artesano con precio, tiempo y disponibilidad.</td></tr>
+        <tr><td><code>ORDER</code></td><td><span class="badge badge-blue">Comercio</span></td><td>Pedido con estado, totales, moneda, puntos canjeados y cupón aplicado.</td></tr>
+        <tr><td><code>ORDER_ITEM</code></td><td><span class="badge badge-blue">Comercio</span></td><td>Línea del pedido con snapshot_title (inmutable post-venta).</td></tr>
+        <tr><td><code>PAYMENT</code></td><td><span class="badge badge-blue">Comercio</span></td><td>Registro del pago con stripe_payment_id + stripe_transfer_id para trazabilidad completa.</td></tr>
+        <tr><td><code>SHIPMENT</code></td><td><span class="badge badge-blue">Comercio</span></td><td>Despacho por artesano con courier, tracking y estados de envío.</td></tr>
+        <tr><td><code>SHIPPING_ADDRESS</code></td><td><span class="badge badge-blue">Comercio</span></td><td>Dirección inmutable del pedido (snapshot post-confirmación).</td></tr>
+        <tr><td><code>MEMBERSHIP_LEVEL</code></td><td><span class="badge badge-amber">Fidelización</span></td><td>Definición de niveles: umbral de puntos y beneficios. Configurable desde admin.</td></tr>
+        <tr><td><code>LOYALTY_TRANSACTION</code></td><td><span class="badge badge-amber">Fidelización</span></td><td>Historial completo de acumulación y canje de puntos por comprador.</td></tr>
+        <tr><td><code>REVIEW</code></td><td><span class="badge badge-amber">Fidelización</span></td><td>Reseña verificada (solo compradores con ORDER completada). Moderación por admin.</td></tr>
+        <tr><td><code>WISHLIST_ITEM</code></td><td><span class="badge badge-amber">Fidelización</span></td><td>Pieza guardada en favoritos por comprador registrado.</td></tr>
+        <tr><td><code>ARTISAN_FOLLOWER</code></td><td><span class="badge badge-amber">Fidelización</span></td><td>Relación comprador → artesano. Dispara notificaciones de novedades.</td></tr>
+        <tr><td><code>COUPON</code></td><td><span class="badge">Config</span></td><td>Cupones con tipo (% o monto), límite de usos y expiración.</td></tr>
+        <tr><td><code>COMMISSION_CONFIG</code></td><td><span class="badge">Config</span></td><td>Configuración versionada de comisión y umbrales. Historial inmutable.</td></tr>
+        <tr><td><code>BLOG_POST</code></td><td><span class="badge">Contenido</span></td><td>Artículos editoriales con metadatos SEO, estado y autor.</td></tr>
+        <tr><td><code>SEO_META</code></td><td><span class="badge">Contenido</span></td><td>Tabla polimórfica de metadatos SEO + Schema.org JSON para cualquier entidad.</td></tr>
+      </table>
+    </div>
+    <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap">
+      <span class="badge badge-done">ERD módulo 1 (catálogo y comercio)</span>
+      <span class="badge badge-done">ERD módulo 2 (usuarios y fidelización)</span>
+      <span class="badge badge-pending">Migraciones SQL — pendiente</span>
+    </div>
+  </section>
+
+  <!-- 8. CASOS DE USO -->
+  <section class="section" id="usecases">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <h2>Casos de uso</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>ID</th><th>Nombre</th><th>Actores</th></tr>
+        <tr><td><code>UC01</code></td><td>Iniciar sesión</td><td><span class="badge badge-purple">Admin</span> <span class="badge badge-teal">Artesano</span> <span class="badge badge-blue">Comprador</span></td></tr>
+        <tr><td><code>UC02</code></td><td>Registrarse</td><td><span class="badge">Invitado</span></td></tr>
+        <tr><td><code>UC03</code></td><td>Comprar como invitado</td><td><span class="badge">Invitado</span></td></tr>
+        <tr><td><code>UC04</code></td><td>Explorar catálogo</td><td><span class="badge">Todos</span></td></tr>
+        <tr><td><code>UC05</code></td><td>Filtrar productos</td><td><span class="badge">Invitado</span> <span class="badge badge-blue">Comprador</span></td></tr>
+        <tr><td><code>UC06</code></td><td>Ver detalle de pieza + visor 3D</td><td><span class="badge">Invitado</span> <span class="badge badge-blue">Comprador</span></td></tr>
+        <tr><td><code>UC07</code></td><td>Ver perfil de artesano</td><td><span class="badge">Invitado</span> <span class="badge badge-blue">Comprador</span></td></tr>
+        <tr><td><code>UC08</code></td><td>Agregar al carrito</td><td><span class="badge">Invitado</span> <span class="badge badge-blue">Comprador</span></td></tr>
+        <tr><td><code>UC09</code></td><td>Realizar compra</td><td><span class="badge">Invitado</span> <span class="badge badge-blue">Comprador</span></td></tr>
+        <tr><td><code>UC10</code></td><td>Reservar slot de encargo</td><td><span class="badge badge-blue">Comprador</span></td></tr>
+        <tr><td><code>UC11</code></td><td>Aplicar cupón</td><td><span class="badge">Invitado</span> <span class="badge badge-blue">Comprador</span></td></tr>
+        <tr><td><code>UC12</code></td><td>Canjear puntos</td><td><span class="badge badge-blue">Comprador</span></td></tr>
+        <tr><td><code>UC13</code></td><td>Gestionar favoritos</td><td><span class="badge badge-blue">Comprador</span></td></tr>
+        <tr><td><code>UC14</code></td><td>Seguir artesano</td><td><span class="badge badge-blue">Comprador</span></td></tr>
+        <tr><td><code>UC15</code></td><td>Escribir reseña</td><td><span class="badge badge-blue">Comprador</span></td></tr>
+        <tr><td><code>UC16</code></td><td>Ver historial de pedidos</td><td><span class="badge badge-blue">Comprador</span></td></tr>
+        <tr><td><code>UC17</code></td><td>Gestionar perfil público</td><td><span class="badge badge-teal">Artesano</span></td></tr>
+        <tr><td><code>UC18</code></td><td>Subir pieza nueva</td><td><span class="badge badge-teal">Artesano</span></td></tr>
+        <tr><td><code>UC19</code></td><td>Editar pieza existente</td><td><span class="badge badge-teal">Artesano</span></td></tr>
+        <tr><td><code>UC20</code></td><td>Gestionar slots de encargo</td><td><span class="badge badge-teal">Artesano</span></td></tr>
+        <tr><td><code>UC21</code></td><td>Actualizar estado de pedido</td><td><span class="badge badge-teal">Artesano</span></td></tr>
+        <tr><td><code>UC22</code></td><td>Ver balance y comisiones</td><td><span class="badge badge-teal">Artesano</span></td></tr>
+        <tr><td><code>UC23</code></td><td>Aprobar / rechazar pieza</td><td><span class="badge badge-purple">Admin</span></td></tr>
+        <tr><td><code>UC24</code></td><td>Gestionar artesanos</td><td><span class="badge badge-purple">Admin</span></td></tr>
+        <tr><td><code>UC25</code></td><td>Configurar comisión</td><td><span class="badge badge-purple">Admin</span></td></tr>
+        <tr><td><code>UC26</code></td><td>Gestionar cupones</td><td><span class="badge badge-purple">Admin</span></td></tr>
+        <tr><td><code>UC27</code></td><td>Gestionar membresías</td><td><span class="badge badge-purple">Admin</span></td></tr>
+        <tr><td><code>UC28</code></td><td>Moderar reseñas</td><td><span class="badge badge-purple">Admin</span></td></tr>
+        <tr><td><code>UC29</code></td><td>Ver reportería</td><td><span class="badge badge-purple">Admin</span></td></tr>
+        <tr><td><code>UC30</code></td><td>Gestionar categorías y tags</td><td><span class="badge badge-purple">Admin</span></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <!-- 9. FLUJOS CRÍTICOS -->
+  <section class="section" id="flows">
+    <div class="section-header">
+      <div class="section-num">9</div>
+      <h2>Flujos críticos</h2>
+    </div>
+    <div class="card-grid">
+      <div class="card"><div class="rf-id">FLUJO 1</div><div class="rf-title">Compra completa</div><div class="rf-body">Selección de variante → dirección + cotización courier → descuentos opcionales → resumen → pago → crear ORDER + split payment → notificaciones + puntos → pedido confirmado.</div><div style="margin-top:8px"><span class="badge badge-done">Diagrama generado</span></div></div>
+      <div class="card"><div class="rf-id">FLUJO 2</div><div class="rf-title">Publicación de pieza</div><div class="rf-body">Formulario + multimedia → envío a revisión → notificación a admin → aprobación/rechazo → publicar en catálogo + ISR → notificar artesano y seguidores.</div><div style="margin-top:8px"><span class="badge badge-done">Diagrama generado</span></div></div>
+      <div class="card"><div class="rf-id">FLUJO 3</div><div class="rf-title">Split payment</div><div class="rf-body">Stripe captura pago → calcular comisión desde COMMISSION_CONFIG → Stripe Transfer al artesano → registrar PAYMENT (IDs) → ORDER a Pagado → acreditar punto → notificar artesano.</div><div style="margin-top:8px"><span class="badge badge-done">Diagrama generado</span></div></div>
+    </div>
+    <h3>Flujos pendientes de diagramar</h3>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <span class="badge badge-pending">Reserva de encargo (comisión)</span>
+      <span class="badge badge-pending">Canje de puntos en checkout</span>
+      <span class="badge badge-pending">Onboarding artesano + Stripe Connect</span>
+      <span class="badge badge-pending">Recuperación de contraseña</span>
+      <span class="badge badge-pending">Moderación de reseñas</span>
+    </div>
+  </section>
+
+  <!-- 10. ADR -->
+  <section class="section" id="adr">
+    <div class="section-header">
+      <div class="section-num">10</div>
+      <h2>Decisiones de arquitectura (ADR)</h2>
+    </div>
+    <div class="adr-card">
+      <div class="adr-header"><span class="adr-num">ADR-001</span><span class="adr-title">Supabase como backend principal</span><span class="adr-status"><span class="badge badge-done">Aceptada</span></span></div>
+      <div class="adr-body">Alternativas evaluadas: Firebase, PlanetScale + Auth0, Neon + Clerk.</div>
+      <div class="adr-reason"><strong>Razón:</strong> Resuelve autenticación, base de datos PostgreSQL, storage de archivos y Row Level Security en un solo servicio. Reduce configuración y costos iniciales. Migración a infra propia posible si el proyecto escala.</div>
+    </div>
+    <div class="adr-card">
+      <div class="adr-header"><span class="adr-num">ADR-002</span><span class="adr-title">Stripe Connect para split payments</span><span class="adr-status"><span class="badge badge-done">Aceptada</span></span></div>
+      <div class="adr-body">Alternativas evaluadas: MercadoPago, PayPal Marketplace, distribución manual.</div>
+      <div class="adr-reason"><strong>Razón:</strong> Único gateway con split payments nativos (Transfer API), PCI DSS Level 1 y soporte robusto para marketplace latinoamericano. El costo (2.9% + fee) se absorbe en el porcentaje de comisión.</div>
+    </div>
+    <div class="adr-card">
+      <div class="adr-header"><span class="adr-num">ADR-003</span><span class="adr-title">Next.js 14 App Router con ISR</span><span class="adr-status"><span class="badge badge-done">Aceptada</span></span></div>
+      <div class="adr-body">Alternativas evaluadas: Remix, Nuxt 3, Astro.</div>
+      <div class="adr-reason"><strong>Razón:</strong> SSG/ISR nativo crítico para SEO de catálogo. React Server Components reduce JS enviado al cliente. Ecosistema más maduro para e-commerce. next-intl e integración con Vercel sin configuración adicional.</div>
+    </div>
+    <div class="adr-card">
+      <div class="adr-header"><span class="adr-num">ADR-004</span><span class="adr-title">Cloudinary para multimedia</span><span class="adr-status"><span class="badge badge-done">Aceptada</span></span></div>
+      <div class="adr-body">Alternativas evaluadas: Supabase Storage solo, AWS S3 + CloudFront, Uploadthing.</div>
+      <div class="adr-reason"><strong>Razón:</strong> Conversión automática a WebP/AVIF es un RNF crítico para Core Web Vitals. Cloudinary lo resuelve sin código adicional. CDN global incluido. Supabase Storage se usa solo para modelos 3D donde la transformación no aplica.</div>
+    </div>
+    <div class="adr-card">
+      <div class="adr-header"><span class="adr-num">ADR-005</span><span class="adr-title">USER como tabla base única (single table inheritance)</span><span class="adr-status"><span class="badge badge-done">Aceptada</span></span></div>
+      <div class="adr-body">Alternativas evaluadas: tablas separadas por rol, discriminated union.</div>
+      <div class="adr-reason"><strong>Razón:</strong> Permite a futuro que un mismo email sea artesano y comprador simultáneamente sin duplicar registros de autenticación. Supabase Auth gestiona el registro; la tabla USER extiende con datos del negocio.</div>
+    </div>
+    <div class="adr-card">
+      <div class="adr-header"><span class="adr-num">ADR-006</span><span class="adr-title">SEO_META polimórfica para todos los metadatos</span><span class="adr-status"><span class="badge badge-done">Aceptada</span></span></div>
+      <div class="adr-body">Alternativas evaluadas: columnas SEO en cada tabla, JSON en la misma entidad.</div>
+      <div class="adr-reason"><strong>Razón:</strong> Centraliza metadatos SEO y Schema.org JSON de productos, artesanos, categorías y blog posts en una sola tabla. El admin puede editar metadatos de cualquier entidad desde un solo panel sin modificar las tablas de negocio.</div>
+    </div>
+  </section>
+
+  <!-- 11. ROADMAP -->
+  <section class="section" id="roadmap">
+    <div class="section-header">
+      <div class="section-num">11</div>
+      <h2>Roadmap de desarrollo por fases</h2>
+    </div>
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:var(--purple-600)">1</div>
+        <div class="phase-title">Fase 1 — Fundaciones</div>
+        <div class="phase-est">Semanas 1–4</div>
+        <span class="badge badge-wip">En progreso (documentación)</span>
+      </div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--green-600)"></div>Captura de requerimientos completa</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--green-600)"></div>Modelo entidad-relación (2 módulos)</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--green-600)"></div>Diagrama de casos de uso (30 UCs)</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--green-600)"></div>Arquitectura del sistema (6 capas)</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--green-600)"></div>Flujos críticos (3 diagramas)</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--amber-200)"></div>Migraciones SQL completas (Supabase)</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--amber-200)"></div>Estructura de carpetas Next.js 14</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--amber-200)"></div>Variables de entorno documentadas</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--amber-200)"></div>Wireframes de pantallas clave</div>
+    </div>
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:var(--teal-600)">2</div>
+        <div class="phase-title">Fase 2 — MVP Core</div>
+        <div class="phase-est">Semanas 5–12</div>
+        <span class="badge badge-pending">Pendiente</span>
+      </div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Autenticación (Supabase Auth + RLS)</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Catálogo público (SSG/ISR) + visor 3D</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Panel de artesano (subir piezas + multimedia)</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Flujo de aprobación de piezas (admin)</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Carrito + checkout + Stripe Connect</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Split payment automático</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Integración couriers (cotización)</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Email transaccional (Resend)</div>
+    </div>
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:var(--blue-600)">3</div>
+        <div class="phase-title">Fase 3 — Fidelización y contenido</div>
+        <div class="phase-est">Semanas 13–18</div>
+        <span class="badge badge-pending">Pendiente</span>
+      </div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Sistema de puntos y membresía</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Reseñas verificadas + moderación</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Favoritos y seguimiento de artesanos</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Slots de encargo + pago de encargo</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Blog editorial + asistente IA</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Web Push notifications</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Coinbase Commerce (cripto)</div>
+    </div>
+    <div class="phase">
+      <div class="phase-header">
+        <div class="phase-num" style="background:var(--amber-600)">4</div>
+        <div class="phase-title">Fase 4 — SEO, Analytics y optimización</div>
+        <div class="phase-est">Semanas 19–24</div>
+        <span class="badge badge-pending">Pendiente</span>
+      </div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Schema.org completo (todos los tipos)</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>GA4 + Search Console API en admin</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Pinterest Shopping feed sincronizado</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Instagram Shopping</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>llms.txt + FAQ + glosario AEO</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Lighthouse CI en pipeline de deploy</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Multi-moneda (CLP/USD en tiempo real)</div>
+      <div class="phase-item"><div class="phase-dot" style="background:var(--gray-200)"></div>Internacionalización (inglés activado)</div>
+    </div>
+  </section>
+
+  <!-- 12. PUNTOS ABIERTOS -->
+  <section class="section" id="open">
+    <div class="section-header">
+      <div class="section-num">12</div>
+      <h2>Puntos abiertos y pendientes técnicos</h2>
+    </div>
+    <div class="open-item">Formatos de modelos 3D aceptados (.glb, .gltf, .usdz) — definir al evaluar el pipeline de producción 3D de los artesanos y las herramientas que usarán para crear los modelos.</div>
+    <div class="open-item">Porcentaje exacto de comisión — configurable desde el panel de admin. Definir valor inicial antes del lanzamiento.</div>
+    <div class="open-item">Umbral de puntos para nivel Premium — configurable desde el panel. Definir valor inicial.</div>
+    <div class="open-item">Tasa de conversión de puntos a dinero — ej. 100 puntos = $1.000 CLP. Definir antes de implementar el módulo de fidelización.</div>
+    <div class="open-item">Nombres de los niveles de membresía — a definir desde el panel de admin antes del lanzamiento.</div>
+    <div class="open-item">Onboarding de artesanos en Stripe Connect — definir el flujo de activación de cuenta Stripe antes de poder despachar pedidos. Bloqueante para el MVP.</div>
+    <div class="open-item">Gestión de impuestos internacionales — actualmente se muestra solo un aviso legal. Evaluar si se necesita integración con un servicio de tax compliance (ej. TaxJar) antes del lanzamiento internacional.</div>
+  </section>
+
+  <!-- 13. ARTEFACTOS -->
+  <section class="section" id="artifacts">
+    <div class="section-header">
+      <div class="section-num">13</div>
+      <h2>Registro de artefactos del proyecto</h2>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <tr><th>Artefacto</th><th>Formato</th><th>Estado</th><th>Descripción</th></tr>
+        <tr class="artifact-row">
+          <td>Documento maestro</td>
+          <td><code>.html</code></td>
+          <td><span class="badge badge-done">Disponible</span></td>
+          <td>Este documento — índice vivo de todo el proyecto</td>
+        </tr>
+        <tr class="artifact-row">
+          <td>ERD — Núcleo comercial</td>
+          <td><code>.html</code></td>
+          <td><span class="badge badge-done">Disponible</span></td>
+          <td>Entidades de catálogo, pedidos, pagos y envíos</td>
+        </tr>
+        <tr class="artifact-row">
+          <td>ERD — Usuarios y fidelización</td>
+          <td><code>.html</code></td>
+          <td><span class="badge badge-wip">Por guardar</span></td>
+          <td>Usuarios, membresía, puntos, reseñas y contenido</td>
+        </tr>
+        <tr class="artifact-row">
+          <td>Diagrama de casos de uso</td>
+          <td><code>.html</code></td>
+          <td><span class="badge badge-wip">Por guardar</span></td>
+          <td>30 casos de uso interactivos con filtro por actor</td>
+        </tr>
+        <tr class="artifact-row">
+          <td>Diagrama de arquitectura</td>
+          <td><code>.html</code></td>
+          <td><span class="badge badge-wip">Por guardar</span></td>
+          <td>6 capas del sistema con detalle de cada servicio</td>
+        </tr>
+        <tr class="artifact-row">
+          <td>Flujos críticos (3)</td>
+          <td><code>.html</code></td>
+          <td><span class="badge badge-wip">Por guardar</span></td>
+          <td>Compra, publicación y split payment</td>
+        </tr>
+        <tr class="artifact-row">
+          <td>Migraciones SQL</td>
+          <td><code>.sql</code></td>
+          <td><span class="badge badge-pending">Pendiente</span></td>
+          <td>Esquema completo Supabase listo para ejecutar</td>
+        </tr>
+        <tr class="artifact-row">
+          <td>Estructura del proyecto</td>
+          <td><code>.md</code></td>
+          <td><span class="badge badge-pending">Pendiente</span></td>
+          <td>Carpetas Next.js 14 + variables de entorno</td>
+        </tr>
+        <tr class="artifact-row">
+          <td>Especificación de API</td>
+          <td><code>.md</code></td>
+          <td><span class="badge badge-pending">Pendiente</span></td>
+          <td>Endpoints, payloads y respuestas de cada módulo</td>
+        </tr>
+        <tr class="artifact-row">
+          <td>Roadmap detallado</td>
+          <td><code>.html</code></td>
+          <td><span class="badge badge-pending">Pendiente</span></td>
+          <td>Fases, tareas y estimaciones de desarrollo</td>
+        </tr>
+        <tr class="artifact-row">
+          <td>Wireframes pantallas clave</td>
+          <td><code>.html</code></td>
+          <td><span class="badge badge-pending">Pendiente</span></td>
+          <td>Catálogo, pieza, checkout, paneles artesano y admin</td>
+        </tr>
+        <tr class="artifact-row">
+          <td>Estrategia de testing</td>
+          <td><code>.md</code></td>
+          <td><span class="badge badge-pending">Pendiente</span></td>
+          <td>Herramientas, cobertura mínima y plan de pruebas</td>
+        </tr>
+        <tr class="artifact-row">
+          <td>Pipeline CI/CD</td>
+          <td><code>.yml</code></td>
+          <td><span class="badge badge-pending">Pendiente</span></td>
+          <td>GitHub Actions → Vercel con Lighthouse CI</td>
+        </tr>
+      </table>
+    </div>
+    <div style="margin-top:16px;padding:12px 14px;background:var(--purple-50);border-radius:8px;font-size:13px;color:var(--purple-800);border:1px solid var(--purple-200)">
+      <strong>Convención de versiones:</strong> Al actualizar cualquier sección de este documento, incrementar el número de versión en el sidebar y actualizar la fecha. Formato: <code>v&lt;major&gt;.&lt;minor&gt;</code> — major para cambios estructurales, minor para adiciones o correcciones.
+    </div>
+  </section>
+
+  <hr>
+  <div style="text-align:center;font-size:12px;color:var(--hint);padding:8px 0 24px">
+    Crisol · Documentación Maestra v1.1 · Generado con asistencia de IA · Metodología Kendall &amp; Kendall
+  </div>
+
+</main>
+</div>
+
+<script>
+const sections = document.querySelectorAll('.section');
+const navItems = document.querySelectorAll('.nav-item');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      navItems.forEach(n => n.classList.remove('active'));
+      const active = document.querySelector('.nav-item[href="#' + e.target.id + '"]');
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.2 });
+sections.forEach(s => obs.observe(s));
+navItems.forEach(item => {
+  item.addEventListener('click', e => {
+    e.preventDefault();
+    const id = item.getAttribute('href').slice(1);
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
+  });
+});
+</script>
+</body>
+</html>

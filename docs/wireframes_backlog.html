@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crisol — Backlog de Wireframes</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --gold:#B8975A;--gold-l:#F2E8D5;--gold-d:#8A6E3E;
+  --ink:#1A1714;--ink-m:#5C5550;--ink-l:#9C9590;
+  --cream:#FAF8F5;--white:#FFFFFF;--bd:#E8E3DC;--sf:#F5F1EB;
+  --ok:#3B6D11;--ok-l:#EAF3DE;--warn:#B05008;--warn-l:#FFF3E0;
+  --sans:'DM Sans',sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--sans);background:var(--cream);color:var(--ink);font-size:14px;line-height:1.6;padding:32px}
+h1{font-size:22px;font-weight:500;margin-bottom:4px}
+.meta{font-size:13px;color:var(--ink-l);margin-bottom:32px}
+.meta strong{color:var(--ink-m)}
+.section{margin-bottom:32px}
+.section-title{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink-l);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--bd)}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px}
+.card{background:var(--white);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
+.card-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px}
+.card-title{font-size:13px;font-weight:500;color:var(--ink);flex:1}
+.badge{font-size:10px;font-weight:500;padding:3px 8px;border-radius:20px;white-space:nowrap;flex-shrink:0}
+.b-done{background:var(--ok-l);color:var(--ok)}
+.b-pending{background:var(--sf);color:var(--ink-m);border:1px solid var(--bd)}
+.b-low{background:var(--warn-l);color:var(--warn)}
+.card-reason{font-size:12px;color:var(--ink-l);line-height:1.5}
+.card-module{font-size:10px;color:var(--gold-d);background:var(--gold-l);padding:2px 7px;border-radius:20px;display:inline-block;align-self:flex-start}
+/* summary row */
+.summary{display:flex;gap:16px;margin-bottom:28px;flex-wrap:wrap}
+.sum-card{background:var(--white);border:1px solid var(--bd);border-radius:8px;padding:12px 18px;display:flex;align-items:center;gap:10px}
+.sum-num{font-size:22px;font-weight:500;color:var(--ink)}
+.sum-lbl{font-size:12px;color:var(--ink-l)}
+/* done section uses muted style */
+.card.done{opacity:.55}
+</style>
+</head>
+<body>
+
+<h1>Crisol — Backlog de Wireframes</h1>
+<div class="meta">Última actualización: <strong>Abril 2026</strong> · Referencia para no olvidar pantallas pendientes de diseñar</div>
+
+<div class="summary">
+  <div class="sum-card"><div class="sum-num" style="color:var(--ok)">17</div><div class="sum-lbl">Wireframeadas<br>y listas</div></div>
+  <div class="sum-card"><div class="sum-num" style="color:var(--ink)">12</div><div class="sum-lbl">Postergadas<br>(no críticas ahora)</div></div>
+  <div class="sum-card"><div class="sum-num" style="color:var(--gold)">29</div><div class="sum-lbl">Total pantallas<br>identificadas</div></div>
+</div>
+
+<!-- DONE -->
+<div class="section">
+  <div class="section-title">✓ Wireframeadas y listas (17)</div>
+  <div class="cards">
+    <div class="card done"><div class="card-top"><span class="card-title">Homepage</span><span class="badge b-done">Listo</span></div><span class="card-module">Público</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Catálogo con filtros</span><span class="badge b-done">Listo</span></div><span class="card-module">Público</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Detalle de pieza (+ visor 3D)</span><span class="badge b-done">Listo</span></div><span class="card-module">Público</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Perfil público del artesano</span><span class="badge b-done">Listo</span></div><span class="card-module">Público</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Listado público de encargos</span><span class="badge b-done">Listo</span></div><span class="card-module">Público</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Solicitud de encargo (slot)</span><span class="badge b-done">Listo</span></div><span class="card-module">Compra</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Login / Registro</span><span class="badge b-done">Listo</span></div><span class="card-module">Auth</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Carrito standalone</span><span class="badge b-done">Listo</span></div><span class="card-module">Compra</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Checkout (dirección + envío + pago)</span><span class="badge b-done">Listo</span></div><span class="card-module">Compra</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Confirmación de pedido</span><span class="badge b-done">Listo</span></div><span class="card-module">Compra</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Mis pedidos (listado + detalle)</span><span class="badge b-done">Listo</span></div><span class="card-module">Mi cuenta</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Mis puntos / Membresía</span><span class="badge b-done">Listo</span></div><span class="card-module">Mi cuenta</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Panel artesano — Dashboard</span><span class="badge b-done">Listo</span></div><span class="card-module">Panel artesano</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Nueva pieza / editar pieza</span><span class="badge b-done">Listo</span></div><span class="card-module">Panel artesano</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Onboarding Stripe Connect</span><span class="badge b-done">Listo</span></div><span class="card-module">Panel artesano</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Panel admin — Dashboard</span><span class="badge b-done">Listo</span></div><span class="card-module">Panel admin</span></div>
+    <div class="card done"><div class="card-top"><span class="card-title">Admin — Revisar pieza individual</span><span class="badge b-done">Listo</span></div><span class="card-module">Panel admin</span></div>
+  </div>
+</div>
+
+<!-- POSTPONED - Mi cuenta -->
+<div class="section">
+  <div class="section-title">⏳ Postergadas — Mi cuenta (4)</div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-top"><span class="card-title">Wishlist / Mis favoritos</span><span class="badge b-pending">Pendiente</span></div>
+      <span class="card-module">Mi cuenta</span>
+      <div class="card-reason">Lista de product cards ya wireframeadas. Patrón trivial: grid de piezas con botón "Quitar". No bloquea ninguna decisión.</div>
+    </div>
+    <div class="card">
+      <div class="card-top"><span class="card-title">Artesanos seguidos</span><span class="badge b-pending">Pendiente</span></div>
+      <span class="card-module">Mi cuenta</span>
+      <div class="card-reason">Idéntico a wishlist pero con artisan-cards. Misma lógica de pantalla.</div>
+    </div>
+    <div class="card">
+      <div class="card-top"><span class="card-title">Mis direcciones guardadas</span><span class="badge b-pending">Pendiente</span></div>
+      <span class="card-module">Mi cuenta</span>
+      <div class="card-reason">CRUD estándar de direcciones: lista + formulario. Sin ambigüedad de diseño.</div>
+    </div>
+    <div class="card">
+      <div class="card-top"><span class="card-title">Editar mi perfil (comprador)</span><span class="badge b-pending">Pendiente</span></div>
+      <span class="card-module">Mi cuenta</span>
+      <div class="card-reason">Formulario de nombre, email, avatar y contraseña. Patrón estándar.</div>
+    </div>
+  </div>
+</div>
+
+<!-- POSTPONED - Panel artesano -->
+<div class="section">
+  <div class="section-title">⏳ Postergadas — Panel artesano (3)</div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-top"><span class="card-title">Mis piezas — listado completo</span><span class="badge b-pending">Pendiente</span></div>
+      <span class="card-module">Panel artesano</span>
+      <div class="card-reason">Tabla con filtros por estado (borrador, en revisión, publicada, vendida). Patrón igual al listado de pedidos ya diseñado.</div>
+    </div>
+    <div class="card">
+      <div class="card-top"><span class="card-title">Mis encargos — gestión de slots</span><span class="badge b-pending">Pendiente</span></div>
+      <span class="card-module">Panel artesano</span>
+      <div class="card-reason">CRUD de slots: crear, editar disponibilidad, cerrar. Formulario simple (5-6 campos). Ver solicitudes recibidas.</div>
+    </div>
+    <div class="card">
+      <div class="card-top"><span class="card-title">Balance y comisiones — detalle</span><span class="badge b-pending">Pendiente</span></div>
+      <span class="card-module">Panel artesano</span>
+      <div class="card-reason">Tabla de transacciones con fechas, montos brutos/netos y IDs de transferencia Stripe. Misma lógica que historial de puntos.</div>
+    </div>
+  </div>
+</div>
+
+<!-- POSTPONED - Panel admin -->
+<div class="section">
+  <div class="section-title">⏳ Postergadas — Panel admin (4)</div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-top"><span class="card-title">Gestión de artesanos</span><span class="badge b-pending">Pendiente</span></div>
+      <span class="card-module">Panel admin</span>
+      <div class="card-reason">Tabla con filtros + fila de detalle (suspender, ver piezas, ver estado Stripe). Mismo patrón que moderación de reseñas.</div>
+    </div>
+    <div class="card">
+      <div class="card-top"><span class="card-title">Moderación de reseñas</span><span class="badge b-pending">Pendiente</span></div>
+      <span class="card-module">Panel admin</span>
+      <div class="card-reason">Cola igual a la de piezas pero más simple. Solo texto + rating + aprobar/rechazar. Sin ambigüedad.</div>
+    </div>
+    <div class="card">
+      <div class="card-top"><span class="card-title">Configurar comisión y membresías</span><span class="badge b-pending">Pendiente</span></div>
+      <span class="card-module">Panel admin</span>
+      <div class="card-reason">Formulario de 4-5 campos para % comisión, umbral envío gratis, puntos por compra y beneficios de nivel. Trivial.</div>
+    </div>
+    <div class="card">
+      <div class="card-top"><span class="card-title">Reportería — gráficos avanzados</span><span class="badge b-low">Baja prioridad</span></div>
+      <span class="card-module">Panel admin</span>
+      <div class="card-reason">Requiere datos reales para diseñar bien. Mejor wireframear en la Fase 4 cuando hay ventas reales de referencia. Dashboard básico ya existe.</div>
+    </div>
+  </div>
+</div>
+
+<!-- POSTPONED - Otros -->
+<div class="section">
+  <div class="section-title">⏳ Postergadas — Otros (1)</div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-top"><span class="card-title">Páginas de error (404, 500, mantenimiento)</span><span class="badge b-pending">Pendiente</span></div>
+      <span class="card-module">Sistema</span>
+      <div class="card-reason">Patrón estándar con logo, mensaje y CTA "Volver al inicio". Se diseña al final del proyecto junto con el sistema de diseño visual final.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Auth note -->
+<div class="section">
+  <div class="section-title">ℹ Nota — Recuperación de contraseña</div>
+  <div class="cards">
+    <div class="card">
+      <div class="card-top"><span class="card-title">Olvidé mi contraseña + restablecer</span><span class="badge b-pending">Pendiente</span></div>
+      <span class="card-module">Auth</span>
+      <div class="card-reason">Flujo estándar de Supabase Auth: pantalla de email → email enviado → nueva contraseña. 3 pantallas triviales, Supabase provee los templates por defecto.</div>
+    </div>
+  </div>
+</div>
+
+<div style="margin-top:32px;padding:16px;background:var(--white);border:1px solid var(--bd);border-radius:10px;font-size:12px;color:var(--ink-m);line-height:1.8">
+  <strong style="color:var(--ink)">Cómo usar este documento:</strong>
+  Al iniciar el desarrollo de un módulo, revisar si su pantalla está wireframeada.
+  Si está en "Postergadas", evaluar si el patrón es realmente trivial o si surgieron complejidades nuevas.
+  Si surgieron complejidades → wireframear antes de codear.
+  Si sigue siendo trivial → codear directamente usando el patrón de referencia indicado en la razón.
+</div>
+</body>
+</html>

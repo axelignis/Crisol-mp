@@ -1,0 +1,430 @@
+# =============================================================
+# CRISOL — Pipeline CI/CD
+# GitHub Actions: calidad + tests + deploy automático
+#
+# FLUJO:
+#   Push a cualquier rama  → quality check (lint, types, unit tests)
+#   Pull Request a main    → quality + E2E + Lighthouse + preview deploy
+#   Merge a main           → quality + E2E + deploy a producción
+#
+# SECRETOS REQUERIDOS EN GITHUB (Settings → Secrets → Actions):
+#   VERCEL_TOKEN            — token de Vercel
+#   VERCEL_ORG_ID           — ID de la organización en Vercel
+#   VERCEL_PROJECT_ID       — ID del proyecto en Vercel
+#   SUPABASE_ACCESS_TOKEN   — para CLI de Supabase
+#   SUPABASE_DB_PASSWORD    — contraseña de la BD de Supabase
+#   NEXT_PUBLIC_SUPABASE_URL             — (preview/prod)
+#   NEXT_PUBLIC_SUPABASE_ANON_KEY        — (preview/prod)
+#   STRIPE_SECRET_KEY                    — (test key para CI)
+#   STRIPE_WEBHOOK_SECRET                — (test webhook secret)
+#   RESEND_API_KEY                       — (test key)
+#   CLOUDINARY_API_SECRET                — (para tests de upload)
+# =============================================================
+
+name: CI/CD — Crisol
+
+on:
+  push:
+    branches: [main, develop, 'feature/**', 'fix/**']
+  pull_request:
+    branches: [main, develop]
+    types: [opened, synchronize, reopened]
+
+# Cancelar runs anteriores de la misma rama para ahorrar minutos
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  NODE_VERSION: '20'
+  PNPM_VERSION: '9'
+
+# =============================================================
+# JOB 1: CALIDAD — lint, tipos y tests unitarios
+# Corre en TODOS los pushes. Si falla, bloquea todo lo demás.
+# =============================================================
+jobs:
+  quality:
+    name: Calidad (lint + tipos + unit tests)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout código
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - name: Setup Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint (ESLint)
+        run: pnpm lint
+        # Falla si hay errores. Warnings permitidos en dev, errores nunca.
+
+      - name: Verificación de tipos (TypeScript)
+        run: pnpm tsc --noEmit
+        # Falla si hay errores de tipos. Garantiza coherencia con database.types.ts
+
+      - name: Tests unitarios + cobertura
+        run: pnpm test:coverage
+        env:
+          # Variables mínimas para tests unitarios (sin BD real)
+          NODE_ENV: test
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
+          NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+      - name: Publicar reporte de cobertura
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: coverage-report
+          path: coverage/
+          retention-days: 7
+
+      # Comentar el % de cobertura en el PR
+      - name: Comentar cobertura en PR
+        uses: davelosert/vitest-coverage-report-action@v2
+        if: github.event_name == 'pull_request'
+        with:
+          json-summary-path: coverage/coverage-summary.json
+
+# =============================================================
+# JOB 2: TESTS DE RLS — políticas de Supabase
+# Corre en PRs a main y en pushes a main/develop.
+# Levanta una BD local de Supabase y aplica las migraciones.
+# =============================================================
+  rls-tests:
+    name: Tests RLS (Supabase local)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: quality
+    if: |
+      github.event_name == 'pull_request' ||
+      github.ref == 'refs/heads/main' ||
+      github.ref == 'refs/heads/develop'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Iniciar Supabase local
+        run: supabase start
+        # Levanta PostgreSQL + Auth + Storage en Docker
+
+      - name: Aplicar migraciones
+        run: |
+          supabase db push
+          echo "Migraciones aplicadas correctamente"
+
+      - name: Ejecutar tests RLS
+        run: pnpm test:rls
+        env:
+          SUPABASE_URL: http://localhost:54321
+          SUPABASE_ANON_KEY: ${{ env.SUPABASE_LOCAL_ANON_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ env.SUPABASE_LOCAL_SERVICE_KEY }}
+
+      - name: Detener Supabase local
+        if: always()
+        run: supabase stop
+
+# =============================================================
+# JOB 3: BUILD — verifica que la app compila sin errores
+# =============================================================
+  build:
+    name: Build Next.js
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: quality
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Build de producción
+        run: pnpm build
+        env:
+          # Variables mínimas para que el build no falle
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
+          NEXT_PUBLIC_APP_URL: https://www.crisol.cl
+          NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME: crisol-store
+
+      - name: Subir build como artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: nextjs-build
+          path: .next/
+          retention-days: 1
+
+# =============================================================
+# JOB 4: LIGHTHOUSE CI — performance y SEO
+# Solo en PRs. Bloquea merge si los Core Web Vitals caen.
+# =============================================================
+  lighthouse:
+    name: Lighthouse CI (CWV + SEO)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: build
+    if: github.event_name == 'pull_request'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Descargar build
+        uses: actions/download-artifact@v4
+        with:
+          name: nextjs-build
+          path: .next/
+
+      - name: Iniciar servidor Next.js
+        run: pnpm start &
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          PORT: 3000
+
+      - name: Esperar que el servidor esté listo
+        run: npx wait-on http://localhost:3000 --timeout 30000
+
+      - name: Instalar Lighthouse CI
+        run: pnpm add -g @lhci/cli
+
+      - name: Ejecutar Lighthouse CI
+        run: lhci autorun
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+        # Configuración en lighthouserc.js:
+        # - Performance ≥ 0.90
+        # - SEO ≥ 0.95
+        # - LCP ≤ 2500ms
+        # - CLS ≤ 0.1
+
+# =============================================================
+# JOB 5: E2E — Playwright (flujos críticos)
+# Solo en PRs a main y pushes a main.
+# =============================================================
+  e2e:
+    name: E2E (Playwright)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: build
+    if: |
+      github.event_name == 'pull_request' ||
+      github.ref == 'refs/heads/main'
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Instalar dependencias
+        run: pnpm install --frozen-lockfile
+
+      - name: Instalar browsers de Playwright
+        run: pnpm exec playwright install --with-deps chromium
+
+      - name: Setup Supabase local para E2E
+        uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - name: Iniciar Supabase y aplicar migraciones
+        run: |
+          supabase start
+          supabase db push
+          supabase db seed  # datos semilla para E2E
+
+      - name: Ejecutar tests E2E
+        run: pnpm test:e2e
+        env:
+          PLAYWRIGHT_BASE_URL: http://localhost:3000
+          NEXT_PUBLIC_SUPABASE_URL: http://localhost:54321
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ env.SUPABASE_LOCAL_ANON_KEY }}
+          STRIPE_SECRET_KEY: ${{ secrets.STRIPE_SECRET_KEY }}
+          # Usar Stripe test mode — nunca claves live en CI
+
+      - name: Publicar reporte de Playwright
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 7
+
+      - name: Detener Supabase local
+        if: always()
+        run: supabase stop
+
+# =============================================================
+# JOB 6: DEPLOY PREVIEW — para Pull Requests
+# Despliega en Vercel con URL de preview única por PR.
+# =============================================================
+  deploy-preview:
+    name: Deploy Preview (Vercel)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [quality, build]
+    if: github.event_name == 'pull_request'
+
+    outputs:
+      preview-url: ${{ steps.deploy.outputs.preview-url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Instalar Vercel CLI
+        run: pnpm add -g vercel
+
+      - name: Pull configuración de Vercel
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build en Vercel
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy Preview
+        id: deploy
+        run: |
+          url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})
+          echo "preview-url=$url" >> $GITHUB_OUTPUT
+          echo "Preview desplegado en: $url"
+
+      - name: Comentar URL de preview en PR
+        uses: actions/github-script@v7
+        with:
+          script: |
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 🚀 Preview deployado\n\n**URL:** ${{ steps.deploy.outputs.preview-url }}\n\n**Commit:** ${context.sha.substring(0,7)}\n\n---\n*Este preview se actualizará con cada nuevo commit en este PR.*`
+            })
+
+# =============================================================
+# JOB 7: DEPLOY PRODUCCIÓN — solo en merge a main
+# Requiere que quality + E2E hayan pasado.
+# =============================================================
+  deploy-production:
+    name: Deploy Producción (Vercel)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: [quality, rls-tests, e2e]
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+
+    environment:
+      name: production
+      url: https://www.crisol.cl
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: ${{ env.PNPM_VERSION }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'pnpm'
+
+      - name: Instalar Vercel CLI
+        run: pnpm add -g vercel
+
+      - name: Pull configuración de producción
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Build de producción
+        run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Deploy a producción
+        run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}
+
+      - name: Notificar deploy exitoso
+        uses: actions/github-script@v7
+        if: success()
+        with:
+          script: |
+            github.rest.repos.createCommitStatus({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              sha: context.sha,
+              state: 'success',
+              description: 'Deploy a producción exitoso',
+              context: 'deploy/production'
+            })
+
+      - name: Trigger revalidación ISR post-deploy
+        if: success()
+        run: |
+          curl -X POST https://www.crisol.cl/api/revalidate \
+            -H "X-Revalidate-Secret: ${{ secrets.REVALIDATE_SECRET }}" \
+            -H "Content-Type: application/json" \
+            -d '{"type": "all"}'
+        # Invalida el caché ISR de todas las páginas del catálogo
+        # para que los cambios sean visibles inmediatamente
