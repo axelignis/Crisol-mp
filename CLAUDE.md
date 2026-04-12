@@ -46,7 +46,7 @@ supabase start | supabase migration new <nombre>
 - Hotfixes críticos de producción: desde `main`, merge back a `main` + `develop`.
 - Flujo: `feature/*` → `develop` → `qa` → `uat` → `main`.
 - Formato de commit: `type(scope): descripción` — types: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`.
-- Siempre mostrar el comando de push para que el usuario lo ejecute. Nunca hacer push ni merge.
+- Siempre mostrar el comando (en una sola linea) de push para que el usuario lo ejecute. Nunca hacer push ni merge.
 
 ## Testing
 
