@@ -218,9 +218,9 @@ CREATE POLICY "order: artesano ve pedidos con sus items"
     WHERE oi.order_id = id AND oi.artisan_id = current_artisan_id()
   ));
 
-CREATE POLICY "order: cualquiera puede crear pedido"
+CREATE POLICY "order: comprador puede crear su propio pedido"
   ON "order" FOR INSERT
-  WITH CHECK (true);
+  WITH CHECK (buyer_id = current_buyer_id());
 
 CREATE POLICY "admin: gestionar todos los pedidos"
   ON "order" FOR ALL
@@ -240,9 +240,12 @@ CREATE POLICY "item: artesano ve sus propios items"
   ON order_item FOR SELECT
   USING (artisan_id = current_artisan_id());
 
-CREATE POLICY "item: cualquiera puede insertar"
+CREATE POLICY "item: solo via pedido del comprador"
   ON order_item FOR INSERT
-  WITH CHECK (true);
+  WITH CHECK (EXISTS (
+    SELECT 1 FROM "order" o
+    WHERE o.id = order_id AND o.buyer_id = current_buyer_id()
+  ));
 
 CREATE POLICY "admin: gestionar todos los items"
   ON order_item FOR ALL
@@ -297,9 +300,12 @@ CREATE POLICY "address: comprador ve su direccion"
     WHERE o.id = order_id AND o.buyer_id = current_buyer_id()
   ));
 
-CREATE POLICY "address: cualquiera puede insertar"
+CREATE POLICY "address: solo en pedido del comprador"
   ON shipping_address FOR INSERT
-  WITH CHECK (true);
+  WITH CHECK (EXISTS (
+    SELECT 1 FROM "order" o
+    WHERE o.id = order_id AND o.buyer_id = current_buyer_id()
+  ));
 
 CREATE POLICY "admin: gestionar todas las direcciones"
   ON shipping_address FOR ALL
