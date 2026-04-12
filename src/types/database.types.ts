@@ -17,8 +17,8 @@ export type Database = {
           instagram: string | null
           is_suspended: boolean
           photo_url: string | null
+          slug: string | null
           stripe_account_id: string | null
-          stripe_onboarded: boolean
           updated_at: string
           user_id: string
           website: string | null
@@ -30,8 +30,8 @@ export type Database = {
           instagram?: string | null
           is_suspended?: boolean
           photo_url?: string | null
+          slug?: string | null
           stripe_account_id?: string | null
-          stripe_onboarded?: boolean
           updated_at?: string
           user_id: string
           website?: string | null
@@ -43,8 +43,8 @@ export type Database = {
           instagram?: string | null
           is_suspended?: boolean
           photo_url?: string | null
+          slug?: string | null
           stripe_account_id?: string | null
-          stripe_onboarded?: boolean
           updated_at?: string
           user_id?: string
           website?: string | null
@@ -88,6 +88,75 @@ export type Database = {
             columns: ["buyer_id"]
             isOneToOne: false
             referencedRelation: "buyer"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      artisan_payout: {
+        Row: {
+          artisan_id: string
+          commission_amount: number
+          created_at: string
+          gross_amount: number
+          id: string
+          net_amount: number
+          notes: string | null
+          paid_at: string | null
+          paid_by: string | null
+          period_from: string
+          period_to: string
+          status: string
+          stripe_payout_id: string | null
+          stripe_transfer_ids: Json | null
+          updated_at: string
+        }
+        Insert: {
+          artisan_id: string
+          commission_amount: number
+          created_at?: string
+          gross_amount: number
+          id?: string
+          net_amount: number
+          notes?: string | null
+          paid_at?: string | null
+          paid_by?: string | null
+          period_from: string
+          period_to: string
+          status?: string
+          stripe_payout_id?: string | null
+          stripe_transfer_ids?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          artisan_id?: string
+          commission_amount?: number
+          created_at?: string
+          gross_amount?: number
+          id?: string
+          net_amount?: number
+          notes?: string | null
+          paid_at?: string | null
+          paid_by?: string | null
+          period_from?: string
+          period_to?: string
+          status?: string
+          stripe_payout_id?: string | null
+          stripe_transfer_ids?: Json | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artisan_payout_artisan_id_fkey"
+            columns: ["artisan_id"]
+            isOneToOne: false
+            referencedRelation: "artisan"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "artisan_payout_paid_by_fkey"
+            columns: ["paid_by"]
+            isOneToOne: false
+            referencedRelation: "user"
             referencedColumns: ["id"]
           },
         ]
@@ -279,7 +348,6 @@ export type Database = {
         Row: {
           artisan_id: string
           created_at: string
-          currency: string
           description: string | null
           estimated_days: number
           id: string
@@ -293,7 +361,6 @@ export type Database = {
         Insert: {
           artisan_id: string
           created_at?: string
-          currency?: string
           description?: string | null
           estimated_days?: number
           id?: string
@@ -307,7 +374,6 @@ export type Database = {
         Update: {
           artisan_id?: string
           created_at?: string
-          currency?: string
           description?: string | null
           estimated_days?: number
           id?: string
@@ -507,9 +573,9 @@ export type Database = {
         Row: {
           buyer_id: string | null
           commission_amount: number
+          commission_pct_snapshot: number | null
           coupon_id: string | null
           created_at: string
-          currency: string
           discount_amount: number
           guest_email: string | null
           guest_name: string | null
@@ -525,9 +591,9 @@ export type Database = {
         Insert: {
           buyer_id?: string | null
           commission_amount?: number
+          commission_pct_snapshot?: number | null
           coupon_id?: string | null
           created_at?: string
-          currency?: string
           discount_amount?: number
           guest_email?: string | null
           guest_name?: string | null
@@ -543,9 +609,9 @@ export type Database = {
         Update: {
           buyer_id?: string | null
           commission_amount?: number
+          commission_pct_snapshot?: number | null
           coupon_id?: string | null
           created_at?: string
-          currency?: string
           discount_amount?: number
           guest_email?: string | null
           guest_name?: string | null
@@ -663,7 +729,6 @@ export type Database = {
           coinbase_charge_id: string | null
           commission_amount: number
           created_at: string
-          currency: string
           id: string
           method: string
           order_id: string
@@ -679,7 +744,6 @@ export type Database = {
           coinbase_charge_id?: string | null
           commission_amount: number
           created_at?: string
-          currency?: string
           id?: string
           method: string
           order_id: string
@@ -695,7 +759,6 @@ export type Database = {
           coinbase_charge_id?: string | null
           commission_amount?: number
           created_at?: string
-          currency?: string
           id?: string
           method?: string
           order_id?: string
@@ -723,7 +786,6 @@ export type Database = {
           base_price: number
           category_id: string | null
           created_at: string
-          currency: string
           description: string | null
           id: string
           is_unique: boolean
@@ -743,7 +805,6 @@ export type Database = {
           base_price: number
           category_id?: string | null
           created_at?: string
-          currency?: string
           description?: string | null
           id?: string
           is_unique?: boolean
@@ -763,7 +824,6 @@ export type Database = {
           base_price?: number
           category_id?: string | null
           created_at?: string
-          currency?: string
           description?: string | null
           id?: string
           is_unique?: boolean
@@ -1162,30 +1222,6 @@ export type Database = {
         }
         Relationships: []
       }
-      webhook_event: {
-        Row: {
-          id: string
-          source: string
-          event_type: string
-          processed_at: string
-          payload: Json | null
-        }
-        Insert: {
-          id: string
-          source: string
-          event_type: string
-          processed_at?: string
-          payload?: Json | null
-        }
-        Update: {
-          id?: string
-          source?: string
-          event_type?: string
-          processed_at?: string
-          payload?: Json | null
-        }
-        Relationships: []
-      }
       user: {
         Row: {
           avatar_url: string | null
@@ -1219,6 +1255,30 @@ export type Database = {
           locale?: string
           role?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      webhook_event: {
+        Row: {
+          event_type: string
+          id: string
+          payload: Json | null
+          processed_at: string
+          source: string
+        }
+        Insert: {
+          event_type: string
+          id: string
+          payload?: Json | null
+          processed_at?: string
+          source: string
+        }
+        Update: {
+          event_type?: string
+          id?: string
+          payload?: Json | null
+          processed_at?: string
+          source?: string
         }
         Relationships: []
       }
@@ -1265,8 +1325,69 @@ export type Database = {
     Functions: {
       current_artisan_id: { Args: never; Returns: string }
       current_buyer_id: { Args: never; Returns: string }
-      current_user_role: { Args: never; Returns: string }
+      custom_access_token_hook: { Args: { event: Json }; Returns: Json }
+      transition_order_status: {
+        Args: { p_actor_id: string; p_new_status: string; p_order_id: string }
+        Returns: {
+          buyer_id: string | null
+          commission_amount: number
+          commission_pct_snapshot: number | null
+          coupon_id: string | null
+          created_at: string
+          discount_amount: number
+          guest_email: string | null
+          guest_name: string | null
+          id: string
+          notes: string | null
+          points_redeemed: number
+          shipping_cost: number
+          status: string
+          subtotal: number
+          total: number
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "order"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
+      transition_product_status: {
+        Args: {
+          p_actor_id: string
+          p_new_status: string
+          p_notes?: string
+          p_product_id: string
+        }
+        Returns: {
+          approved_at: string | null
+          approved_by: string | null
+          artisan_id: string
+          base_price: number
+          category_id: string | null
+          created_at: string
+          description: string | null
+          id: string
+          is_unique: boolean
+          is_visible: boolean
+          published_at: string | null
+          rejection_notes: string | null
+          slug: string
+          status: string
+          title: string
+          type: string
+          updated_at: string
+        }
+        SetofOptions: {
+          from: "*"
+          to: "product"
+          isOneToOne: true
+          isSetofReturn: false
+        }
+      }
       unaccent: { Args: { "": string }; Returns: string }
+      user_role: { Args: never; Returns: string }
     }
     Enums: {
       [_ in never]: never
