@@ -2,6 +2,11 @@
 -- CRISOL — Migración 002: Usuarios y roles
 -- Tabla base USER extiende Supabase Auth.
 -- Perfiles ARTISAN y BUYER se crean automáticamente via trigger.
+--
+-- MODELO DE PAGOS: El administrador recibe todos los pagos
+-- en su propia cuenta Stripe y transfiere manualmente a los
+-- artesanos vía transferencia bancaria. Los artesanos no
+-- necesitan cuenta Stripe ni formalización tributaria.
 -- ============================================================
 
 -- ------------------------------------------------------------
@@ -34,16 +39,21 @@ CREATE TABLE artisan (
   photo_url           TEXT,
   instagram           TEXT,
   website             TEXT,
-  stripe_account_id   TEXT,              -- Stripe Connect account ID
-  stripe_onboarded    BOOLEAN NOT NULL DEFAULT false,
+  -- Datos bancarios para transferencias manuales del admin
+  bank_name           TEXT,              -- Ej: "Banco Santander"
+  bank_account_type   TEXT              -- Ej: "Cuenta corriente", "Cuenta Vista", "CuentaRUT"
+                        CHECK (bank_account_type IN ('cuenta_corriente','cuenta_vista','cuenta_rut','chequera_electronica', NULL)),
+  bank_account_number TEXT,             -- Número de cuenta (encriptado en capa de aplicación)
+  bank_rut            TEXT,             -- RUT del artesano para transferencia
+  bank_email          TEXT,             -- Email de notificación de transferencia
   is_suspended        BOOLEAN NOT NULL DEFAULT false,
   created_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
   updated_at          TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-COMMENT ON TABLE  artisan                    IS 'Perfil público de cada artesano. 1:1 con USER donde role = artisan.';
-COMMENT ON COLUMN artisan.stripe_account_id  IS 'ID de la cuenta Stripe Connect del artesano. Requerido para recibir pagos.';
-COMMENT ON COLUMN artisan.stripe_onboarded   IS 'true cuando el artesano completó el onboarding de Stripe Connect.';
+COMMENT ON TABLE  artisan                   IS 'Perfil del artesano. El admin le transfiere manualmente el neto de sus ventas por transferencia bancaria.';
+COMMENT ON COLUMN artisan.bank_account_number IS 'Número de cuenta bancaria. Encriptar en capa de aplicación antes de guardar.';
+COMMENT ON COLUMN artisan.bank_rut          IS 'RUT para identificar la cuenta destino en transferencias.';
 
 -- ------------------------------------------------------------
 -- BUYER — perfil del comprador con fidelización

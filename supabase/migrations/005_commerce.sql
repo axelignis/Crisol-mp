@@ -68,14 +68,18 @@ COMMENT ON COLUMN order_item.snapshot_title IS 'Título del producto al momento 
 COMMENT ON COLUMN order_item.artisan_id    IS 'Desnormalizado para facilitar queries por artesano sin joins adicionales.';
 
 -- ------------------------------------------------------------
--- PAYMENT — registro del pago con trazabilidad completa
+-- PAYMENT — registro del pago del comprador al admin
+--
+-- MODELO: El admin recibe el pago completo en su cuenta
+-- Stripe personal. La comisión queda en la cuenta del admin.
+-- El neto del artesano se registra aquí para saber cuánto
+-- transferirle, pero la transferencia es manual (ver ARTISAN_PAYOUT).
 -- ------------------------------------------------------------
 CREATE TABLE payment (
   id                          UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   order_id                    UUID UNIQUE NOT NULL REFERENCES "order"(id),
   method                      TEXT NOT NULL CHECK (method IN ('stripe', 'crypto', 'bank_transfer')),
-  stripe_payment_intent_id    TEXT,
-  stripe_transfer_id          TEXT,    -- ID de la transferencia al artesano vía Stripe Connect
+  stripe_payment_intent_id    TEXT,   -- pi_... Cobro del comprador al admin
   coinbase_charge_id          TEXT,
   amount                      NUMERIC(10,2) NOT NULL CHECK (amount > 0),
   artisan_net                 NUMERIC(10,2) NOT NULL CHECK (artisan_net >= 0),
@@ -88,10 +92,43 @@ CREATE TABLE payment (
   updated_at                  TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
-COMMENT ON TABLE  payment                         IS 'Registro del pago. Incluye IDs de Stripe para trazabilidad financiera completa.';
-COMMENT ON COLUMN payment.stripe_payment_intent_id IS 'Payment Intent ID de Stripe (pi_...). Identifica el cobro al comprador.';
-COMMENT ON COLUMN payment.stripe_transfer_id      IS 'Transfer ID de Stripe (tr_...). Identifica la transferencia al artesano.';
-COMMENT ON COLUMN payment.artisan_net             IS 'Monto neto transferido al artesano después de descontar la comisión.';
+COMMENT ON TABLE  payment                          IS 'Pago del comprador a la cuenta Stripe del admin. El neto del artesano se transfiere manualmente via ARTISAN_PAYOUT.';
+COMMENT ON COLUMN payment.stripe_payment_intent_id IS 'Payment Intent ID (pi_...) de la cuenta Stripe personal del admin.';
+COMMENT ON COLUMN payment.artisan_net              IS 'Monto que el admin le debe al artesano. Se liquida con ARTISAN_PAYOUT.';
+COMMENT ON COLUMN payment.commission_amount        IS 'Monto que queda en la cuenta del admin como comisión.';
+
+-- ------------------------------------------------------------
+-- ARTISAN_PAYOUT — liquidaciones manuales a artesanos
+--
+-- El admin marca aquí cada transferencia bancaria realizada
+-- a un artesano. Puede agrupar múltiples ventas en un solo
+-- pago (liquidación semanal, quincenal, mensual).
+-- ------------------------------------------------------------
+CREATE TABLE artisan_payout (
+  id                UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  artisan_id        UUID NOT NULL REFERENCES artisan(id),
+  period_from       DATE NOT NULL,           -- inicio del período liquidado
+  period_to         DATE NOT NULL,           -- fin del período liquidado
+  gross_amount      NUMERIC(10,2) NOT NULL,  -- ventas brutas del período
+  commission_amount NUMERIC(10,2) NOT NULL,  -- comisión descontada
+  net_amount        NUMERIC(10,2) NOT NULL,  -- monto transferido al artesano
+  currency          TEXT NOT NULL DEFAULT 'CLP',
+  -- Datos de la transferencia bancaria manual
+  transfer_date     DATE,
+  transfer_ref      TEXT,                    -- número de transferencia o comprobante
+  transfer_bank     TEXT,                    -- banco desde el que se envió
+  notes             TEXT,
+  status            TEXT NOT NULL DEFAULT 'pending'
+                      CHECK (status IN ('pending', 'paid')),
+  paid_at           TIMESTAMPTZ,
+  paid_by           UUID REFERENCES "user"(id),  -- admin que marcó como pagado
+  created_at        TIMESTAMPTZ NOT NULL DEFAULT now(),
+  updated_at        TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+COMMENT ON TABLE  artisan_payout            IS 'Liquidaciones manuales del admin a cada artesano. Agrupa ventas de un período.';
+COMMENT ON COLUMN artisan_payout.transfer_ref IS 'Número de comprobante de transferencia bancaria. Evidencia del pago.';
+COMMENT ON COLUMN artisan_payout.status     IS 'pending = monto adeudado al artesano · paid = transferencia realizada y confirmada.';
 
 -- ------------------------------------------------------------
 -- SHIPMENT — despacho por artesano
