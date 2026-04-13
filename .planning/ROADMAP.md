@@ -52,7 +52,7 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 02-01-PLAN.md — shadcn/ui init, deps, shared types, queries, utilities, i18n messages
+- [x] 02-01-PLAN.md — shadcn/ui init, deps, shared types, queries, utilities, i18n messages
 - [ ] 02-02-PLAN.md — Artisan piece wizard: 4-step form, variants, media upload, auto-save
 - [ ] 02-03-PLAN.md — Admin moderation queue with approve/changes/reject and email notifications
 - [ ] 02-04-PLAN.md — Public catalog listing with filters, sort, pagination
