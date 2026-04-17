@@ -54,10 +54,10 @@ Plans:
 Plans:
 - [x] 02-01-PLAN.md — shadcn/ui init, deps, shared types, queries, utilities, i18n messages
 - [x] 02-02-PLAN.md — Artisan piece wizard: 4-step form, variants, media upload, auto-save
-- [ ] 02-03-PLAN.md — Admin moderation queue with approve/changes/reject and email notifications
-- [ ] 02-04-PLAN.md — Public catalog listing with filters, sort, pagination
-- [ ] 02-05-PLAN.md — Product detail, artisan profile, gallery, variant selector, SEO
-- [ ] 02-06-PLAN.md — Seed migration, database push, E2E Playwright tests
+- [x] 02-03-PLAN.md — Admin moderation queue with approve/changes/reject and email notifications
+- [x] 02-04-PLAN.md — Public catalog listing with filters, sort, pagination
+- [x] 02-05-PLAN.md — Product detail, artisan profile, gallery, variant selector, SEO
+- [x] 02-06-PLAN.md — Seed migration, database push, E2E Playwright tests
 
 ### Phase 3: Commerce
 **Goal**: A visitor (guest or registered) can add pieces to a cart, proceed through checkout with shipping quote and coupon, and pay via Stripe Connect with automatic commission split — creating a confirmed order
