@@ -35,7 +35,7 @@ export function SortDropdown({ currentOrder }: SortDropdownProps) {
 
   return (
     <Select value={currentOrder} onValueChange={handleChange}>
-      <SelectTrigger size="sm">
+      <SelectTrigger size="sm" data-testid="sort-dropdown">
         <SelectValue />
       </SelectTrigger>
       <SelectContent>

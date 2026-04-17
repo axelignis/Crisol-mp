@@ -204,7 +204,7 @@ export function ProductFilters({ filterOptions, currentFilters }: ProductFilters
   return (
     <>
       {/* Desktop sidebar */}
-      <aside className="hidden w-60 shrink-0 md:block">
+      <aside className="hidden w-60 shrink-0 md:block" data-testid="product-filters">
         {filterContent}
       </aside>
 

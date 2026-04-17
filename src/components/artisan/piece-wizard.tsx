@@ -182,7 +182,7 @@ export function PieceWizard({ initialData, productId: initialProductId }: PieceW
   }
 
   return (
-    <div className="max-w-2xl mx-auto py-8 px-4">
+    <div className="max-w-2xl mx-auto py-8 px-4" data-testid="piece-wizard">
       {/* Step indicator */}
       <div className="flex items-center justify-between mb-8">
         {STEPS.map((label, i) => (
@@ -251,7 +251,7 @@ export function PieceWizard({ initialData, productId: initialProductId }: PieceW
                     onValueChange={field.onChange}
                   >
                     <FormControl>
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full" data-testid="piece-type">
                         <SelectValue />
                       </SelectTrigger>
                     </FormControl>
@@ -279,7 +279,7 @@ export function PieceWizard({ initialData, productId: initialProductId }: PieceW
                 <FormItem>
                   <FormLabel>Titulo</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Nombre de tu pieza" />
+                    <Input {...field} placeholder="Nombre de tu pieza" data-testid="piece-title" />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -297,6 +297,7 @@ export function PieceWizard({ initialData, productId: initialProductId }: PieceW
                       {...field}
                       placeholder="Describe tu pieza, materiales, tecnica..."
                       rows={4}
+                      data-testid="piece-description"
                     />
                   </FormControl>
                   <FormMessage />
@@ -316,6 +317,7 @@ export function PieceWizard({ initialData, productId: initialProductId }: PieceW
                       min={0}
                       {...field}
                       onChange={e => field.onChange(parseInt(e.target.value) || 0)}
+                      data-testid="piece-price"
                     />
                   </FormControl>
                   <FormMessage />
