@@ -27,7 +27,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/gsd-check-update.js"
+            "command": "\"/Users/axelignis/.nvm/versions/node/v22.17.0/bin/node\" .claude/hooks/gsd-check-update.js"
           }
         ]
       },
@@ -46,7 +46,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/gsd-context-monitor.js",
+            "command": "\"/Users/axelignis/.nvm/versions/node/v22.17.0/bin/node\" .claude/hooks/gsd-context-monitor.js",
             "timeout": 10
           }
         ]
@@ -60,6 +60,16 @@
             "timeout": 5
           }
         ]
+      },
+      {
+        "matcher": "Read",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "\"/Users/axelignis/.nvm/versions/node/v22.17.0/bin/node\" \"/Users/axelignis/crisol/.claude/hooks/gsd-read-injection-scanner.js\"",
+            "timeout": 5
+          }
+        ]
       }
     ],
     "PreToolUse": [
@@ -68,7 +78,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/gsd-prompt-guard.js",
+            "command": "\"/Users/axelignis/.nvm/versions/node/v22.17.0/bin/node\" .claude/hooks/gsd-prompt-guard.js",
             "timeout": 5
           }
         ]
@@ -78,7 +88,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/gsd-read-guard.js",
+            "command": "\"/Users/axelignis/.nvm/versions/node/v22.17.0/bin/node\" .claude/hooks/gsd-read-guard.js",
             "timeout": 5
           }
         ]
@@ -88,7 +98,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "node .claude/hooks/gsd-workflow-guard.js",
+            "command": "\"/Users/axelignis/.nvm/versions/node/v22.17.0/bin/node\" .claude/hooks/gsd-workflow-guard.js",
             "timeout": 5
           }
         ]
