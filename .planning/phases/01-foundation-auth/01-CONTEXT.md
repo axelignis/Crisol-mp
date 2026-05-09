@@ -15,7 +15,7 @@ Complete database schema (22 entities) with enforced RLS policies per role, user
 
 ### Migration Strategy
 - **D-01:** Rewrite all 8 existing migrations from scratch — current migrations have inconsistencies (layout references `profiles` table that doesn't exist, artisan table has manual bank transfer fields incompatible with Stripe Connect model)
-- **D-02:** Artisan payout model is Stripe Connect (Express accounts) — remove all manual bank transfer fields (bank_name, bank_account_type, bank_account_number, bank_rut, bank_email) from artisan table. Add stripe_account_id instead.
+- **D-02 (SUPERSEDED 2026-05-09 by Phase 3 D-SPLIT):** ~~Artisan payout model is Stripe Connect (Express accounts) — remove all manual bank transfer fields (bank_name, bank_account_type, bank_account_number, bank_rut, bank_email) from artisan table. Add stripe_account_id instead.~~ Stripe Connect Separate Charges & Transfers no está disponible en Chile. Phase 3 adopta single-account model con liquidación manual vía `artisan_payout`. El campo `artisan.stripe_account_id` queda nullable y sin uso (no eliminar para evitar migración destructiva); los campos de banco (bank_name, bank_rut, bank_email, etc.) deben **restaurarse** en Phase 3 vía nueva migración para soportar la liquidación manual del admin. Ver `.planning/phases/03-commerce/03-CONTEXT.md` D-SPLIT.
 
 ### Role Onboarding
 - **D-03:** Admin-only artisan creation — no public artisan registration. Fits the family marketplace model (4-6 initial artisans).

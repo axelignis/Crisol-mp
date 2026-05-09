@@ -1,17 +1,27 @@
 # Phase 3: Commerce - Context
 
 **Gathered:** 2026-05-09
+**Updated:** 2026-05-09 (D-SPLIT — Stripe Connect descartado, single-account model)
 **Status:** Ready for planning
 
 <domain>
 ## Phase Boundary
 
-Visitantes (invitado o registrado) pueden agregar piezas de múltiples artesanos al carrito, avanzar a checkout con cotización de courier y cupón opcional, y pagar vía Stripe Connect con split automático de comisión — generando un pedido confirmado con snapshot inmutable de precios. La gestión post-pago (state machine, fulfillment, tracking, emails transaccionales más allá de la confirmación inicial) es Phase 4. Crypto payments (Coinbase) y envío internacional se difieren.
+Visitantes (invitado o registrado) pueden agregar piezas de múltiples artesanos al carrito, avanzar a checkout con cotización de courier y cupón opcional, y pagar vía Stripe (single-account de plataforma) — generando un pedido confirmado con snapshot inmutable de precios y un registro contable `artisan_payout` por cada artesano que el admin liquida manualmente fuera de Stripe. La gestión post-pago (state machine, fulfillment, tracking, emails transaccionales más allá de la confirmación inicial) es Phase 4. Crypto payments (Coinbase) y envío internacional se difieren.
+
+**Nota:** Stripe Connect Separate Charges & Transfers no está disponible en Chile (verificado en research). Se adopta single-account model con liquidación manual (ver D-SPLIT y D-07).
 
 </domain>
 
 <decisions>
 ## Implementation Decisions
+
+### Phase 1 Carry-Forwards (Updated)
+- **Phase 1 D-02 SUPERSEDED:** El modelo Stripe Connect (Express accounts) decidido en Phase 1 D-02 queda **obsoleto**. Stripe Connect Separate Charges & Transfers no está soportado en Chile. Phase 3 adopta single-account model (D-SPLIT abajo).
+- **Restauración de campos bancarios:** Los campos eliminados en Phase 1 D-02 (`bank_name`, `bank_account_type`, `bank_account_number`, `bank_rut`, `bank_email`) deben **restaurarse** en `artisan` vía nueva migración Phase 3 (e.g. `010_restore_artisan_bank_fields.sql`). Son requeridos para que el admin sepa a dónde transferir manualmente. Mantener `stripe_account_id` nullable y sin uso (no eliminar para evitar migración destructiva sobre datos existentes).
+- **Phase 1 D-06 (email verificado para checkout):** Se mantiene vigente — buyers registrados requieren email verificado antes de pagar. Guests usan magic-link post-confirmación.
+- **Phase 1 D-07/D-08 (commission_config + 10%):** Vigentes. `commission_pct_snapshot` se replica también en `artisan_payout` para auditoría.
+
 
 ### Cart UX
 - **D-01:** Cart Sheet (slide-over) **y** página dedicada `/carrito` — sheet para vista rápida desde el header, página completa para edición detallada. Reusa el scaffold `cart-sheet.tsx`.
@@ -26,9 +36,11 @@ Visitantes (invitado o registrado) pueden agregar piezas de múltiples artesanos
 - **D-06:** Validación de stock en tres checkpoints: (1) al agregar al carrito, (2) al abrir checkout, (3) al confirmar el pago en el webhook. El decremento atómico de `product_variant.stock` ocurre en el webhook de pago confirmado para evitar oversell.
 
 ### Multi-Artisan Split Payment
-- **D-07:** Estrategia Stripe Connect: **Separate Charges & Transfers**. Una `PaymentIntent` cobrada por la plataforma (sin `transfer_data`/`destination`), seguida de `stripe.transfers.create` por cada artesano con su monto neto. Es el único patrón que soporta multi-vendedor en una sola autorización del comprador.
-- **D-08:** Comisión calculada por `lib/utils/commission.ts` (Phase 1, D-07/D-08) sobre el subtotal de cada artesano. Snapshot del `commission_pct` activo se guarda en `order.commission_pct_snapshot`.
-- **D-09:** El costo de envío **no** entra en la base de cálculo de comisión — el envío va íntegro al artesano (o a la plataforma si la plataforma cobró el envío al buyer en su nombre, a confirmar en research).
+- **D-SPLIT (LOCKED):** **Single-account model** — Crisol recibe todos los pagos en una única cuenta Stripe de plataforma. **NO se usa Stripe Connect**, **NO se crean Express accounts**, **NO se invoca `stripe.transfers.create`**. El admin transfiere manualmente el neto a cada artesano vía transferencia bancaria fuera de Stripe. La tabla `artisan_payout` trackea cada payout pendiente/completado como registro contable interno. Razón: Stripe Connect Separate Charges & Transfers no está disponible en Chile (research 2026-05-09).
+- **D-07 (REPLACES previous Connect decision):** Una sola `PaymentIntent` por orden cobrada por la cuenta plataforma. Sin `transfer_data`, sin `destination`, sin `application_fee_amount`. El "split" es puramente contable: al confirmarse el pago, el webhook crea N filas en `artisan_payout` (una por artesano participante en la orden) con `amount_clp = subtotal_artisano - comision_artisano + envio_artisano`, estado `pending`.
+- **D-08:** Comisión calculada por `lib/utils/commission.ts` (Phase 1) sobre el subtotal de cada artesano. Snapshot del `commission_pct` activo se guarda en `order.commission_pct_snapshot` y se replica en `artisan_payout.commission_pct_snapshot` para auditoría.
+- **D-09:** El costo de envío **no** entra en la base de cálculo de comisión — el envío va íntegro al artesano (sumado a `artisan_payout.amount_clp`).
+- **D-PAYOUT-LIQ:** La liquidación manual (admin marca `artisan_payout.status = paid` con `paid_at`, `bank_reference`) es **fuera de alcance** de Phase 3. Phase 3 solo crea los registros `pending`. La UI admin de liquidación es Phase 5 (Dashboards & Operations).
 
 ### Shipping Quotes
 - **D-10:** Cotización **por artesano** — cada artesano tiene su propio shipment con courier y costo independientes. UI muestra desglose: "Envío Artesano A: $X · Artesano B: $Y". Se alinea con el modelo de fulfillment per-artisan de Phase 4.
@@ -79,10 +91,10 @@ Visitantes (invitado o registrado) pueden agregar piezas de múltiples artesanos
 
 ### Flujo de Compra y Pago
 - `docs/flow_purchase.html` — Flujo completo de compra: carrito, checkout, requisitos auth en checkout
-- `docs/flow_split_payment.html` — Flujo de split payment con Stripe Connect, comisión, transferencias
+- `docs/flow_split_payment.html` — **OBSOLETO en partes** (describe Stripe Connect). Leer solo para entender flujo conceptual de comisión; ignorar referencias a `transfers.create` y Express accounts. Reemplazado por single-account model (D-SPLIT)
 
 ### Schema y State Machine
-- `docs/erd_core.html` — ERD: tablas `order`, `order_item`, `payment`, `artisan_payout`, `shipment`, `shipping_address`, `coupon`, `commission_config`, `webhook_idempotency`
+- `docs/erd_core.html` — ERD: tablas `order`, `order_item`, `payment`, `artisan_payout`, `shipment`, `shipping_address`, `coupon`, `commission_config`, `webhook_idempotency`. **Nota:** `payment.stripe_transfer_id` queda nullable y sin uso (single-account, sin transfers). `artisan_payout` cobra protagonismo como ledger contable interno.
 - `supabase/migrations/003_config.sql` — Schema de `coupon` y `commission_config`
 - `supabase/migrations/005_commerce.sql` — Schema de `order`, `order_item`, `payment`, `artisan_payout`, `shipment`, `shipping_address`
 - `supabase/migrations/007_webhook_idempotency.sql` — Tabla idempotencia webhooks
@@ -114,7 +126,7 @@ Visitantes (invitado o registrado) pueden agregar piezas de múltiples artesanos
 - `src/components/checkout/payment-stripe.tsx` — Stripe Elements wrapper (vacío)
 - `src/components/checkout/payment-crypto.tsx` — Coinbase (vacío, **diferido D-25**)
 - `src/lib/stripe/client.ts` — Cliente Stripe (vacío)
-- `src/lib/stripe/split.ts` — Lógica de split + transfers (vacío)
+- `src/lib/stripe/split.ts` — **Renombrar/repropósito**: ya NO contiene `transfers.create`. Pasa a contener helpers de cálculo contable que producen filas `artisan_payout` (in-memory) listas para insertar. Considerar renombrar a `src/lib/stripe/payout-ledger.ts` durante planning.
 - `src/lib/couriers/index.ts` — Interface unificada de couriers (vacío)
 - `src/lib/couriers/chilexpress.ts` — Adaptador Chilexpress (vacío)
 - `src/lib/couriers/starken.ts` — Adaptador Starken (vacío)
