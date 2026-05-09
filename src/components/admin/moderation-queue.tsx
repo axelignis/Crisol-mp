@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import Image from 'next/image'
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
 import {
@@ -31,10 +32,25 @@ interface PendingProduct {
   media: { id: string; url: string; sort_order: number; is_cover: boolean; type: string }[]
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function normalizePieces(raw: any[]): PendingProduct[] {
+type RawUser = { full_name: string | null } | { full_name: string | null }[] | null | undefined
+type RawArtisan = { id: string; slug: string; user: RawUser } | { id: string; slug: string; user: RawUser }[] | null | undefined
+
+interface RawPiece {
+  id: string
+  title: string
+  slug: string
+  description: string | null
+  base_price: number
+  type: string
+  status: string
+  created_at: string
+  artisan: RawArtisan
+  variants?: PendingProduct['variants']
+  media?: PendingProduct['media']
+}
+
+function normalizePieces(raw: RawPiece[]): PendingProduct[] {
   return raw.map(p => {
-    // Supabase joins return related rows as arrays or objects
     const artisan = Array.isArray(p.artisan) ? p.artisan[0] : p.artisan
     const user = artisan?.user
     const fullName = Array.isArray(user) ? user[0]?.full_name : user?.full_name
@@ -55,8 +71,7 @@ function normalizePieces(raw: any[]): PendingProduct[] {
 }
 
 interface ModerationQueueProps {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  initialPieces: any[]
+  initialPieces: RawPiece[]
 }
 
 export function ModerationQueue({ initialPieces }: ModerationQueueProps) {
@@ -220,9 +235,11 @@ export function ModerationQueue({ initialPieces }: ModerationQueueProps) {
                         m.is_cover ? 'ring-2 ring-zinc-900' : 'border-zinc-200'
                       }`}
                     >
-                      <img
+                      <Image
                         src={m.url}
                         alt=""
+                        width={80}
+                        height={80}
                         className="h-full w-full object-cover"
                       />
                     </div>
