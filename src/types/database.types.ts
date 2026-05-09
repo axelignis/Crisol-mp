@@ -7,10 +7,40 @@ export type Json =
   | Json[]
 
 export type Database = {
+  graphql_public: {
+    Tables: {
+      [_ in never]: never
+    }
+    Views: {
+      [_ in never]: never
+    }
+    Functions: {
+      graphql: {
+        Args: {
+          extensions?: Json
+          operationName?: string
+          query?: string
+          variables?: Json
+        }
+        Returns: Json
+      }
+    }
+    Enums: {
+      [_ in never]: never
+    }
+    CompositeTypes: {
+      [_ in never]: never
+    }
+  }
   public: {
     Tables: {
       artisan: {
         Row: {
+          bank_account_number: string | null
+          bank_account_type: string | null
+          bank_email: string | null
+          bank_name: string | null
+          bank_rut: string | null
           bio: string | null
           created_at: string
           id: string
@@ -24,6 +54,11 @@ export type Database = {
           website: string | null
         }
         Insert: {
+          bank_account_number?: string | null
+          bank_account_type?: string | null
+          bank_email?: string | null
+          bank_name?: string | null
+          bank_rut?: string | null
           bio?: string | null
           created_at?: string
           id?: string
@@ -37,6 +72,11 @@ export type Database = {
           website?: string | null
         }
         Update: {
+          bank_account_number?: string | null
+          bank_account_type?: string | null
+          bank_email?: string | null
+          bank_name?: string | null
+          bank_rut?: string | null
           bio?: string | null
           created_at?: string
           id?: string
@@ -260,6 +300,44 @@ export type Database = {
             foreignKeyName: "buyer_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: true
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cart_snapshot: {
+        Row: {
+          buyer_id: string | null
+          created_at: string
+          email: string | null
+          expires_at: string
+          id: string
+          payload: Json
+          totals: Json
+        }
+        Insert: {
+          buyer_id?: string | null
+          created_at?: string
+          email?: string | null
+          expires_at?: string
+          id?: string
+          payload: Json
+          totals: Json
+        }
+        Update: {
+          buyer_id?: string | null
+          created_at?: string
+          email?: string | null
+          expires_at?: string
+          id?: string
+          payload?: Json
+          totals?: Json
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cart_snapshot_buyer_id_fkey"
+            columns: ["buyer_id"]
+            isOneToOne: false
             referencedRelation: "user"
             referencedColumns: ["id"]
           },
@@ -1260,6 +1338,7 @@ export type Database = {
       }
       webhook_event: {
         Row: {
+          error_message: string | null
           event_type: string
           id: string
           payload: Json | null
@@ -1267,6 +1346,7 @@ export type Database = {
           source: string
         }
         Insert: {
+          error_message?: string | null
           event_type: string
           id: string
           payload?: Json | null
@@ -1274,6 +1354,7 @@ export type Database = {
           source: string
         }
         Update: {
+          error_message?: string | null
           event_type?: string
           id?: string
           payload?: Json | null
@@ -1326,6 +1407,15 @@ export type Database = {
       current_artisan_id: { Args: never; Returns: string }
       current_buyer_id: { Args: never; Returns: string }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
+      decrement_stock_atomic: {
+        Args: { p_items: Json }
+        Returns: {
+          available: number
+          ok: boolean
+          requested: number
+          variant_id: string
+        }[]
+      }
       transition_order_status: {
         Args: { p_actor_id: string; p_new_status: string; p_order_id: string }
         Returns: {
@@ -1516,6 +1606,9 @@ export type CompositeTypes<
     : never
 
 export const Constants = {
+  graphql_public: {
+    Enums: {},
+  },
   public: {
     Enums: {},
   },
