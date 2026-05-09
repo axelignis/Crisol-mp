@@ -1,0 +1,76 @@
+{
+  "cart": {
+    "title": "Your cart",
+    "empty": "Your cart is empty",
+    "addedToast": "Item added to cart",
+    "remove": "Remove",
+    "quantity": "Quantity",
+    "subtotal": "Subtotal",
+    "artisanGroup": "Pieces by {artisan}",
+    "checkout": "Checkout"
+  },
+  "checkout": {
+    "contact": {
+      "email": "Email address",
+      "emailLabel": "For order confirmation and tracking"
+    },
+    "address": {
+      "title": "Shipping address",
+      "line1": "Street and number",
+      "line2": "Apartment, suite or reference (optional)",
+      "city": "City",
+      "region": "Region",
+      "phone": "Phone",
+      "country": "Country"
+    },
+    "shipping": {
+      "title": "Shipping method",
+      "quote": "Get shipping quote",
+      "quoting": "Calculating...",
+      "timeoutFallback": "Using standard rate (estimated shipping)",
+      "courier": "Courier",
+      "cost": "Cost",
+      "perArtisan": "Shipping per artisan"
+    },
+    "coupon": {
+      "title": "Discount code",
+      "placeholder": "Enter your code",
+      "apply": "Apply",
+      "remove": "Remove coupon",
+      "invalid": "Invalid coupon",
+      "expired": "This coupon has expired",
+      "minOrder": "Minimum order of {amount} required for this coupon",
+      "applied": "Coupon {code} applied"
+    },
+    "disclaimers": {
+      "noReturns": "Handmade pieces are not returnable. Verify size and materials before paying.",
+      "intlTax": "Orders shipped outside Chile may be subject to import taxes and customs duties not included in this price.",
+      "acceptCheckbox": "I have read and accept the above terms"
+    },
+    "payment": {
+      "title": "Payment",
+      "payNow": "Pay now",
+      "processing": "Processing payment...",
+      "error": "There was a problem with your payment. Please try again."
+    },
+    "summary": {
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "discount": "Discount",
+      "commission": "Crisol fee",
+      "total": "Total",
+      "items": "{count, plural, one {# piece} other {# pieces}}"
+    }
+  },
+  "order": {
+    "confirmed": "Order confirmed",
+    "trackingComing": "You will receive the tracking number by email when shipped",
+    "detailsEmail": "We sent the details to {email}",
+    "viewOrder": "View order"
+  },
+  "errors": {
+    "stockChange": "Stock changed while you were paying. Please review your cart.",
+    "paymentFailed": "Payment could not be processed. Your card was not charged.",
+    "sessionExpired": "Your checkout session expired. Please restart the payment."
+  }
+}

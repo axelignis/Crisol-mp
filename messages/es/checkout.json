@@ -1,0 +1,76 @@
+{
+  "cart": {
+    "title": "Tu carrito",
+    "empty": "Tu carrito esta vacio",
+    "addedToast": "Pieza agregada al carrito",
+    "remove": "Quitar",
+    "quantity": "Cantidad",
+    "subtotal": "Subtotal",
+    "artisanGroup": "Piezas de {artisan}",
+    "checkout": "Ir a pagar"
+  },
+  "checkout": {
+    "contact": {
+      "email": "Correo electronico",
+      "emailLabel": "Para confirmacion y seguimiento del pedido"
+    },
+    "address": {
+      "title": "Direccion de envio",
+      "line1": "Calle y numero",
+      "line2": "Departamento, oficina o referencia (opcional)",
+      "city": "Comuna",
+      "region": "Region",
+      "phone": "Telefono",
+      "country": "Pais"
+    },
+    "shipping": {
+      "title": "Metodo de envio",
+      "quote": "Cotizar envio",
+      "quoting": "Cotizando...",
+      "timeoutFallback": "Usando tarifa estandar (envio estimado)",
+      "courier": "Courier",
+      "cost": "Costo",
+      "perArtisan": "Envio por artesano"
+    },
+    "coupon": {
+      "title": "Codigo de descuento",
+      "placeholder": "Ingresa tu codigo",
+      "apply": "Aplicar",
+      "remove": "Quitar cupon",
+      "invalid": "Cupon invalido",
+      "expired": "Este cupon ha expirado",
+      "minOrder": "Pedido minimo de {amount} para usar este cupon",
+      "applied": "Cupon {code} aplicado"
+    },
+    "disclaimers": {
+      "noReturns": "Las piezas artesanales no admiten devoluciones. Verifica medidas y materiales antes de pagar.",
+      "intlTax": "Los envios fuera de Chile pueden estar sujetos a impuestos y aranceles aduaneros del pais destino, no incluidos en este precio.",
+      "acceptCheckbox": "He leido y acepto los terminos anteriores"
+    },
+    "payment": {
+      "title": "Pago",
+      "payNow": "Pagar ahora",
+      "processing": "Procesando pago...",
+      "error": "Hubo un problema con el pago. Intenta nuevamente."
+    },
+    "summary": {
+      "subtotal": "Subtotal",
+      "shipping": "Envio",
+      "discount": "Descuento",
+      "commission": "Comision Crisol",
+      "total": "Total",
+      "items": "{count, plural, one {# pieza} other {# piezas}}"
+    }
+  },
+  "order": {
+    "confirmed": "Pedido confirmado",
+    "trackingComing": "Recibiras el numero de seguimiento por correo cuando se despache",
+    "detailsEmail": "Te enviamos los detalles a {email}",
+    "viewOrder": "Ver pedido"
+  },
+  "errors": {
+    "stockChange": "El stock cambio mientras pagabas. Revisa tu carrito.",
+    "paymentFailed": "El pago no pudo procesarse. Tu tarjeta no fue cobrada.",
+    "sessionExpired": "Tu sesion de checkout expiro. Inicia el pago nuevamente."
+  }
+}
