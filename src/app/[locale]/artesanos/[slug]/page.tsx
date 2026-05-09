@@ -44,7 +44,7 @@ export default async function ArtisanProfilePage({ params }: PageProps) {
         </h2>
 
         {products.length > 0 ? (
-          <ProductGrid />
+          <ProductGrid products={products} />
         ) : (
           <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-8 text-center">
             <p className="text-base text-zinc-700">
