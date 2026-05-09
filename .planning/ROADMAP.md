@@ -60,22 +60,26 @@ Plans:
 - [x] 02-06-PLAN.md — Seed migration, database push, E2E Playwright tests
 
 ### Phase 3: Commerce
-**Goal**: A visitor (guest or registered) can add pieces to a cart, proceed through checkout with shipping quote and coupon, and pay via Stripe Connect with automatic commission split — creating a confirmed order
+**Goal**: A visitor (guest or registered) can add pieces from multiple artisans to a cart, complete a single-page checkout with per-artisan courier quote and coupon, pay via single-account Stripe (no Connect, per D-SPLIT), and receive a confirmed order with immutable snapshots and pending artisan_payout records for manual settlement
 **Depends on**: Phase 2
 **Requirements**: COMR-01, COMR-02, COMR-03, COMR-04, COMR-05, COMR-06, COMR-07, COMR-08, COMR-09, COUP-01, COUP-02, COUP-03
 **Success Criteria** (what must be TRUE):
   1. A visitor can add pieces from multiple artisans to a persistent cart (Zustand + localStorage) and see correct totals including variant price modifiers
-  2. Checkout displays a shipping quote from Chilexpress/Starken (with timeout fallback to flat rate), a no-returns disclaimer, and an international tax disclaimer
-  3. A buyer can apply a valid coupon code and see the discount reflected before confirming payment
-  4. Payment via Stripe Connect creates a split where the configured commission goes to the platform and the net amount goes to the artisan — verified with real Stripe test-mode transactions
-  5. The Stripe webhook handler verifies signatures, enforces idempotency via event.id, and creates the order with immutable price/title snapshots only on confirmed payment
-**Plans**: TBD
+  2. Checkout displays a per-artisan shipping quote from Chilexpress/Starken (with 5s timeout fallback to flat rate), a no-returns disclaimer, and an international tax disclaimer with mandatory acceptance checkbox
+  3. A buyer can apply a valid coupon code (single per order) and see the discount reflected before confirming payment; platform absorbs the discount per D-15
+  4. Single-account Stripe payment (D-SPLIT — no Stripe Connect, no transfers.create) creates pending artisan_payout ledger rows per artisan with correct net + commission split, verified in Stripe test mode
+  5. The Stripe webhook verifies signatures, enforces idempotency via event.id, atomically decrements stock with row locks, and creates the order with immutable price/title snapshots only on confirmed payment
+**Plans**: 7 plans
 **UI hint**: yes
 
 Plans:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
+- [ ] 03-01-PLAN.md — Migrations (artisan bank fields, cart_snapshot, coupon seeds), Stripe clients, i18n checkout messages
+- [ ] 03-02-PLAN.md — Multi-artisan Zustand cart with persist, sheet + /carrito page, header badge, stock-check endpoint, E2E persist
+- [ ] 03-03-PLAN.md — Couriers (Chilexpress + Starken adapters, 5s timeout, flat-rate fallback) + /api/couriers/quote (TDD)
+- [ ] 03-04-PLAN.md — Checkout single-page (sections + Stripe Elements + sticky summary + disclaimers checkbox) + totals/coupon/payout-ledger libs (TDD) + payment-intent endpoint
+- [ ] 03-05-PLAN.md — Stripe webhook (signature, idempotency, transactional order creation, atomic stock RPC, artisan_payout ledger — single-account, no transfers) (TDD)
+- [ ] 03-06-PLAN.md — /pedido/[id] page, guest HMAC magic-link token, order-confirmed React Email, sender wired into webhook
+- [ ] 03-07-PLAN.md — E2E Playwright: happy path, guest, coupon, disclaimers, courier fallback, webhook idempotency
 
 ### Phase 4: Order Lifecycle
 **Goal**: After payment, orders follow a strict state machine through fulfillment, with artisans managing shipments and buyers tracking status — all transitions generating email notifications
@@ -119,6 +123,6 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4 -> 5
 |-------|----------------|--------|-----------|
 | 1. Foundation & Auth | 0/4 | Planned | - |
 | 2. Catalog & Discovery | 0/6 | Planned | - |
-| 3. Commerce | 0/3 | Not started | - |
+| 3. Commerce | 0/7 | Planned | - |
 | 4. Order Lifecycle | 0/2 | Not started | - |
 | 5. Dashboards & Operations | 0/3 | Not started | - |

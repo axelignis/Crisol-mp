@@ -1,5 +1,7 @@
 # Phase 3: Commerce - Research
 
+> ⚠️ **SUPERSEDED 2026-05-09:** Single-account model adoptado (D-SPLIT en CONTEXT.md). **IGNORAR** todas las referencias a Stripe Connect, `transfers.create`, `transfer_data`, `destination`, Express accounts, paths A/B/C de la sección "Stripe Connect Chile Feasibility", y los diagramas que muestren transfers post-PI. La fase no usa Stripe Connect bajo ninguna circunstancia. Las decisiones efectivas y vinculantes están en `03-CONTEXT.md` (D-SPLIT, D-07, D-08, D-09, D-15, D-PAYOUT-LIQ).
+
 **Researched:** 2026-05-09
 **Domain:** E-commerce — cart, checkout, multi-vendor split payment, courier quoting, coupons
 **Confidence:** MEDIUM-HIGH (HIGH for libs/patterns; MEDIUM for Stripe Connect Chile feasibility — FLAG-CRITICAL)
@@ -692,7 +694,7 @@ for (const group of artisanGroups) {
 | A7 | Coupon `discount_value` of type `INTEGER` for percentage means literal % (e.g., 10 = 10%) | Coupons | Wrong → discounts off by 100x. Schema comment: "porcentaje entero si percentage" confirms intent. **Confidence HIGH.** |
 | A8 | env example claim "NO Stripe Connect" reflects an outdated/proposed architecture, not a locked decision overriding D-07 | Critical Flag | Wrong → CONTEXT.md D-07 is wrong, not the env file. Discuss-phase already decided D-07; assume D-07 wins until contradicted by user. |
 
-## Open Questions
+## Open Questions (RESOLVED — see CONTEXT.md D-XX decisions)
 
 1. **Stripe Connect Chile — verified availability of Separate Charges & Transfers?**
    - What we know: docs list a fixed region set excluding CL; preview features change frequently; STATE.md flags this.
