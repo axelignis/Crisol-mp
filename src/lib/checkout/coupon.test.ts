@@ -36,7 +36,7 @@ describe('validateCoupon (preview)', () => {
     const sb = mockSupabaseSelect(null)
     const r = await validateCoupon('NOPE', 50000, sb as never)
     expect(r.valid).toBe(false)
-    expect(r.reason).toBe('not_found')
+    if (!r.valid) expect(r.reason).toBe('not_found')
   })
 
   it('expired → invalid', async () => {
@@ -53,7 +53,7 @@ describe('validateCoupon (preview)', () => {
     })
     const r = await validateCoupon('EXP', 50000, sb as never)
     expect(r.valid).toBe(false)
-    expect(r.reason).toBe('expired')
+    if (!r.valid) expect(r.reason).toBe('expired')
   })
 
   it('uses_limit reached → invalid', async () => {
@@ -70,7 +70,7 @@ describe('validateCoupon (preview)', () => {
     })
     const r = await validateCoupon('X', 50000, sb as never)
     expect(r.valid).toBe(false)
-    expect(r.reason).toBe('limit_reached')
+    if (!r.valid) expect(r.reason).toBe('limit_reached')
   })
 
   it('min_order > subtotal → invalid', async () => {
@@ -87,7 +87,7 @@ describe('validateCoupon (preview)', () => {
     })
     const r = await validateCoupon('BIENVENIDA', 20000, sb as never)
     expect(r.valid).toBe(false)
-    expect(r.reason).toBe('min_order')
+    if (!r.valid) expect(r.reason).toBe('min_order')
   })
 
   it('percentage 10% sobre subtotal 100000 → discount=10000', async () => {
@@ -141,7 +141,7 @@ describe('validateCoupon (preview)', () => {
     })
     const r = await validateCoupon('OFF', 50000, sb as never)
     expect(r.valid).toBe(false)
-    expect(r.reason).toBe('inactive')
+    if (!r.valid) expect(r.reason).toBe('inactive')
   })
 })
 
@@ -161,7 +161,7 @@ describe('reserveCoupon (atomic UPDATE)', () => {
     const sb = mockSupabaseRpc([])
     const r = await reserveCoupon('CRISOL10', 100000, sb as never)
     expect(r.valid).toBe(false)
-    expect(r.reason).toBe('race_or_limit_reached')
+    if (!r.valid) expect(r.reason).toBe('race_or_limit_reached')
   })
 
   it('cupón fixed: discount cap al subtotal', async () => {
