@@ -73,7 +73,7 @@ Plans:
 **UI hint**: yes
 
 Plans:
-- [ ] 03-01-PLAN.md — Migrations (artisan bank fields, cart_snapshot, coupon seeds), Stripe clients, i18n checkout messages
+- [x] 03-01-PLAN.md — Migrations (artisan bank fields, cart_snapshot, coupon seeds), Stripe clients, i18n checkout messages
 - [ ] 03-02-PLAN.md — Multi-artisan Zustand cart with persist, sheet + /carrito page, header badge, stock-check endpoint, E2E persist
 - [ ] 03-03-PLAN.md — Couriers (Chilexpress + Starken adapters, 5s timeout, flat-rate fallback) + /api/couriers/quote (TDD)
 - [ ] 03-04-PLAN.md — Checkout single-page (sections + Stripe Elements + sticky summary + disclaimers checkbox) + totals/coupon/payout-ledger libs (TDD) + payment-intent endpoint
