@@ -78,7 +78,7 @@ test.describe('Cart - persistence and multi-artisan', () => {
     ).toHaveCount(2)
   })
 
-  test('removing an item updates the cart and persists', async ({ page }) => {
+  test('removing an item updates the cart and persists in localStorage', async ({ page }) => {
     await page.goto('/es/carrito')
     await expect(
       page.locator('[data-testid="cart-artisan-group"]')
@@ -95,10 +95,13 @@ test.describe('Cart - persistence and multi-artisan', () => {
       page.locator('[data-testid="cart-artisan-group"]')
     ).toHaveCount(1)
 
-    await page.reload()
-    await expect(
-      page.locator('[data-testid="cart-artisan-group"]')
-    ).toHaveCount(1)
+    // Verificar persistencia inspeccionando localStorage (no reload:
+    // addInitScript reescribiria el seed original en cada navegacion).
+    const persisted = await page.evaluate((k) => {
+      const raw = window.localStorage.getItem(k)
+      return raw ? JSON.parse(raw) : null
+    }, CART_KEY)
+    expect(persisted?.state?.items).toHaveLength(1)
   })
 })
 
