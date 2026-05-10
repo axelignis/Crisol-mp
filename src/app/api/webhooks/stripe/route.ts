@@ -17,6 +17,7 @@ import { NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe/client'
 import { createServiceRoleClient } from '@/lib/supabase/admin'
 import { createOrderFromPayment } from '@/lib/orders/create-from-payment'
+import { sendOrderConfirmedEmail } from '@/lib/resend/send-order-confirmed'
 
 // Health probe (manual debug)
 export async function GET() {
@@ -64,6 +65,10 @@ export async function POST(req: Request) {
     case 'payment_intent.succeeded': {
       try {
         const { orderId } = await createOrderFromPayment({ event: event as never, supabase })
+        // Best-effort email (Plan 06): nunca bloquea el webhook.
+        await sendOrderConfirmedEmail(orderId).catch((emailErr) => {
+          console.error('[stripe-webhook] sendOrderConfirmedEmail failed:', emailErr)
+        })
         return NextResponse.json({ received: true, orderId })
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
