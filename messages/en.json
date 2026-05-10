@@ -1,5 +1,7 @@
 {
-  "common": { "appName": "Crisol" },
+  "common": {
+    "appName": "Crisol"
+  },
   "cart": {
     "title": "Your cart",
     "open": "Open cart",
@@ -27,31 +29,180 @@
   "catalog": {
     "title": "Handcrafted Jewelry Catalog",
     "description": "Discover unique handcrafted jewelry pieces created by our artisans.",
-    "sort": { "reciente": "Most recent", "precio_asc": "Price: low to high", "precio_desc": "Price: high to low" },
-    "filters": { "title": "Filters", "tipo": "Piece type", "material": "Material", "precio": "Price range", "ocasion": "Occasion", "tecnica": "Technique", "clear": "Clear filters", "active": "{count} active filters" },
-    "empty": { "title": "No pieces available", "description": "Come back soon, our artisans are creating new works." },
-    "emptyFiltered": { "title": "No results", "description": "Try adjusting the filters or explore the full catalog.", "action": "Clear filters" },
-    "stock": { "low": "{count} units left", "sold": "Sold" },
-    "cart": { "add": "Add to cart", "disabledTooltip": "Coming soon" },
+    "sort": {
+      "reciente": "Most recent",
+      "precio_asc": "Price: low to high",
+      "precio_desc": "Price: high to low"
+    },
+    "filters": {
+      "title": "Filters",
+      "tipo": "Piece type",
+      "material": "Material",
+      "precio": "Price range",
+      "ocasion": "Occasion",
+      "tecnica": "Technique",
+      "clear": "Clear filters",
+      "active": "{count} active filters"
+    },
+    "empty": {
+      "title": "No pieces available",
+      "description": "Come back soon, our artisans are creating new works."
+    },
+    "emptyFiltered": {
+      "title": "No results",
+      "description": "Try adjusting the filters or explore the full catalog.",
+      "action": "Clear filters"
+    },
+    "stock": {
+      "low": "{count} units left",
+      "sold": "Sold"
+    },
+    "cart": {
+      "add": "Add to cart",
+      "disabledTooltip": "Coming soon"
+    },
     "price": "Price"
   },
   "wizard": {
-    "step1": "Basic info", "step2": "Variants", "step3": "Photos", "step4": "Review and submit",
-    "type": { "label": "Piece type", "jewelry_unique": "Unique piece", "jewelry_series": "Series", "decorative": "Decorative art" },
-    "title": "Title", "description": "Description", "basePrice": "Base price (CLP)", "category": "Category",
-    "submit": "Submit for review", "save": "Saved", "saving": "Saving...", "next": "Next", "back": "Back",
-    "variants": { "type": "Type", "value": "Value", "stock": "Stock", "modifier": "Price modifier", "addRow": "Add variant" },
-    "photos": { "dropzone": "Drag photos here or click to select", "cover": "Cover", "maxPhotos": "Maximum {max} photos (JPG, PNG or WebP)", "uploadError": "Could not upload the image. Check the format (JPG, PNG or WebP) and that it does not exceed 10 MB.", "deleteConfirm": { "title": "Delete photo", "description": "This photo will be permanently deleted.", "confirm": "Delete", "cancel": "Cancel" } },
-    "review": { "title": "Review piece", "confirm": "All set. Upon submission, an administrator will review your piece." },
-    "empty": { "title": "You have no pieces", "description": "Create your first piece and share your art.", "action": "Create piece" },
+    "step1": "Basic info",
+    "step2": "Variants",
+    "step3": "Photos",
+    "step4": "Review and submit",
+    "type": {
+      "label": "Piece type",
+      "jewelry_unique": "Unique piece",
+      "jewelry_series": "Series",
+      "decorative": "Decorative art"
+    },
+    "title": "Title",
+    "description": "Description",
+    "basePrice": "Base price (CLP)",
+    "category": "Category",
+    "submit": "Submit for review",
+    "save": "Saved",
+    "saving": "Saving...",
+    "next": "Next",
+    "back": "Back",
+    "variants": {
+      "type": "Type",
+      "value": "Value",
+      "stock": "Stock",
+      "modifier": "Price modifier",
+      "addRow": "Add variant"
+    },
+    "photos": {
+      "dropzone": "Drag photos here or click to select",
+      "cover": "Cover",
+      "maxPhotos": "Maximum {max} photos (JPG, PNG or WebP)",
+      "uploadError": "Could not upload the image. Check the format (JPG, PNG or WebP) and that it does not exceed 10 MB.",
+      "deleteConfirm": {
+        "title": "Delete photo",
+        "description": "This photo will be permanently deleted.",
+        "confirm": "Delete",
+        "cancel": "Cancel"
+      }
+    },
+    "review": {
+      "title": "Review piece",
+      "confirm": "All set. Upon submission, an administrator will review your piece."
+    },
+    "empty": {
+      "title": "You have no pieces",
+      "description": "Create your first piece and share your art.",
+      "action": "Create piece"
+    },
     "saveError": "Could not save changes. Please try again."
   },
   "moderation": {
-    "title": "Piece moderation", "approve": "Approve piece", "requestChanges": "Request changes", "reject": "Reject piece",
-    "feedback": "Message for artisan", "feedbackRequired": "Write a message before requesting changes",
-    "rejectConfirm": { "title": "Reject piece", "description": "This will notify the artisan and the piece will not be published. Confirm?", "confirm": "Yes, reject", "cancel": "Cancel" },
-    "empty": { "title": "No pending pieces", "description": "All pieces have been reviewed." }
+    "title": "Piece moderation",
+    "approve": "Approve piece",
+    "requestChanges": "Request changes",
+    "reject": "Reject piece",
+    "feedback": "Message for artisan",
+    "feedbackRequired": "Write a message before requesting changes",
+    "rejectConfirm": {
+      "title": "Reject piece",
+      "description": "This will notify the artisan and the piece will not be published. Confirm?",
+      "confirm": "Yes, reject",
+      "cancel": "Cancel"
+    },
+    "empty": {
+      "title": "No pending pieces",
+      "description": "All pieces have been reviewed."
+    }
   },
-  "artisan": { "pieces": "Pieces by {name}", "empty": { "title": "This artisan has no published pieces yet", "description": "Come back soon to discover their work." } },
-  "error": { "catalogLoad": "Could not load the catalog. Reload the page." }
+  "artisan": {
+    "pieces": "Pieces by {name}",
+    "empty": {
+      "title": "This artisan has no published pieces yet",
+      "description": "Come back soon to discover their work."
+    }
+  },
+  "error": {
+    "catalogLoad": "Could not load the catalog. Reload the page."
+  },
+  "checkout": {
+    "contact": {
+      "email": "Email address",
+      "emailLabel": "For order confirmation and tracking"
+    },
+    "address": {
+      "title": "Shipping address",
+      "line1": "Street and number",
+      "line2": "Apartment, suite or reference (optional)",
+      "city": "City",
+      "region": "Region",
+      "phone": "Phone",
+      "country": "Country"
+    },
+    "shipping": {
+      "title": "Shipping method",
+      "quote": "Get shipping quote",
+      "quoting": "Calculating...",
+      "timeoutFallback": "Using standard rate (estimated shipping)",
+      "courier": "Courier",
+      "cost": "Cost",
+      "perArtisan": "Shipping per artisan"
+    },
+    "coupon": {
+      "title": "Discount code",
+      "placeholder": "Enter your code",
+      "apply": "Apply",
+      "remove": "Remove coupon",
+      "invalid": "Invalid coupon",
+      "expired": "This coupon has expired",
+      "minOrder": "Minimum order of {amount} required for this coupon",
+      "applied": "Coupon {code} applied"
+    },
+    "disclaimers": {
+      "noReturns": "Handmade pieces are not returnable. Verify size and materials before paying.",
+      "intlTax": "Orders shipped outside Chile may be subject to import taxes and customs duties not included in this price.",
+      "acceptCheckbox": "I have read and accept the above terms"
+    },
+    "payment": {
+      "title": "Payment",
+      "payNow": "Pay now",
+      "processing": "Processing payment...",
+      "error": "There was a problem with your payment. Please try again."
+    },
+    "summary": {
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "discount": "Discount",
+      "commission": "Crisol fee",
+      "total": "Total",
+      "items": "{count, plural, one {# piece} other {# pieces}}"
+    }
+  },
+  "order": {
+    "confirmed": "Order confirmed",
+    "trackingComing": "You will receive the tracking number by email when shipped",
+    "detailsEmail": "We sent the details to {email}",
+    "viewOrder": "View order"
+  },
+  "checkoutErrors": {
+    "stockChange": "Stock changed while you were paying. Please review your cart.",
+    "paymentFailed": "Payment could not be processed. Your card was not charged.",
+    "sessionExpired": "Your checkout session expired. Please restart the payment."
+  }
 }
