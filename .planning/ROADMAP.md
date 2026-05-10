@@ -78,7 +78,7 @@ Plans:
 - [x] 03-03-PLAN.md — Couriers (Chilexpress + Starken adapters, 5s timeout, flat-rate fallback) + /api/couriers/quote (TDD)
 - [x] 03-04-PLAN.md — Checkout single-page (sections + Stripe Elements + sticky summary + disclaimers checkbox) + totals/coupon/payout-ledger libs (TDD) + payment-intent endpoint
 - [x] 03-05-PLAN.md — Stripe webhook (signature, idempotency, transactional order creation, atomic stock RPC, artisan_payout ledger — single-account, no transfers) (TDD)
-- [ ] 03-06-PLAN.md — /pedido/[id] page, guest HMAC magic-link token, order-confirmed React Email, sender wired into webhook
+- [x] 03-06-PLAN.md — /pedido/[id] page, guest HMAC magic-link token, order-confirmed React Email, sender wired into webhook
 - [ ] 03-07-PLAN.md — E2E Playwright: happy path, guest, coupon, disclaimers, courier fallback, webhook idempotency
 
 ### Phase 4: Order Lifecycle
