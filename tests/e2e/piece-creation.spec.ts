@@ -10,16 +10,22 @@ test.describe('Piece Creation Wizard', () => {
     await page.fill('#email', ARTISAN_EMAIL)
     await page.fill('#password', ARTISAN_PASSWORD)
     await page.click('button[type="submit"]')
-    await page.waitForURL(/artesano/, { timeout: 10000 })
+    // Login redirige a /es (homepage). Esperar a que la sesion este activa
+    // verificando salida de /auth/login.
+    await page.waitForURL((url) => !/auth\/login/.test(url.toString()), {
+      timeout: 10000,
+    })
   })
 
   test('create piece happy path - step 1 fills and advances', async ({ page }) => {
     await page.goto('/artesano/piezas/nueva')
 
     // Step 1: Fill basic info
+    // Radix Select (combobox custom): click trigger, luego click option.
     const typeSelect = page.locator('[data-testid="piece-type"]')
     if (await typeSelect.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await typeSelect.selectOption('jewelry_unique')
+      await typeSelect.click()
+      await page.getByRole('option', { name: 'Pieza unica' }).click()
     }
 
     await page.fill('[data-testid="piece-title"]', 'Anillo de prueba E2E')
@@ -36,9 +42,11 @@ test.describe('Piece Creation Wizard', () => {
   test('validation error - title too short prevents advance', async ({ page }) => {
     await page.goto('/artesano/piezas/nueva')
 
+    // Radix Select (combobox custom): click trigger, luego click option.
     const typeSelect = page.locator('[data-testid="piece-type"]')
     if (await typeSelect.isVisible({ timeout: 3000 }).catch(() => false)) {
-      await typeSelect.selectOption('jewelry_unique')
+      await typeSelect.click()
+      await page.getByRole('option', { name: 'Pieza unica' }).click()
     }
 
     await page.fill('[data-testid="piece-title"]', 'AB') // Too short (min 3)
@@ -47,7 +55,7 @@ test.describe('Piece Creation Wizard', () => {
 
     // Should show validation error, NOT advance to step 2
     await expect(
-      page.getByText(/3/).or(page.getByText(/[Mm][ií]nimo/)).or(page.locator('[role="alert"]'))
+      page.getByText(/[Mm][ií]nimo 3 caracteres/),
     ).toBeVisible({ timeout: 5000 })
   })
 
@@ -55,16 +63,12 @@ test.describe('Piece Creation Wizard', () => {
     await page.goto('/artesano/piezas/nueva')
     // Page must render the wizard form or at least the page content
     await expect(
-      page.locator('[data-testid="piece-wizard"]')
-        .or(page.locator('form'))
-        .or(page.locator('main'))
+      page.locator('[data-testid="piece-wizard"]'),
     ).toBeVisible()
   })
 
   test('piece list page loads for artisan', async ({ page }) => {
     await page.goto('/artesano/piezas')
-    await expect(
-      page.getByText(/[Mm]is [Pp]iezas/).or(page.locator('main'))
-    ).toBeVisible()
+    await expect(page.locator('main')).toBeVisible()
   })
 })

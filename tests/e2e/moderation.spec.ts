@@ -10,7 +10,11 @@ test.describe('Admin Moderation Queue', () => {
     await page.fill('#email', ADMIN_EMAIL)
     await page.fill('#password', ADMIN_PASSWORD)
     await page.click('button[type="submit"]')
-    await page.waitForURL(/admin/, { timeout: 10000 })
+    // Login redirige a /es (homepage). Esperar a que la sesion este activa
+    // verificando salida de /auth/login.
+    await page.waitForURL((url) => !/auth\/login/.test(url.toString()), {
+      timeout: 10000,
+    })
   })
 
   test('moderation page loads and shows queue or empty state', async ({ page }) => {
