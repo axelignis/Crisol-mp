@@ -42,6 +42,18 @@ export type PerArtisanTotal = {
   artisanNet: number
 }
 
+// Item-level snapshot consumido por el webhook (Plan 05) para crear order_item
+// con snapshot_title y unit_price inmutables (D-20, COMR-08).
+export type PerItemTotal = {
+  variantId: string
+  productId: string
+  artisanId: string
+  qty: number
+  unitPrice: number
+  totalPrice: number
+  snapshotTitle: string
+}
+
 export type Totals = {
   subtotal: number
   discount: number
@@ -49,6 +61,7 @@ export type Totals = {
   commission: number
   total: number
   perArtisan: PerArtisanTotal[]
+  perItem: PerItemTotal[]
 }
 
 export type ComputeTotalsInput = {
@@ -69,14 +82,24 @@ export function computeTotals(input: ComputeTotalsInput): Totals {
     }
   }
 
-  // Agrupar items por artesano (orden de inserción)
+  // Agrupar items por artesano (orden de inserción) y persistir snapshot per-item
   const perArtisanMap = new Map<string, PerArtisanTotal>()
+  const perItem: PerItemTotal[] = []
   let subtotal = 0
   for (const it of items) {
     const prod = productLookup[it.variantId]
     const unit = prod.basePrice + (prod.priceModifier || 0)
     const lineTotal = unit * it.qty
     subtotal += lineTotal
+    perItem.push({
+      variantId: it.variantId,
+      productId: prod.productId,
+      artisanId: prod.artisanId,
+      qty: it.qty,
+      unitPrice: unit,
+      totalPrice: lineTotal,
+      snapshotTitle: prod.snapshotTitle,
+    })
     const existing = perArtisanMap.get(prod.artisanId)
     if (existing) {
       existing.subtotal += lineTotal
@@ -124,5 +147,6 @@ export function computeTotals(input: ComputeTotalsInput): Totals {
     commission: commissionTotal,
     total,
     perArtisan: Array.from(perArtisanMap.values()),
+    perItem,
   }
 }

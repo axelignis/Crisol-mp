@@ -182,8 +182,12 @@ export async function POST(req: Request) {
       shippingTotal: totals.shippingTotal,
     })
 
-    // 9. Stage cart (con couponId + ledger para webhook)
-    const snapshotId = await stageCart(supabase, input, { ...totals, couponId, ledger } as never)
+    // 9. Stage cart (con couponId + ledger + commissionPct para webhook Plan 05)
+    const snapshotId = await stageCart(
+      supabase,
+      input,
+      { ...totals, couponId, ledger, commissionPct } as never,
+    )
 
     // 10. Create Stripe PI (idempotency = snapshotId)
     const pi = await stripe.paymentIntents.create(
