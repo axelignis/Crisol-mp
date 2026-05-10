@@ -55,6 +55,7 @@ supabase start | supabase migration new <nombre>
 - Correr con `pnpm test:e2e` y confirmar que pasan antes de hacer commit final.
 - Los tests deben cubrir el happy path completo y al menos un caso de error.
 - Datos de prueba: usar factories de `src/test/factories/`, nunca datos hardcodeados.
+- Antes de correr la suite E2E con specs que requieren login (admin/artisan), ejecutar `pnpm seed:e2e` para crear `admin@test.crisol.cl` y `artisan@test.crisol.cl` (idempotente, requiere supabase local arriba).
 
 ## Instrucciones de respuesta
 
