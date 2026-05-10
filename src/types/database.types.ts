@@ -1404,6 +1404,13 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      create_order_from_snapshot: {
+        Args: { p_pi_id: string; p_pi_metadata?: Json; p_snapshot_id: string }
+        Returns: {
+          error_code: string
+          order_id: string
+        }[]
+      }
       current_artisan_id: { Args: never; Returns: string }
       current_buyer_id: { Args: never; Returns: string }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
