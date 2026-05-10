@@ -16,7 +16,12 @@
 import { NextResponse } from 'next/server'
 import { stripe } from '@/lib/stripe/client'
 import { createServiceRoleClient } from '@/lib/supabase/admin'
-import { createOrderFromPayment } from '@/lib/orders/create-from-payment'
+import {
+  createOrderFromPayment,
+  StockInsufficientError,
+  SnapshotNotFoundError,
+  CouponLimitReachedError,
+} from '@/lib/orders/create-from-payment'
 import { sendOrderConfirmedEmail } from '@/lib/resend/send-order-confirmed'
 
 // Health probe (manual debug)
@@ -63,27 +68,54 @@ export async function POST(req: Request) {
   // 3. Dispatch por event.type
   switch (event.type) {
     case 'payment_intent.succeeded': {
+      const pi = event.data.object as { id?: string }
+      const piId = pi.id ?? ''
       try {
         const { orderId } = await createOrderFromPayment({ event: event as never, supabase })
         // Best-effort email (Plan 06): nunca bloquea el webhook.
         await sendOrderConfirmedEmail(orderId).catch((emailErr) => {
           console.error('[stripe-webhook] sendOrderConfirmedEmail failed:', emailErr)
         })
-        return NextResponse.json({ received: true, orderId })
+        // WR-01: NO incluir orderId en la respuesta a Stripe (queda persistido
+        // en webhook_event y order; el cliente Stripe no necesita verlo).
+        return NextResponse.json({ received: true })
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e)
         console.error('[stripe-webhook] order creation failed:', msg)
+
+        // CR-03: si el pago ya succeeded pero no podemos crear la orden por
+        // stock/snapshot/cupon, refund automatico. El cliente NO debe quedar
+        // cobrado sin orden. TODO(phase-4): notificar al buyer via email/sms.
+        const shouldAutoRefund =
+          piId &&
+          (e instanceof StockInsufficientError ||
+            e instanceof SnapshotNotFoundError ||
+            e instanceof CouponLimitReachedError)
+
+        let finalErrorMessage = msg
+        if (shouldAutoRefund) {
+          try {
+            const refund = await stripe.refunds.create({
+              payment_intent: piId,
+              reason: 'requested_by_customer',
+            })
+            finalErrorMessage = `${msg} | refunded_automatically:${refund.id}`
+          } catch (refundErr) {
+            const refundMsg = refundErr instanceof Error ? refundErr.message : String(refundErr)
+            console.error('[stripe-webhook] auto-refund failed:', refundMsg)
+            finalErrorMessage = `${msg} | refund_failed:${refundMsg}`
+          }
+        }
+
         // CRITICO: el pago ya succeeded; devolver 5xx haria que Stripe reintente
         // y procesemos duplicado. En lugar de eso flagear para reconciliacion.
         await supabase
           .from('webhook_event')
-          .update({ error_message: msg })
+          .update({ error_message: finalErrorMessage })
           .eq('id', event.id)
-        return NextResponse.json({
-          received: true,
-          error: 'order_creation_failed',
-          details: msg,
-        })
+
+        // WR-01: NO exponer detalles internos a Stripe (queda en DB).
+        return NextResponse.json({ received: true })
       }
     }
 

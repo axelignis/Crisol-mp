@@ -50,9 +50,14 @@ const {
   }
 })
 
+const { refundsCreateMock } = vi.hoisted(() => ({
+  refundsCreateMock: vi.fn(),
+}))
+
 vi.mock('@/lib/stripe/client', () => ({
   stripe: {
     webhooks: { constructEvent: constructEventMock },
+    refunds: { create: refundsCreateMock },
   },
 }))
 
@@ -101,6 +106,8 @@ describe('POST /api/webhooks/stripe', () => {
     vi.spyOn(console, 'warn').mockImplementation(() => {})
     constructEventMock.mockReset()
     createOrderFromPaymentMock.mockReset()
+    refundsCreateMock.mockReset()
+    refundsCreateMock.mockResolvedValue({ id: 're_mock_1' })
     serviceRoleClient.__inserts.length = 0
     serviceRoleClient.__updates.length = 0
     serviceRoleClient.__idempState.nextInsertError = null
@@ -122,14 +129,15 @@ describe('POST /api/webhooks/stripe', () => {
     expect(createOrderFromPaymentMock).not.toHaveBeenCalled()
   })
 
-  it('happy path: firma valida + new event id -> 200, createOrderFromPayment llamado', async () => {
+  it('happy path: firma valida + new event id -> 200, createOrderFromPayment llamado (WR-01: sin orderId leak)', async () => {
     constructEventMock.mockReturnValue(piSucceededEvent('evt_new'))
     createOrderFromPaymentMock.mockResolvedValue({ orderId: 'order-uuid' })
     const res = await POST(makeReq('{"raw":true}'))
     expect(res.status).toBe(200)
     const json = await res.json()
     expect(json.received).toBe(true)
-    expect(json.orderId).toBe('order-uuid')
+    // WR-01: la respuesta a Stripe NO debe incluir orderId ni detalles internos
+    expect(json.orderId).toBeUndefined()
     expect(createOrderFromPaymentMock).toHaveBeenCalledTimes(1)
     const idemInsert = serviceRoleClient.__inserts.find((i: { table: string }) => i.table === 'webhook_event')
     expect(idemInsert).toBeDefined()
@@ -154,8 +162,8 @@ describe('POST /api/webhooks/stripe', () => {
     expect(createOrderFromPaymentMock).not.toHaveBeenCalled()
   })
 
-  it('order creation throws -> 200 (no 5xx) + flag error_message para reconciliacion', async () => {
-    constructEventMock.mockReturnValue(piSucceededEvent('evt_err'))
+  it('CR-03: stock insuficiente post-pago dispara refund automatico + flag error_message', async () => {
+    constructEventMock.mockReturnValue(piSucceededEvent('evt_err', 'pi_refund_1'))
     createOrderFromPaymentMock.mockRejectedValue(
       new StockInsufficientError([{ variantId: 'v1', available: 0, requested: 2 }]),
     )
@@ -163,11 +171,46 @@ describe('POST /api/webhooks/stripe', () => {
     expect(res.status).toBe(200) // critico: NO 5xx (evita Stripe retry duplicado)
     const json = await res.json()
     expect(json.received).toBe(true)
-    expect(json.error).toBe('order_creation_failed')
-    // El webhook debe escribir error_message en webhook_event
+    // WR-01: la respuesta NO debe filtrar detalles ni mensajes de error.
+    expect(json.error).toBeUndefined()
+    expect(json.details).toBeUndefined()
+
+    // CR-03: refund debe haberse invocado con el PI id
+    expect(refundsCreateMock).toHaveBeenCalledWith({
+      payment_intent: 'pi_refund_1',
+      reason: 'requested_by_customer',
+    })
+    // El webhook debe escribir error_message en webhook_event con el refund id
     const upd = serviceRoleClient.__updates.find((u: { table: string }) => u.table === 'webhook_event')
     expect(upd).toBeDefined()
     expect((upd!.values as any).error_message).toMatch(/insufficient/)
+    expect((upd!.values as any).error_message).toMatch(/refunded_automatically:re_mock_1/)
+  })
+
+  it('CR-03: si el refund mismo falla, error_message anota refund_failed pero igual 200', async () => {
+    constructEventMock.mockReturnValue(piSucceededEvent('evt_err2', 'pi_refund_fail'))
+    createOrderFromPaymentMock.mockRejectedValue(
+      new StockInsufficientError([{ variantId: 'v1', available: 0, requested: 2 }]),
+    )
+    refundsCreateMock.mockRejectedValueOnce(new Error('refund api down'))
+    const res = await POST(makeReq('{"raw":true}'))
+    expect(res.status).toBe(200)
+    const json = await res.json()
+    expect(json.received).toBe(true)
+    const upd = serviceRoleClient.__updates.find((u: { table: string }) => u.table === 'webhook_event')
+    expect(upd).toBeDefined()
+    expect((upd!.values as any).error_message).toMatch(/refund_failed:refund api down/)
+  })
+
+  it('errores no-refundables (ej. NO_SNAPSHOT_ID) NO disparan refund', async () => {
+    constructEventMock.mockReturnValue(piSucceededEvent('evt_err3', 'pi_no_refund'))
+    createOrderFromPaymentMock.mockRejectedValue(new Error('NO_SNAPSHOT_ID'))
+    const res = await POST(makeReq('{"raw":true}'))
+    expect(res.status).toBe(200)
+    expect(refundsCreateMock).not.toHaveBeenCalled()
+    const upd = serviceRoleClient.__updates.find((u: { table: string }) => u.table === 'webhook_event')
+    expect(upd).toBeDefined()
+    expect((upd!.values as any).error_message).toBe('NO_SNAPSHOT_ID')
   })
 
   it('constructEvent recibe el raw body string (no parsed JSON)', async () => {
