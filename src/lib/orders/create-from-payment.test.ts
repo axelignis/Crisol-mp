@@ -105,7 +105,7 @@ function makeSupabaseMock(opts: {
   return { from, rpc, inserts, couponUpdates }
 }
 
-function defaultSnapshot() {
+function defaultSnapshot(): any {
   return {
     id: SNAP,
     email: 'buyer@example.com',
