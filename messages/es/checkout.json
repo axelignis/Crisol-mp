@@ -16,6 +16,7 @@
     },
     "address": {
       "title": "Direccion de envio",
+      "fullName": "Nombre completo",
       "line1": "Calle y numero",
       "line2": "Departamento, oficina o referencia (opcional)",
       "city": "Comuna",

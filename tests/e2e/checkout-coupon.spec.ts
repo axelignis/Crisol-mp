@@ -76,8 +76,9 @@ test.describe('Checkout - cupón (COUP-02, COUP-03)', () => {
 
     const expectedDiscount = Math.floor(subtotal * 0.1)
     await expect(page.getByText(new RegExp(`CRISOL10 aplicado`, 'i'))).toBeVisible()
+    const formatted = expectedDiscount.toLocaleString('es-CL')
     await expect(
-      page.getByText(new RegExp(`-?\\$?${expectedDiscount.toLocaleString('es-CL')}`))
+      page.getByText(new RegExp(`[−-]\\$?${formatted}`)).first()
     ).toBeVisible()
   })
 

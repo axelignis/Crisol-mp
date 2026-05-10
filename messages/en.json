@@ -148,6 +148,7 @@
     },
     "address": {
       "title": "Shipping address",
+      "fullName": "Full name",
       "line1": "Street and number",
       "line2": "Apartment, suite or reference (optional)",
       "city": "City",
