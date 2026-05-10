@@ -71,7 +71,7 @@ test.describe('Auth - Login', () => {
 
     await expect(page.locator('h1, h2').filter({ hasText: 'Iniciar sesion' })).toBeVisible()
 
-    await expect(page.locator('text=Crisol')).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Crisol' })).toBeVisible()
 
     await expect(page.locator('#email')).toBeVisible()
     await expect(page.locator('#password')).toBeVisible()
