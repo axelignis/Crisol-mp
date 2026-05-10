@@ -8,13 +8,16 @@
 // - T-03-12: response NO expone commission al buyer.
 // - T-03-14: variantes no published / stock=0 → 409.
 // - T-03-15: acceptedDisclaimers literal(true) → audit en cart_snapshot.payload.
-// - T-03-23: coupon race fix vía reserveCoupon (UPDATE condicional atómico).
+// - T-03-23 (CR-02): coupon race fix vía RPC create_order_from_snapshot
+//   (UPDATE condicional atómico al crear la orden). El payment-intent solo
+//   valida disponibilidad read-only — NO incrementa uses_count para evitar
+//   inflar el contador con PIs abandonados.
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createClient } from '@/lib/supabase/server'
 import { stripe } from '@/lib/stripe/client'
 import { computeTotals, type ProductLookup } from '@/lib/checkout/totals'
-import { reserveCoupon } from '@/lib/checkout/coupon'
+import { validateCouponForCheckout } from '@/lib/checkout/coupon'
 import { stageCart } from '@/lib/checkout/stage-cart'
 import { buildPayoutLedger } from '@/lib/stripe/payout-ledger'
 
@@ -146,18 +149,19 @@ export async function POST(req: Request) {
       }
     }
 
-    // 5. Calcular subtotal preliminar para reserveCoupon
+    // 5. Calcular subtotal preliminar para validar el cupón
     let preSubtotal = 0
     for (const it of input.items) {
       const p = lookup[it.variantId]
       preSubtotal += (p.basePrice + p.priceModifier) * it.qty
     }
 
-    // 6. Reservar cupón (atomic) si presente
+    // 6. Validar cupón read-only (CR-02). El uses_count++ se hace atomicamente
+    //    dentro de la RPC create_order_from_snapshot al crear la orden.
     let reservedDiscount = 0
     let couponId: string | null = null
     if (input.couponCode) {
-      const r = await reserveCoupon(input.couponCode, preSubtotal, supabase)
+      const r = await validateCouponForCheckout(input.couponCode, preSubtotal, supabase)
       if (!r.valid) {
         return NextResponse.json({ error: 'coupon_invalid', reason: r.reason }, { status: 409 })
       }

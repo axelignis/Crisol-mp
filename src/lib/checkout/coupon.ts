@@ -1,6 +1,7 @@
-// Phase 3 Plan 04 — Coupon validation (preview) + reservation (atomic).
-// Preview es read-only (UI muestra discount tentativo).
-// Reserve usa RPC con UPDATE condicional para evitar race condition vs uses_limit (D-15 fix).
+// Phase 3 Plan 04 — Coupon validation (preview) + checkout validation (read-only).
+// CR-02 fix: la incrementacion de uses_count NO ocurre al crear el PaymentIntent;
+// se mueve a la creacion atomica de la orden (RPC create_order_from_snapshot,
+// migracion 023) para que solo cuenten usos efectivos.
 import type { SupabaseClient } from '@supabase/supabase-js'
 
 export type ValidateResult =
@@ -68,33 +69,40 @@ export async function validateCoupon(
 }
 
 /**
- * Atomic reservation via RPC `reserve_coupon` (UPDATE condicional con RETURNING).
- * Usado por /api/checkout/payment-intent ANTES de crear el PI — previene race
- * condition vs uses_limit. El webhook (Plan 05) NO re-incrementa uses_count;
- * solo asocia coupon_id a la order.
+ * Pre-checkout validation (read-only, CR-02). Llamada por
+ * /api/checkout/payment-intent ANTES de crear el PI. NO incrementa
+ * uses_count: esto evita inflar el contador con PIs abandonados.
  *
- * TODO(phase-5): cleanup job para PIs abandonados (uses_count queda inflado).
+ * El uses_count++ se ejecuta atomicamente dentro de la RPC
+ * `create_order_from_snapshot` (migracion 023) cuando la orden se
+ * crea efectivamente. Esa misma RPC re-valida la disponibilidad
+ * con FOR UPDATE para garantizar que el limite no se sobrepase
+ * bajo concurrencia, asi que esta funcion solo necesita ser
+ * read-only.
+ *
+ * Reutiliza validateCoupon — la firma se mantiene como wrapper
+ * para no obligar a cambios en callers que prefieran la semantica
+ * "for-checkout".
+ */
+export async function validateCouponForCheckout(
+  code: string,
+  subtotal: number,
+  supabase: SupabaseClient
+): Promise<ValidateResult> {
+  return validateCoupon(code, subtotal, supabase)
+}
+
+/**
+ * @deprecated CR-02: usar `validateCouponForCheckout`. Mantenido como
+ * alias temporal hasta que se migre a la nueva RPC; ahora ya NO
+ * incrementa uses_count (era inseguro, inflaba el contador con PIs
+ * abandonados). El incremento atomico se hace en
+ * `create_order_from_snapshot`.
  */
 export async function reserveCoupon(
   code: string,
   subtotal: number,
   supabase: SupabaseClient
 ): Promise<ValidateResult> {
-  const normalized = code.trim().toUpperCase()
-  const { data, error } = await supabase.rpc('reserve_coupon', {
-    p_code: normalized,
-    p_subtotal: subtotal,
-  })
-  if (error) return { valid: false, reason: 'race_or_limit_reached' }
-  const rows = (data ?? []) as Array<{ id: string; discount_type: 'percentage' | 'fixed'; discount_value: number }>
-  if (rows.length === 0) {
-    return { valid: false, reason: 'race_or_limit_reached' }
-  }
-  const row = rows[0]
-  return {
-    valid: true,
-    couponId: row.id,
-    discountType: row.discount_type,
-    discount: calcDiscount(row.discount_type, row.discount_value, subtotal),
-  }
+  return validateCouponForCheckout(code, subtotal, supabase)
 }

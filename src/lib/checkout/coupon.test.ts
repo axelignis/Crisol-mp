@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest'
-import { validateCoupon, reserveCoupon } from './coupon'
+import { validateCoupon, validateCouponForCheckout, reserveCoupon } from './coupon'
 
 type RowData = {
   id: string
@@ -25,9 +25,11 @@ function mockSupabaseSelect(row: RowData | null) {
   }
 }
 
-function mockSupabaseRpc(rows: Array<{ id: string; discount_type: string; discount_value: number }>) {
+function mockSupabaseRpc(_rows: Array<{ id: string; discount_type: string; discount_value: number }>) {
+  // CR-02: ya no se usa RPC reserve_coupon. Mantenido como helper inerte
+  // por backwards-compat de los tests legacy que aún lo importan.
   return {
-    rpc: vi.fn().mockResolvedValue({ data: rows, error: null }),
+    rpc: vi.fn().mockResolvedValue({ data: [], error: null }),
   }
 }
 
@@ -145,29 +147,78 @@ describe('validateCoupon (preview)', () => {
   })
 })
 
-describe('reserveCoupon (atomic UPDATE)', () => {
-  it('happy path → uses_count incrementado, retorna couponId+discount', async () => {
-    const sb = mockSupabaseRpc([{ id: 'c1', discount_type: 'percentage', discount_value: 10 }])
-    const r = await reserveCoupon('CRISOL10', 100000, sb as never)
+describe('validateCouponForCheckout (read-only, CR-02)', () => {
+  it('happy path → retorna couponId+discount sin tocar uses_count', async () => {
+    const sb = mockSupabaseSelect({
+      id: 'c1',
+      code: 'CRISOL10',
+      discount_type: 'percentage',
+      discount_value: 10,
+      min_order: null,
+      uses_limit: null,
+      uses_count: 0,
+      expires_at: null,
+      is_active: true,
+    })
+    const r = await validateCouponForCheckout('CRISOL10', 100000, sb as never)
     expect(r.valid).toBe(true)
     if (r.valid) {
       expect(r.couponId).toBe('c1')
       expect(r.discount).toBe(10000)
     }
-    expect(sb.rpc).toHaveBeenCalledWith('reserve_coupon', expect.objectContaining({ p_code: 'CRISOL10', p_subtotal: 100000 }))
   })
 
-  it('uses_limit reached / race → 0 rows → invalid race_or_limit_reached', async () => {
-    const sb = mockSupabaseRpc([])
-    const r = await reserveCoupon('CRISOL10', 100000, sb as never)
+  it('uses_limit alcanzado → invalid limit_reached (NO race_or_limit_reached porque ya no hay UPDATE)', async () => {
+    const sb = mockSupabaseSelect({
+      id: 'c1',
+      code: 'CRISOL10',
+      discount_type: 'percentage',
+      discount_value: 10,
+      min_order: null,
+      uses_limit: 5,
+      uses_count: 5,
+      expires_at: null,
+      is_active: true,
+    })
+    const r = await validateCouponForCheckout('CRISOL10', 100000, sb as never)
     expect(r.valid).toBe(false)
-    if (!r.valid) expect(r.reason).toBe('race_or_limit_reached')
+    if (!r.valid) expect(r.reason).toBe('limit_reached')
   })
 
   it('cupón fixed: discount cap al subtotal', async () => {
-    const sb = mockSupabaseRpc([{ id: 'c2', discount_type: 'fixed', discount_value: 99999 }])
-    const r = await reserveCoupon('BIG', 5000, sb as never)
+    const sb = mockSupabaseSelect({
+      id: 'c2',
+      code: 'BIG',
+      discount_type: 'fixed',
+      discount_value: 99999,
+      min_order: null,
+      uses_limit: null,
+      uses_count: 0,
+      expires_at: null,
+      is_active: true,
+    })
+    const r = await validateCouponForCheckout('BIG', 5000, sb as never)
     expect(r.valid).toBe(true)
     if (r.valid) expect(r.discount).toBe(5000)
+  })
+
+  // Sanity: el alias deprecated `reserveCoupon` mantiene la misma semántica read-only.
+  it('reserveCoupon (deprecated alias) delega a validateCouponForCheckout', async () => {
+    const sb = mockSupabaseSelect({
+      id: 'c1',
+      code: 'CRISOL10',
+      discount_type: 'percentage',
+      discount_value: 10,
+      min_order: null,
+      uses_limit: null,
+      uses_count: 0,
+      expires_at: null,
+      is_active: true,
+    })
+    const r = await reserveCoupon('CRISOL10', 100000, sb as never)
+    expect(r.valid).toBe(true)
+    // Verificar que NO se llama RPC
+    expect((sb as { rpc?: unknown }).rpc).toBeUndefined()
+    void mockSupabaseRpc // mantener el helper referenciado para evitar warnings
   })
 })

@@ -195,20 +195,41 @@ describe('POST /api/checkout/payment-intent', () => {
     expect(json.error).toBe('shipment_missing')
   })
 
-  it('409 coupon_invalid si reserveCoupon retorna 0 rows (race)', async () => {
-    // happy path setup pero rpc retorna []
+  it('409 coupon_invalid si cupón no existe (CR-02 read-only)', async () => {
+    // Default mock devuelve coupon=null → validateCouponForCheckout retorna not_found
     const body = { ...validBody, couponCode: 'CRISOL10' }
     const res = await POST(makeReq(body))
     expect(res.status).toBe(409)
     const json = await res.json()
     expect(json.error).toBe('coupon_invalid')
-    expect(json.reason).toBe('race_or_limit_reached')
+    expect(json.reason).toBe('not_found')
   })
 
-  it('happy path con cupón válido: discount aplicado a totales', async () => {
-    supabaseMock.rpc = vi.fn().mockResolvedValue({
-      data: [{ id: 'coupon-uuid', discount_type: 'percentage', discount_value: 10 }],
-      error: null,
+  it('happy path con cupón válido: discount aplicado a totales (CR-02 read-only, sin uses_count++)', async () => {
+    // Override mock de la tabla coupon para devolver row válido
+    const couponRow = {
+      id: 'coupon-uuid',
+      code: 'CRISOL10',
+      discount_type: 'percentage',
+      discount_value: 10,
+      min_order: null,
+      uses_limit: null,
+      uses_count: 0,
+      expires_at: null,
+      is_active: true,
+    }
+    const originalFrom = supabaseMock.from
+    supabaseMock.from = vi.fn((table: string) => {
+      if (table === 'coupon') {
+        return {
+          select: vi.fn().mockReturnValue({
+            eq: vi.fn().mockReturnValue({
+              maybeSingle: vi.fn().mockResolvedValue({ data: couponRow, error: null }),
+            }),
+          }),
+        }
+      }
+      return originalFrom(table)
     })
     const body = { ...validBody, couponCode: 'CRISOL10' }
     const res = await POST(makeReq(body))
