@@ -91,3 +91,4 @@ Desktop.ini
 .claude/.credentials.json
 .claude/projects/
 !.claude/settings.json
+.claude/worktrees/
