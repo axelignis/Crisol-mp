@@ -10,6 +10,7 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "test:e2e": "playwright test",
+    "seed:e2e": "node scripts/seed-e2e-users.mjs",
     "db:types": "pnpm dlx supabase gen types typescript --project-id $SUPABASE_PROJECT_ID --schema public > src/types/database.types.ts",
     "lhci": "lhci autorun"
   },
