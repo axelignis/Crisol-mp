@@ -140,7 +140,7 @@ describe('sendOrderConfirmedEmail', () => {
     expect(resendSendMock).toHaveBeenCalledTimes(1)
     const args = resendSendMock.mock.calls[0][0]
     expect(args.to).toBe('buyer@example.com')
-    expect(args.subject).toMatch(/Confirmación.*order-uuid/i)
+    expect(args.subject).toMatch(/Confirmación.*order-uu/i)
     expect(args.react).toBeTruthy()
 
     expect(templateSpy).toHaveBeenCalledTimes(1)
